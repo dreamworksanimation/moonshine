@@ -1,0 +1,627 @@
+// Copyright 2023 DreamWorks Animation LLC
+// SPDX-License-Identifier: Apache-2.0
+
+/// @file DwaBase.isph
+
+#pragma once
+
+#include "DwaBaseLayerable.isph"
+
+#include <moonray/rendering/shading/ispc/Shading.isph>
+#include <scene_rdl2/common/platform/IspcUtil.isph>
+
+#define ASSIGN_GLITTER_ATTR_FUNCS(fns) \
+    fns.mEvalAttrGlitter                           = (uniform intptr_t) (void*) evalAttrGlitter;                            \
+    fns.mEvalAttrGlitterDensity                    = (uniform intptr_t) (void*) evalAttrGlitterDensity;                     \
+    fns.mEvalAttrGlitterJitter                     = (uniform intptr_t) (void*) evalAttrGlitterJitter;                      \
+    fns.mEvalAttrGlitterHueVariation               = (uniform intptr_t) (void*) evalAttrGlitterHueVariation;                \
+    fns.mEvalAttrGlitterSaturationVariation        = (uniform intptr_t) (void*) evalAttrGlitterSaturationVariation;         \
+    fns.mEvalAttrGlitterValueVariation             = (uniform intptr_t) (void*) evalAttrGlitterValueVariation;              \
+    fns.mGetAttrGlitterOrientationRandomness       = (uniform intptr_t) (void*) getAttrGlitterTextureOrientationRandomness; \
+    fns.mGetAttrGlitterCompensateDeformation       = (uniform intptr_t) (void*) getAttrGlitterCompensateDeformation;        \
+    fns.mGetAttrGlitterApproximateForSecondaryRays = (uniform intptr_t) (void*) getAttrGlitterApproximateForSecRays;        \
+    fns.mGetAttrGlitterDebugMode                   = (uniform intptr_t) (void*) getAttrGlitterDebugMode;                    \
+    fns.mEvalAttrGlitterStyleAFrequency            = (uniform intptr_t) (void*) evalAttrGlitterStyleAFrequency;             \
+    fns.mEvalAttrGlitterColorA                     = (uniform intptr_t) (void*) evalAttrGlitterColorA;                      \
+    fns.mEvalAttrGlitterSizeA                      = (uniform intptr_t) (void*) evalAttrGlitterSizeA;                       \
+    fns.mGetAttrGlitterRoughnessA                  = (uniform intptr_t) (void*) getAttrGlitterRoughnessA;                   \
+    fns.mEvalAttrGlitterStyleBFrequency            = (uniform intptr_t) (void*) evalAttrGlitterStyleBFrequency;             \
+    fns.mEvalAttrGlitterColorB                     = (uniform intptr_t) (void*) evalAttrGlitterColorB;                      \
+    fns.mEvalAttrGlitterSizeB                      = (uniform intptr_t) (void*) evalAttrGlitterSizeB;                       \
+    fns.mGetAttrGlitterRoughnessB                  = (uniform intptr_t) (void*) getAttrGlitterRoughnessB;   
+
+#define ASSIGN_IRIDESCENCE_ATTR_FUNCS(fns) \
+    fns.mEvalAttrIridescence                       = (uniform intptr_t) (void*) evalAttrIridescence;                      \
+    fns.mGetAttrIridescenceApplyTo                 = (uniform intptr_t) (void*) getAttrIridescenceApplyTo;                \
+    fns.mGetAttrIridescenceColorControl            = (uniform intptr_t) (void*) getAttrIridescenceColorControl;           \
+    fns.mEvalAttrIridescencePrimaryColor           = (uniform intptr_t) (void*) evalAttrIridescencePrimaryColor;          \
+    fns.mEvalAttrIridescenceSecondaryColor         = (uniform intptr_t) (void*) evalAttrIridescenceSecondaryColor;        \
+    fns.mGetAttrIridescenceFlipHueDirection        = (uniform intptr_t) (void*) getAttrIridescenceFlipHueDirection;       \
+    fns.mEvalAttrIridescenceThickness              = (uniform intptr_t) (void*) evalAttrIridescenceThickness;             \
+    fns.mEvalAttrIridescenceExponent               = (uniform intptr_t) (void*) evalAttrIridescenceExponent;              \
+    fns.mEvalAttrIridescenceAt0                    = (uniform intptr_t) (void*) evalAttrIridescenceAt0;                   \
+    fns.mEvalAttrIridescenceAt90                   = (uniform intptr_t) (void*) evalAttrIridescenceAt90;                  \
+    fns.mGetAttrIridescenceRampInterpolationMode   = (uniform intptr_t) (void*) getAttrIridescenceRampInterpolationMode;
+
+#define ASSIGN_TOON_DIFFUSE_ATTR_FUNCS(fns) \
+    fns.mToonDiffuseFuncs.mGetAttrModel            = (uniform intptr_t) (void*) getAttrToonDiffuseModel;                                \
+    fns.mToonDiffuseFuncs.mGetAttrExtendRamp              = (uniform intptr_t) (void*) getAttrToonExtendRamp;                                  \
+    fns.mToonDiffuseFuncs.mEvalAttrTerminatorShift        = (uniform intptr_t) (void*) evalAttrToonTerminatorShift;                             \
+    fns.mToonDiffuseFuncs.mEvalAttrFlatness        = (uniform intptr_t) (void*) evalAttrToonDiffuseFlatness;                            \
+    fns.mToonDiffuseFuncs.mEvalAttrFlatnessFalloff = (uniform intptr_t) (void*) evalAttrToonDiffuseFlatnessFalloff;                     \
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset0   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset0;                       \
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset1   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset1;                       \
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset2   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset2;                       \
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset3   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset3;                       \
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset4   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset4;                       \
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset5   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset5;                       \
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset6   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset6;                       \
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset7   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset7;                       \
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset8   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset8;                       \
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset9   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset9;                       \
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier0  = (uniform intptr_t) (void*) evalAttrToonDRampColorMultiplier0;                      \
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier1  = (uniform intptr_t) (void*) evalAttrToonDRampColorMultiplier1;                      \
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier2  = (uniform intptr_t) (void*) evalAttrToonDRampColorMultiplier2;                      \
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier3  = (uniform intptr_t) (void*) evalAttrToonDRampColorMultiplier3;                      \
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier4  = (uniform intptr_t) (void*) evalAttrToonDRampColorMultiplier4;                      \
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier5  = (uniform intptr_t) (void*) evalAttrToonDRampColorMultiplier5;                      \
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier6  = (uniform intptr_t) (void*) evalAttrToonDRampColorMultiplier6;                      \
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier7  = (uniform intptr_t) (void*) evalAttrToonDRampColorMultiplier7;                      \
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier8  = (uniform intptr_t) (void*) evalAttrToonDRampColorMultiplier8;                      \
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier9  = (uniform intptr_t) (void*) evalAttrToonDRampColorMultiplier9;
+
+#define ASSIGN_TOON_SPEC_ATTR_FUNCS(fns, name) \
+    fns.m##name##Funcs.mEvalAttrIntensity                     = (uniform intptr_t) (void*) evalAttr##name##Intensity;                     \
+    fns.m##name##Funcs.mEvalAttrTint                          = (uniform intptr_t) (void*) evalAttr##name##Tint;                          \
+    fns.m##name##Funcs.mGetAttrEnableInputNormal              = (uniform intptr_t) (void*) getAttr##name##EnableInputNormal;              \
+    fns.m##name##Funcs.mEvalAttrInputNormalDial               = (uniform intptr_t) (void*) evalAttr##name##InputNormalDial;               \
+    fns.m##name##Funcs.mEvalAttrStretchU                      = (uniform intptr_t) (void*) evalAttr##name##StretchU;                      \
+    fns.m##name##Funcs.mEvalAttrStretchV                      = (uniform intptr_t) (void*) evalAttr##name##StretchV;                      \
+    fns.m##name##Funcs.mGetAttrUseInputVectors                = (uniform intptr_t) (void*) getAttr##name##UseInputVectors;                \
+    fns.m##name##Funcs.mEvalAttrInputU                        = (uniform intptr_t) (void*) evalAttr##name##InputU;                        \
+    fns.m##name##Funcs.mEvalAttrInputV                        = (uniform intptr_t) (void*) evalAttr##name##InputV;                        \
+    fns.m##name##Funcs.mGetAttrEnableIndirectReflections     = (uniform intptr_t) (void*) getAttr##name##EnableIndirectReflections;       \
+    fns.m##name##Funcs.mEvalAttrIndirectReflectionsIntensity = (uniform intptr_t) (void*) evalAttr##name##IndirectReflectionsIntensity;   \
+    fns.m##name##Funcs.mEvalAttrIndirectReflectionsRoughness = (uniform intptr_t) (void*) evalAttr##name##IndirectReflectionsRoughness;
+
+struct ToonDiffuseAttributeFuncs
+{
+    uniform intptr_t mEvalAttrTerminatorShift;
+    uniform intptr_t mEvalAttrFlatness;
+    uniform intptr_t mEvalAttrFlatnessFalloff;
+    uniform intptr_t mGetAttrModel;
+    uniform intptr_t mGetAttrExtendRamp;
+    uniform intptr_t mEvalAttrRampColorMultiplier0;
+    uniform intptr_t mEvalAttrRampColorMultiplier1;
+    uniform intptr_t mEvalAttrRampColorMultiplier2;
+    uniform intptr_t mEvalAttrRampColorMultiplier3;
+    uniform intptr_t mEvalAttrRampColorMultiplier4;
+    uniform intptr_t mEvalAttrRampColorMultiplier5;
+    uniform intptr_t mEvalAttrRampColorMultiplier6;
+    uniform intptr_t mEvalAttrRampColorMultiplier7;
+    uniform intptr_t mEvalAttrRampColorMultiplier8;
+    uniform intptr_t mEvalAttrRampColorMultiplier9;
+    uniform intptr_t mEvalAttrRampPositionOffset0;
+    uniform intptr_t mEvalAttrRampPositionOffset1;
+    uniform intptr_t mEvalAttrRampPositionOffset2;
+    uniform intptr_t mEvalAttrRampPositionOffset3;
+    uniform intptr_t mEvalAttrRampPositionOffset4;
+    uniform intptr_t mEvalAttrRampPositionOffset5;
+    uniform intptr_t mEvalAttrRampPositionOffset6;
+    uniform intptr_t mEvalAttrRampPositionOffset7;
+    uniform intptr_t mEvalAttrRampPositionOffset8;
+    uniform intptr_t mEvalAttrRampPositionOffset9;
+};
+
+struct ToonSpecularAttributeFuncs
+{
+    uniform intptr_t mGetAttrShow;
+    uniform intptr_t mEvalAttrIntensity;
+    uniform intptr_t mEvalAttrRoughness;
+    uniform intptr_t mEvalAttrTint;
+    uniform intptr_t mGetAttrEnableInputNormal;
+    uniform intptr_t mEvalAttrInputNormalDial;
+    uniform intptr_t mEvalAttrStretchU;
+    uniform intptr_t mEvalAttrStretchV;
+    uniform intptr_t mGetAttrUseInputVectors;
+    uniform intptr_t mEvalAttrInputU;
+    uniform intptr_t mEvalAttrInputV;
+    uniform intptr_t mGetAttrEnableIndirectReflections;
+    uniform intptr_t mEvalAttrIndirectReflectionsIntensity;
+    uniform intptr_t mEvalAttrIndirectReflectionsRoughness;
+};
+
+struct DwaBaseAttributeFuncs
+{
+    uniform ToonDiffuseAttributeFuncs mToonDiffuseFuncs;
+    uniform ToonSpecularAttributeFuncs mToonSpecularFuncs;
+
+    uniform intptr_t mEvalAttrGlitter;
+    uniform intptr_t mGetAttrGlitterDebugMode;
+    uniform intptr_t mEvalAttrGlitterStyleAFrequency;
+    uniform intptr_t mEvalAttrGlitterColorA;
+    uniform intptr_t mEvalAttrGlitterSizeA;
+    uniform intptr_t mGetAttrGlitterRoughnessA;
+    uniform intptr_t mEvalAttrGlitterStyleBFrequency;
+    uniform intptr_t mEvalAttrGlitterColorB;
+    uniform intptr_t mEvalAttrGlitterSizeB;
+    uniform intptr_t mGetAttrGlitterRoughnessB;
+    uniform intptr_t mEvalAttrGlitterHueVariation;
+    uniform intptr_t mEvalAttrGlitterSaturationVariation;
+    uniform intptr_t mEvalAttrGlitterValueVariation;
+    uniform intptr_t mEvalAttrGlitterDensity;
+    uniform intptr_t mEvalAttrGlitterJitter;
+    uniform intptr_t mGetAttrGlitterOrientationRandomness;
+    uniform intptr_t mGetAttrGlitterCompensateDeformation;
+    uniform intptr_t mGetAttrGlitterApproximateForSecondaryRays;
+
+    uniform intptr_t mEvalAttrHairColor;
+
+    uniform intptr_t mGetAttrShowHair;
+    uniform intptr_t mEvalAttrHair;
+    uniform intptr_t mGetAttrHairFresnelType;
+    uniform intptr_t mEvalAttrHairCuticleLayerThickness;
+    uniform intptr_t mGetAttrHairShowR;
+    uniform intptr_t mEvalAttrHairROffset;
+    uniform intptr_t mEvalAttrHairRRoughness;
+    uniform intptr_t mEvalAttrHairRTintColor;
+    uniform intptr_t mGetAttrHairShowTRT;
+    uniform intptr_t mEvalAttrHairTRTOffset;
+    uniform intptr_t mGetAttrHairTRTUseRoughness;
+    uniform intptr_t mEvalAttrHairTRTRoughness;
+    uniform intptr_t mEvalAttrHairTRTTintColor;
+    uniform intptr_t mGetAttrShowHairGlint;
+    uniform intptr_t mEvalAttrHairGlintRoughness;
+    uniform intptr_t mEvalAttrHairGlintMinTwists;
+    uniform intptr_t mEvalAttrHairGlintMaxTwists;
+    uniform intptr_t mEvalAttrHairGlintEccentricity;
+    uniform intptr_t mEvalAttrHairGlintSaturation;
+    uniform intptr_t mGetAttrHairShowTT;
+    uniform intptr_t mEvalAttrHairTTOffset;
+    uniform intptr_t mGetAttrHairTTUseRoughness;
+    uniform intptr_t mEvalAttrHairTTRoughness;
+    uniform intptr_t mEvalAttrHairTTSaturation;
+    uniform intptr_t mEvalAttrHairTTAzimuthalRoughness;
+    uniform intptr_t mEvalAttrHairTTTintColor;
+    uniform intptr_t mGetAttrHairUseOptimizedSampling;
+    uniform intptr_t mGetAttrHairShowTRRTPlus;
+    uniform intptr_t mEvalAttrHairSubsurfaceBlend;
+
+    uniform ToonSpecularAttributeFuncs mHairToonS1Funcs;
+    uniform ToonSpecularAttributeFuncs mHairToonS2Funcs;
+    uniform ToonSpecularAttributeFuncs mHairToonS3Funcs;
+
+    uniform intptr_t mGetAttrShowHairDiffuse;
+    uniform intptr_t mEvalAttrHairDiffuse;
+    uniform intptr_t mGetAttrHairDiffuseUseIndependentFrontAndBackColor;
+    uniform intptr_t mEvalAttrHairDiffuseFrontColor;
+    uniform intptr_t mEvalAttrHairDiffuseBackColor;
+
+    uniform intptr_t mGetAttrShowFuzz;
+    uniform intptr_t mEvalAttrFuzz;
+    uniform intptr_t mEvalAttrFuzzAlbedo;
+    uniform intptr_t mEvalAttrFuzzRoughness;
+    uniform intptr_t mGetAttrFuzzUseAbsorbingFibers;
+    uniform intptr_t mEvalAttrFuzzNormalDial;
+
+    uniform intptr_t mGetAttrShowSpecular;
+    uniform intptr_t mEvalAttrSpecular;
+    uniform intptr_t mGetAttrSpecularModel;
+    uniform intptr_t mGetAttrRefractiveIndex;
+    uniform intptr_t mEvalAttrMetallic;
+    uniform intptr_t mEvalAttrMetallicColor;
+    uniform intptr_t mEvalAttrMetallicEdgeColor;
+    uniform intptr_t mEvalAttrRoughness;
+    uniform intptr_t mEvalAttrAnisotropy;
+    uniform intptr_t mEvalAttrShadingTangent;
+    uniform intptr_t mEvalAttrIridescence;
+    uniform intptr_t mGetAttrIridescenceApplyTo;
+    uniform intptr_t mGetAttrIridescenceColorControl;
+    uniform intptr_t mEvalAttrIridescencePrimaryColor;
+    uniform intptr_t mEvalAttrIridescenceSecondaryColor;
+    uniform intptr_t mGetAttrIridescenceFlipHueDirection;
+    uniform intptr_t mEvalAttrIridescenceThickness;
+    uniform intptr_t mEvalAttrIridescenceExponent;
+    uniform intptr_t mEvalAttrIridescenceAt0;
+    uniform intptr_t mEvalAttrIridescenceAt90;
+    uniform intptr_t mGetAttrIridescenceRampInterpolationMode;
+    uniform intptr_t mGetAttrShowTransmission;
+    uniform intptr_t mEvalAttrTransmission;
+    uniform intptr_t mEvalAttrTransmissionColor;
+    uniform intptr_t mGetAttrUseIndependentTransmissionRefractiveIndex;
+    uniform intptr_t mGetAttrIndependentTransmissionRefractiveIndex;
+    uniform intptr_t mGetAttrUseIndependentTransmissionRoughness;
+    uniform intptr_t mEvalAttrIndependentTransmissionRoughness;
+    uniform intptr_t mGetAttrUseDispersion;
+    uniform intptr_t mGetAttrDispersionAbbeNumber;
+    uniform intptr_t mGetAttrShowDiffuse;
+    uniform intptr_t mEvalAttrAlbedo;
+    uniform intptr_t mEvalAttrDiffuseRoughness;
+    uniform intptr_t mGetAttrSubsurface;
+    uniform intptr_t mEvalAttrScatteringColor;
+    uniform intptr_t mEvalAttrScatteringRadius;
+    uniform intptr_t mGetAttrSSSResolveSelfIntersections;
+    uniform intptr_t mGetEnableSubsurfaceInputNormal;
+    uniform intptr_t mEvalAttrDiffuseTransmission;
+    uniform intptr_t mEvalAttrDiffuseTransmissionColor;
+    uniform intptr_t mGetAttrDiffuseTransmissionBlendingBehavior;
+
+    uniform intptr_t mGetAttrShowFabricSpecular;
+    uniform intptr_t mEvalAttrFabricSpecular;
+    uniform intptr_t mEvalAttrWarpColor;
+    uniform intptr_t mEvalAttrWarpRoughness;
+    uniform intptr_t mGetAttrUseIndependentWeftAttributes;
+    uniform intptr_t mEvalAttrWeftRoughness;
+    uniform intptr_t mEvalAttrWeftColor;
+    uniform intptr_t mGetAttrUseUVsForThreadDirection;
+    uniform intptr_t mEvalAttrWarpThreadDirection;
+    uniform intptr_t mGetAttrWarpThreadCoverage;
+    uniform intptr_t mEvalAttrWarpThreadElevation;
+    uniform intptr_t mEvalAttrFabricDiffuseScattering;
+    uniform intptr_t mGetAttrShowOuterSpecular;
+    uniform intptr_t mEvalAttrOuterSpecular;
+    uniform intptr_t mGetAttrOuterSpecularModel;
+    uniform intptr_t mGetAttrOuterSpecularRefractiveIndex;
+    uniform intptr_t mEvalAttrOuterSpecularRoughness;
+    uniform intptr_t mEvalAttrOuterSpecularThickness;
+    uniform intptr_t mEvalAttrOuterSpecularAttenuationColor;
+    uniform intptr_t mGetAttrOuterSpecularUseBending;
+    uniform intptr_t mGetAttrUseOuterSpecularNormal;
+    uniform intptr_t mEvalAttrOuterSpecularNormalDial;
+    uniform intptr_t mGetAttrShowEmission;
+    uniform intptr_t mEvalAttrEmission;
+    uniform intptr_t mEvalAttrPresence;
+    uniform intptr_t mGetAttrCastsCaustics;
+    uniform intptr_t mGetAttrThinGeometry;
+    uniform intptr_t mGetAttrPreventLightCulling;
+    uniform intptr_t mGetAttrNormalAAStrategy;
+    uniform intptr_t mGetAttrNormalAADial;
+    uniform intptr_t mEvalAttrInputNormalDial;
+
+    uniform intptr_t mEvalNormalInput;
+    uniform intptr_t mEvalNormalOuterSpecular;
+    uniform intptr_t mEvalNormalFuzz;
+    uniform intptr_t mEvalSubsurfaceNormal;
+};
+
+// This structure is used to provide hints during attribute
+// evaluation to avoid doing any unnecessary work.
+struct DwaBaseParameterHints
+{
+    bool mRequiresToonDiffuseParams;
+    bool mRequiresToonSpecularParams;
+    bool mRequiresGlitterParams;
+    bool mRequiresHairParams;
+    bool mRequiresHairDiffuseParams;
+    bool mRequiresHairToonS1Params;
+    bool mRequiresHairToonS2Params;
+    bool mRequiresHairToonS3Params;
+    bool mRequiresFuzzParams;
+    bool mRequiresOuterSpecularParams;
+    bool mRequiresOuterSpecularAbsorptionParams;
+    bool mRequiresSpecularParams;
+    bool mRequiresMetallicParams;
+    bool mRequiresAnisotropyParams;
+    bool mRequiresIridescenceParams;
+    bool mRequiresTransmissionParams;
+    bool mRequiresTransmissionRefractiveIndex;
+    bool mRequiresDiffuseParams;
+    bool mRequiresSubsurfaceParams;
+    bool mRequiresDiffuseTransmissionParams;
+    bool mRequiresFabricParams;
+    bool mRequiresEmissionParams;
+    bool mGlitterIsOne;
+    bool mHairIsOne;
+    bool mHairDiffuseIsOne;
+    bool mMetallicIsOne;
+    bool mTransmissionIsOne;
+    bool mFabricIsOne;
+    bool mThinGeometry;
+    bool mPreventLightCulling;
+    bool mDisableOptimizedHairSampling;
+};
+
+// The model determines how DwaBase handles the 'metallic' and
+// 'transmission' attributes (when no AttributeKey is provided)
+enum Model {
+    Metal,
+    Refractive,
+    Fabric,
+    Velvet,
+    Velvet_v2,
+    SolidDielectric,
+    Toon,
+    Mixed,
+    Hair,
+    HairDiffuse,
+    HairToon,
+    Layer
+};
+
+struct ToonSpecularUniformData
+{
+    uniform int   mRampNumPoints;
+    uniform float mRampPositions[DWABASE_MAX_TOOND_RAMP_POINTS];
+    uniform float mRampValues[DWABASE_MAX_TOOND_RAMP_POINTS];
+    uniform RampInterpolatorMode mRampInterpolators[DWABASE_MAX_TOOND_RAMP_POINTS];
+
+    const uniform NormalMap * uniform mNormalMap;
+    uniform intptr_t mSampleNormalFunc;
+};
+
+struct ToonDiffuseUniformData
+{
+    uniform int   mRampNumPoints;
+    uniform float mRampPositions[DWABASE_MAX_TOOND_RAMP_POINTS];
+    uniform Color mRampColors[DWABASE_MAX_TOOND_RAMP_POINTS];
+    uniform RampInterpolatorMode mRampInterpolators[DWABASE_MAX_TOOND_RAMP_POINTS];
+};
+
+struct IridescenceUniformData
+{
+    uniform int   mRampNumPoints;
+    uniform float mRampPositions[DWABASE_MAX_IRIDESCENCE_RAMP_POINTS];
+    uniform Color mRampColors[DWABASE_MAX_IRIDESCENCE_RAMP_POINTS];
+    uniform RampInterpolatorMode mRampInterpolators[DWABASE_MAX_IRIDESCENCE_RAMP_POINTS];
+
+};
+
+struct DwaBase
+{
+    DwaBaseParameterHints mHints;
+    DwaBaseAttributeFuncs mAttrFuncs;
+    Model mModel;
+    uniform TraceSet * uniform mSubsurfaceTraceSet;
+
+    uniform DwaBaseUniformParameters mUParams;
+
+    const uniform Xform * uniform mXform;
+
+    const uniform GLITTER_Glitter * uniform mGlitterPointer;
+    const uniform GLITTER_UniformParameters * uniform mGlitterUniformParameters;
+
+    // Toon Difuse Ramp Data
+    uniform ToonDiffuseUniformData mToonDiffuseData;
+    uniform ToonSpecularUniformData mToonSpecularData;
+
+    // 3 hair toon lobes specular ramp data
+    uniform ToonSpecularUniformData mHairToonS1Data;
+    uniform ToonSpecularUniformData mHairToonS2Data;
+    uniform ToonSpecularUniformData mHairToonS3Data;
+
+    // Iridescence Ramp Data
+    uniform IridescenceUniformData mIridescenceData;
+
+    // Pointers for evaluating normal maps
+    const uniform NormalMap * uniform mNormalMap;
+    uniform intptr_t mSampleNormalFunc;
+    const uniform NormalMap * uniform mOuterSpecularNormalMap;
+    uniform intptr_t mOuterSpecularSampleNormalFunc;
+    const uniform NormalMap * uniform mFuzzNormalMap;
+    uniform intptr_t mFuzzSampleNormalFunc;
+};
+
+#define INIT_TOON_SPEC_ATTR_FUNCS(name)                         \
+    fns.name.mGetAttrShow                           = 0;        \
+    fns.name.mEvalAttrIntensity                     = 0;        \
+    fns.name.mEvalAttrRoughness                     = 0;        \
+    fns.name.mEvalAttrTint                          = 0;        \
+    fns.name.mGetAttrEnableInputNormal              = 0;        \
+    fns.name.mEvalAttrInputNormalDial               = 0;        \
+    fns.name.mEvalAttrStretchU                      = 0;        \
+    fns.name.mEvalAttrStretchV                      = 0;        \
+    fns.name.mGetAttrUseInputVectors                = 0;        \
+    fns.name.mEvalAttrInputU                        = 0;        \
+    fns.name.mEvalAttrInputV                        = 0;        \
+    fns.name.mGetAttrEnableIndirectReflections      = 0;        \
+    fns.name.mEvalAttrIndirectReflectionsIntensity  = 0;        \
+    fns.name.mEvalAttrIndirectReflectionsRoughness  = 0;
+
+extern void
+DWABASE_initDwaBaseAttributeFuncs(uniform DwaBaseAttributeFuncs &fns)
+{
+    fns.mEvalAttrGlitter                           = 0;
+    fns.mGetAttrGlitterDebugMode                   = 0;
+    fns.mEvalAttrGlitterStyleAFrequency            = 0;
+    fns.mEvalAttrGlitterColorA                     = 0;
+    fns.mEvalAttrGlitterSizeA                      = 0;
+    fns.mGetAttrGlitterRoughnessA                  = 0;
+    fns.mEvalAttrGlitterStyleBFrequency            = 0;
+    fns.mEvalAttrGlitterColorB                     = 0;
+    fns.mEvalAttrGlitterSizeB                      = 0;
+    fns.mGetAttrGlitterRoughnessB                  = 0;
+    fns.mEvalAttrGlitterHueVariation               = 0;
+    fns.mEvalAttrGlitterSaturationVariation        = 0;
+    fns.mEvalAttrGlitterValueVariation             = 0;
+    fns.mEvalAttrGlitterDensity                    = 0;
+    fns.mEvalAttrGlitterJitter                     = 0;
+    fns.mGetAttrGlitterOrientationRandomness       = 0;
+    fns.mGetAttrGlitterCompensateDeformation       = 0;
+    fns.mGetAttrGlitterApproximateForSecondaryRays = 0;
+
+    fns.mEvalAttrHairColor                      = 0;
+
+    fns.mGetAttrShowHair                        = 0;
+    fns.mEvalAttrHair                           = 0;
+    fns.mGetAttrHairFresnelType                 = 0;
+    fns.mEvalAttrHairCuticleLayerThickness      = 0;
+    fns.mGetAttrHairShowR                       = 0;
+    fns.mEvalAttrHairROffset                    = 0;
+    fns.mEvalAttrHairRRoughness                 = 0;
+    fns.mEvalAttrHairRTintColor                 = 0;
+    fns.mGetAttrHairShowTRT                     = 0;
+    fns.mEvalAttrHairTRTOffset                  = 0;
+    fns.mGetAttrHairTRTUseRoughness             = 0;
+    fns.mEvalAttrHairTRTRoughness               = 0;
+    fns.mGetAttrShowHairGlint                   = 0;
+    fns.mEvalAttrHairGlintRoughness             = 0;
+    fns.mEvalAttrHairGlintMinTwists             = 0;
+    fns.mEvalAttrHairGlintMaxTwists             = 0;
+    fns.mEvalAttrHairGlintEccentricity          = 0;
+    fns.mEvalAttrHairGlintSaturation            = 0;
+    fns.mEvalAttrHairTRTTintColor               = 0;
+    fns.mGetAttrHairShowTT                      = 0;
+    fns.mEvalAttrHairTTOffset                   = 0;
+    fns.mGetAttrHairTTUseRoughness              = 0;
+    fns.mEvalAttrHairTTRoughness                = 0;
+    fns.mEvalAttrHairTTSaturation               = 0;
+    fns.mEvalAttrHairTTAzimuthalRoughness       = 0;
+    fns.mEvalAttrHairTTTintColor                = 0;
+    fns.mGetAttrHairUseOptimizedSampling        = 0;
+    fns.mGetAttrHairShowTRRTPlus                = 0;
+
+    INIT_TOON_SPEC_ATTR_FUNCS(mHairToonS1Funcs);
+    INIT_TOON_SPEC_ATTR_FUNCS(mHairToonS2Funcs);
+    INIT_TOON_SPEC_ATTR_FUNCS(mHairToonS3Funcs);
+
+    fns.mGetAttrShowHairDiffuse                 = 0;
+    fns.mEvalAttrHairDiffuse                    = 0;
+    fns.mGetAttrHairDiffuseUseIndependentFrontAndBackColor = 0;
+    fns.mEvalAttrHairDiffuseFrontColor          = 0;
+    fns.mEvalAttrHairDiffuseBackColor           = 0;
+
+    fns.mGetAttrShowFuzz                        = 0;
+    fns.mEvalAttrFuzzAlbedo                     = 0;
+    fns.mEvalAttrFuzzRoughness                  = 0;
+    fns.mGetAttrFuzzUseAbsorbingFibers          = 0;
+    fns.mEvalAttrFuzzNormalDial                 = 0;
+
+    fns.mGetAttrShowSpecular                    = 0;
+    fns.mEvalAttrSpecular                       = 0;
+    fns.mGetAttrSpecularModel                   = 0;
+    fns.mGetAttrRefractiveIndex                 = 0;
+    fns.mEvalAttrMetallic                       = 0;
+    fns.mEvalAttrMetallicColor                  = 0;
+    fns.mEvalAttrMetallicEdgeColor              = 0;
+    fns.mEvalAttrRoughness                      = 0;
+    fns.mEvalAttrAnisotropy                     = 0;
+    fns.mEvalAttrShadingTangent                 = 0;
+
+    fns.mEvalAttrIridescence                    = 0;
+    fns.mGetAttrIridescenceApplyTo              = 0;
+    fns.mGetAttrIridescenceColorControl         = 0;
+    fns.mEvalAttrIridescencePrimaryColor        = 0;
+    fns.mEvalAttrIridescenceSecondaryColor      = 0;
+    fns.mGetAttrIridescenceFlipHueDirection     = 0;
+    fns.mEvalAttrIridescenceThickness           = 0;
+    fns.mEvalAttrIridescenceExponent            = 0;
+    fns.mEvalAttrIridescenceAt0                 = 0;
+    fns.mEvalAttrIridescenceAt90                = 0;
+    fns.mGetAttrIridescenceRampInterpolationMode    = 0;
+
+    fns.mGetAttrShowTransmission                = 0;
+    fns.mEvalAttrTransmission                   = 0;
+    fns.mEvalAttrTransmissionColor              = 0;
+    fns.mGetAttrUseIndependentTransmissionRefractiveIndex  = 0;
+    fns.mGetAttrIndependentTransmissionRefractiveIndex     = 0;
+    fns.mGetAttrUseIndependentTransmissionRoughness  = 0;
+    fns.mEvalAttrIndependentTransmissionRoughness    = 0;
+    fns.mGetAttrUseDispersion                   = 0;
+    fns.mGetAttrDispersionAbbeNumber            = 0;
+
+    fns.mGetAttrShowDiffuse                     = 0;
+    fns.mEvalAttrAlbedo                         = 0;
+    fns.mEvalAttrDiffuseRoughness               = 0;
+    fns.mGetAttrSubsurface                      = 0;
+    fns.mEvalAttrScatteringColor                = 0;
+    fns.mEvalAttrScatteringRadius               = 0;
+    fns.mGetEnableSubsurfaceInputNormal         = 0;
+    fns.mGetAttrSSSResolveSelfIntersections     = 0;
+    fns.mEvalAttrDiffuseTransmission            = 0;
+    fns.mEvalAttrDiffuseTransmissionColor       = 0;
+    fns.mGetAttrDiffuseTransmissionBlendingBehavior  = 0;
+
+    fns.mGetAttrShowFabricSpecular              = 0;
+    fns.mEvalAttrFabricSpecular                 = 0;
+    fns.mEvalAttrWarpColor                      = 0;
+    fns.mEvalAttrWarpRoughness                  = 0;
+    fns.mGetAttrUseIndependentWeftAttributes    = 0;
+    fns.mEvalAttrWeftRoughness                  = 0;
+    fns.mEvalAttrWeftColor                      = 0;
+    fns.mGetAttrUseUVsForThreadDirection        = 0;
+    fns.mEvalAttrWarpThreadDirection            = 0;
+    fns.mGetAttrWarpThreadCoverage              = 0;
+    fns.mEvalAttrWarpThreadElevation            = 0;
+    fns.mEvalAttrFabricDiffuseScattering        = 0;
+    fns.mGetAttrShowOuterSpecular               = 0;
+
+    fns.mEvalAttrOuterSpecular                  = 0;
+    fns.mGetAttrOuterSpecularModel              = 0;
+    fns.mGetAttrOuterSpecularRefractiveIndex    = 0;
+    fns.mEvalAttrOuterSpecularRoughness         = 0;
+    fns.mEvalAttrOuterSpecularThickness         = 0;
+    fns.mEvalAttrOuterSpecularAttenuationColor  = 0;
+    fns.mGetAttrOuterSpecularUseBending         = 0;
+    fns.mGetAttrUseOuterSpecularNormal          = 0;
+    fns.mEvalAttrOuterSpecularNormalDial        = 0;
+
+    fns.mToonDiffuseFuncs.mGetAttrModel                  = 0;
+    fns.mToonDiffuseFuncs.mGetAttrExtendRamp             = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrTerminatorShift       = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrFlatness              = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrFlatnessFalloff       = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier0  = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier1  = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier2  = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier3  = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier4  = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier5  = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier6  = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier7  = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier8  = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampColorMultiplier9  = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset0   = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset1   = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset2   = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset3   = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset4   = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset5   = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset6   = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset7   = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset8   = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset9   = 0;
+
+    INIT_TOON_SPEC_ATTR_FUNCS(mToonSpecularFuncs);
+
+    fns.mGetAttrShowEmission                    = 0;
+    fns.mEvalAttrEmission                       = 0;
+    fns.mEvalAttrPresence                       = 0;
+    fns.mGetAttrCastsCaustics                   = 0;
+    fns.mGetAttrThinGeometry                    = 0;
+    fns.mGetAttrPreventLightCulling             = 0;
+    fns.mGetAttrNormalAAStrategy                = 0;
+    fns.mGetAttrNormalAADial                    = 0;
+    fns.mEvalAttrInputNormalDial                = 0;
+
+    // aggregate evaluation inputs
+    fns.mEvalNormalFuzz                         = 0;
+    fns.mEvalNormalOuterSpecular                = 0;
+    fns.mEvalNormalInput                        = 0;
+    fns.mEvalSubsurfaceNormal                   = 0;
+}
+
+/*
+ * From DwaBaseLayerable.isph
+ * #define DWABASELAYERABLE_RESOLVE_FUNC_ARGS              \
+    const uniform Material* uniform me,                     \
+    uniform ShadingTLState *uniform tls,                    \
+    const varying State& state                              \
+    const uniform bool castsCaustics,                       \
+    varying DwaBaseParameters* uniform params
+ */
+extern bool
+DWABASE_resolveParameters(DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS);
+
+/// Accessor Function to retrieve the ISPC data pointer struct from C++ code branch
+extern "C" const void* uniform getDwaBaseMaterialStruct(const uniform Material* uniform);
+
+// Function pointer types
+typedef uniform bool  (*GetBoolAttrFnType)   (const uniform Material * uniform);
+typedef uniform int   (*GetIntAttrFnType)    (const uniform Material * uniform);
+typedef uniform float (*GetFloatAttrFnType)  (const uniform Material * uniform obj, uniform ShadingTLState * uniform tls, const varying State &state);
+typedef uniform Color (*GetColorAttrFnType)  (const uniform Material * uniform obj, uniform ShadingTLState * uniform tls, const varying State &state);
+typedef varying float (*EvalFloatAttrFnType) (const uniform Material * uniform obj, uniform ShadingTLState * uniform tls, const varying State &state);
+typedef varying Color (*EvalColorAttrFnType) (const uniform Material * uniform obj, uniform ShadingTLState * uniform tls, const varying State &state);
+typedef varying Vec2f (*EvalVec2fAttrFnType) (const uniform Material * uniform obj, uniform ShadingTLState * uniform tls, const varying State &state);
+typedef varying Vec3f (*EvalVec3fAttrFnType) (const uniform Material * uniform obj, uniform ShadingTLState * uniform tls, const varying State &state);
+

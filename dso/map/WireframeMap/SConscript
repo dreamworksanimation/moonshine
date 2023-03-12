@@ -1,0 +1,26 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_wireframe_map'
+target = 'WireframeMap.so'
+cc_source = ['WireframeMap.cc']
+ispc_source = ['WireframeMap.ispc']
+json_source = ['WireframeMap.json']
+components = [
+    'shading_ispc',
+    'scene_rdl2',
+    'rendering_shading'
+]
+
+# ---------------------------------------------------------------
+
+env.DWAForceWarningAsError()
+env.DWAUseComponents(components)
+
+# TODO: re-write code to avoid performance warnings
+env.AppendUnique(ISPCFLAGS = ['--wno-perf'])
+
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)
+env.DWAComponent(name, COMPONENTS=components)

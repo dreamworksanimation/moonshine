@@ -1,0 +1,22 @@
+# Copyright 2023 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+add_subdirectory(DwaAdjustMaterial)
+add_subdirectory(DwaBase)
+add_subdirectory(DwaColorCorrect)
+add_subdirectory(DwaEmissive)
+add_subdirectory(DwaFabric)
+add_subdirectory(DwaLayer)
+add_subdirectory(DwaMetal)
+add_subdirectory(DwaMix)
+add_subdirectory(DwaRefractive)
+add_subdirectory(DwaSkin)
+add_subdirectory(DwaSolidDielectric)
+add_subdirectory(DwaSwitch)
+add_subdirectory(DwaTwoSided)
+add_subdirectory(DwaVelvet)
+add_subdirectory(Hair)
+add_subdirectory(HairColorCorrect)
+add_subdirectory(HairDiffuse)
+add_subdirectory(HairLayer)
+add_subdirectory(npr)

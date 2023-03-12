@@ -1,0 +1,44 @@
+{
+    "name": "ConvolutionDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrKernelType": {
+            "name": "kernel_type",
+            "label": "kernel type",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "gaussian": "0",
+                "box": "1",
+                "custom": "2"
+            },
+            "default": "0",
+            "comment": "Kernel to use for convolution."
+        },
+        "attrInput": {
+            "name": "input",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput to convolve"
+        },
+        "attrKernelSize": {
+            "name": "kernel_size",
+            "label": "kernel size",
+            "type": "Int",
+            "default": "5",
+            "comment": "Size of kernel in pixels. Size must be odd. If using a custom kernel, this attribute is ignored, and the size of the custom kernel is used instead."
+        },
+        "attrCustomKernel": {
+            "name": "custom_kernel",
+            "label": "custom kernel",
+            "type": "FloatVector",
+            "comment": "A list of kernel values for a custom filter. The number of values provided must be the square of an odd number (e.g. 3x3, 5x5, 7x7)."
+        }
+    }
+}
+

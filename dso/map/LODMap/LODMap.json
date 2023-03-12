@@ -1,0 +1,47 @@
+{
+    "name": "LODMap",
+    "type": "Map",
+    "attributes": {
+        "attrLODType": {
+            "name": "mode",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "feature width": "0",
+                "camera distance": "1"
+            },
+            "default": "0",
+            "comment":  "Use feature_width for LOD based on average, world-space feature-width visible in a pixel, correctly changing with resolution. Use camera_distance for LOD based on distance from render cam."
+        },
+        "attrStart" : {
+            "name": "start",
+            "type": "Float",
+            "default": "0.01f",
+            "comment":  "feature_width/camera_distance at which to start blending near_value->far_value"
+        },
+        "attrStop" : {
+            "name": "stop",
+            "type": "Float",
+            "default": "0.1f",
+            "comment":  "feature_width/camera_distance at which to stop blending near_value->far_value"
+        },
+        "attrNearValue": {
+            "name": "near_value",
+            "label": "near value",
+            "aliases": [ "near value" ],
+            "type": "Rgb",
+            "default": "Rgb(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "value output when feature_width/camera_distance is less than or equal to start"
+        },
+        "attrFarValue": {
+            "name": "far_value",
+            "label": "far value",
+            "aliases": [ "far value" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "value output when feature_width/camera_distance is more than or equal to stop"
+        }
+    }
+}

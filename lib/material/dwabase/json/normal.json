@@ -1,0 +1,26 @@
+{
+    "attributes": {
+        "attrInputNormal": {
+            "name": "input_normal",
+            "label": "input normal",
+            "aliases": [ "input normal" ],
+            "comment": "specifies an alternate shading normal in the tangent frame (normal map)",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_NORMALMAP",
+            "group": "Normal"
+        },
+        "attrInputNormalDial": {
+            "name": "input_normal_dial",
+            "label": "input normal dial",
+            "aliases": [ "input normal dial" ],
+            "comment": "controls the amount of influence of the alternate normal",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Normal",
+            "min": "0.0f",
+            "max": "1.0f"
+        }
+    }
+}

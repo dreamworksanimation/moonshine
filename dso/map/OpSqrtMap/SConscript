@@ -1,0 +1,23 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_opsqrt_map'
+target = 'OpSqrtMap.so'
+cc_source = ['OpSqrtMap.cc']
+ispc_source = ['OpSqrtMap.ispc']
+json_source = ['OpSqrtMap.json']
+components = [
+    'render_util',
+    'rendering_shading',
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+#dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+#env.DWAInstallIspcDso(dso)
+#env.DWAComponent(name, COMPONENTS=components)

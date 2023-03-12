@@ -1,0 +1,146 @@
+{
+    "name": "DwaAdjustMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASELAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "attributes": {
+        "attrInputMaterial": {
+            "name": "input_material",
+            "label": "input material",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_DWABASELAYERABLE"
+        },
+        "attrOn": {
+            "name": "on",
+            "type": "Bool",
+            "default": "true",
+            "comment": "Enable/disable all adjustments"
+        },
+        "attrMix": {
+            "name": "mix",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true"
+            },
+            "comment": "weight of adjustments applied to the material",  
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrEmissionMode": {
+            "name": "emission_mode",
+            "label": "emission mode",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum" : {
+                "off" : "0",
+                "masked" : "1",
+                "unmasked" : "2"
+            },
+            "comment": "how to handle emission input. masked uses mix input, unmasked is mix = 1"
+        },
+        "attrEmission": {
+            "name": "emission",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "emissive map to add to material's emission",
+            "disable when": "{ emission_mode 0 }"
+        },
+        "attrEnableSpecular": {
+            "name": "adjust_specular",
+            "type": "Bool",
+            "default": "true",
+            "group": "Enable",
+            "enable if": {
+                "on": "true"
+            },
+            "comment": "use specular adjustment attrs: specular_set, specular_set_blend, specular_mult"
+        },
+        "attrEnableRoughness": {
+            "name": "adjust_roughness",
+            "type": "Bool",
+            "default": "true",
+            "group": "Enable",
+            "enable if": {
+                "on": "true"
+            },
+            "comment": "use roughness adjustment attrs: roughness_set, roughness_set_blend, roughness_mult, roughness_remap_{in/out}_{min/max}"
+        },
+        "attrEnableColor": {
+            "name": "adjust_color",
+            "type": "Bool",
+            "default": "true",
+            "group": "Enable",
+            "enable if": {
+                "on": "true"
+            },
+            "comment": "use color adjustment attrs: color_hue_shift, color_saturation, color_gain"
+        },
+        "attrEnablePresence": {
+            "name": "adjust_presence",
+            "type": "Bool",
+            "default": "true",
+            "group": "Enable",
+            "enable if": {
+                "on": "true"
+            },
+            "comment": "use presence adjustment attrs: presence_set, presence_set_blend, presence_mult"
+        },
+        "attrOverrideCastsCaustics": {
+            "name": "casts_caustics",
+            "label": "casts caustics",
+            "type": "Int",
+            "default": "0",
+            "group": "Override",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum" : {
+                "unmodified" : "0",
+                "force on" : "1",
+                "force off" : "2"
+            },
+            "comment": "allows you to keep or set casts caustics attribute"
+        },
+        "attrOverrideThinGeometry": {
+            "name": "thin_geometry",
+            "label": "thin geometry",
+            "type": "Int",
+            "default": "0",
+            "group": "Override",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum" : {
+                "unmodified" : "0",
+                "force on" : "1",
+                "force off" : "2"
+            },
+            "comment": "allows you to keep or set thin geometry attribute"
+        },
+        "attrDisableDiffuse": {
+            "name": "disable_diffuse",
+            "type": "Bool",
+            "default": "false",
+            "group": "Override",
+            "comment": "when checked, turn off all diffuse from input"
+        },
+        "attrDisableClearcoat": {
+            "name": "disable_clearcoat",
+            "type": "Bool",
+            "default": "false",
+            "group": "Override",
+            "comment": "when checked, turn off clearcoat from input"
+        },
+        "attrDisableSpecular": {
+            "name": "disable_specular",
+            "type": "Bool",
+            "default": "false",
+            "group": "Override",
+            "comment": "when checked, turn off all specular from input"
+        }
+    }
+}

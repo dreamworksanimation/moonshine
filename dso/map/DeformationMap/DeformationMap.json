@@ -1,0 +1,35 @@
+{
+    "name": "DeformationMap",
+    "type": "Map",
+    "attributes": {
+         "attrOutputMode": {
+            "name": "output_mode",
+            "type": "Int",
+            "default": "3",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "RGB":             "0",
+                "deformation_S":   "1",
+                "deformation_T":   "2",
+                "deformation_avg": "3"
+            },
+            "comment": "Controls output: \\n\t\t    RGB - R = deformation along S, G = deformation along T, B = average deformation from ref space \\n\t\t    deformation_S - deformation along S \\n\t\t    deformation_T - deformation along T \\n\t\t    deformation_avg - average deformation from ref space"
+        },
+        "attrUseWarningColor": {
+            "name": "use_warning_color",
+            "type": "Bool",
+            "default": "false",
+            "comment": "If derivatives are missing or zero output the warning color erroring out"
+        },
+        "attrWarningColor": {
+            "name": "warning_color",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Warning color to output when derivatives are missing or zero",
+            "enable if": {
+                "use_warning_color": "true"
+            }
+        }
+    }
+}

@@ -1,0 +1,347 @@
+{
+    "attributes": {
+        "attrShowGlitter" : {
+            "name": "show_glitter",
+            "label": "show glitter",
+            "comment": "Enables/disables glitter lobes",
+            "type": "Bool",
+            "default": "false",
+            "group": "Glitter"
+        },
+        "attrGlitter" : {
+            "name": "glitter",
+            "label": "glitter",
+            "comment": "enables/disables glitter model (binary 0|1 for plausibility)",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",
+            "min": "0.0f",
+            "max": "1.0f",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterSeed": {
+            "name": "glitter_seed",
+            "label": "glitter seed",
+            "type": "Int",
+            "default": "0",
+            "group": "Glitter",
+            "comment": "The seed for the glitter random number generator",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterSpace": {
+            "name": "glitter_space",
+            "label": "glitter space",
+            "type": "Int",
+            "default": "5",
+            "group": "Glitter",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "object": "4",
+                "reference": "5"
+            },
+            "comment": "The space to calculate the worley noise in, defaults to reference space",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterDensity": {
+            "name": "glitter_density",
+            "label": "glitter density",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",
+            "comment": "controls the number of flakes per unit length; larger density packs more flakes into same space",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterRandomness": {
+            "name": "glitter_randomness",
+            "label": "glitter randomness",
+            "type": "Float",
+            "default": "0.5f",
+            "group": "Glitter",
+            "min": "0.0f",
+            "max": "1.0f",
+            "comment": "randomness of flake orientation",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterLayeringMode": {
+            "name": "glitter_layering_mode",
+            "label": "glitter layering mode",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "physical": "0",
+                "additive": "1"
+            },
+            "default": "0",
+            "group": "Glitter",
+            "comment": "layering mode for glitter on top of the under material. physical: conserves energy and glitter attenuates under material, additive: breaks energy conservation but glitter is never darker than the under material (eg. use case: snow)",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterStyleAFrequency": {
+            "name": "glitter_style_A_frequency",
+            "label": "glitter style A frequency",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",   
+            "subgroup": "Glitter A Appearance",   
+            "comment": "0 implies none of this style, 1 implies all the flakes will get this style",
+            "min": "0.0f",
+            "max": "1.0f",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterSizeA": {
+            "name": "glitter_size_A",
+            "label": "glitter size A",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",
+            "subgroup": "Glitter A Appearance",   
+            "comment": "size of the flakes.  Apparent flake size may vary based on how much the flake spheres intersect the surface",
+            "disable when": "{ show_glitter 0 } { glitter_style_A_frequency 0 }"
+        },
+        "attrGlitterRoughnessA": {
+            "name": "glitter_roughness_A",
+            "label": "glitter roughness A",
+            "type": "Float",
+            "default": "0.14f",
+            "group": "Glitter",
+            "subgroup": "Glitter A Appearance",   
+            "comment": "specular roughness of individual flakes (0 makes flakes mirror-like)",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ show_glitter 0 } { glitter_style_A_frequency 0 }"
+        },
+        "attrGlitterColorA": {
+            "name": "glitter_color_A",
+            "label": "glitter color A",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",
+            "subgroup": "Glitter A Appearance",   
+            "comment": "base flake color (use physical metallic color values)",
+            "disable when": "{ show_glitter 0 } { glitter_style_A_frequency 0 }"
+        },
+        "attrGlitterTextureA": {
+            "name": "glitter_texture_A",
+            "label": "glitter texture A",
+            "type": "String",
+            "flags": "FLAGS_FILENAME",
+            "group": "Glitter",
+            "subgroup": "Glitter A Appearance",   
+            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx).",
+            "disable when": "{ show_glitter 0 } { glitter_style_A_frequency 0 }"
+        },
+        "attrGlitterStyleBFrequency": {
+            "name": "glitter_style_B_frequency",
+            "label": "glitter style B frequency",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",       
+            "subgroup": "Glitter B Appearance",   
+            "comment": "0 implies none of this style, 1 implies all the flakes will get this style",
+            "min": "0.0f",
+            "max": "1.0f",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterSizeB": {
+            "name": "glitter_size_B",
+            "label": "glitter size B",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",
+            "subgroup": "Glitter B Appearance",   
+            "comment": "size of the flakes.  Apparent flake size may vary based on how much the flake spheres intersect the surface",
+            "disable when": "{ show_glitter 0 } { glitter_style_B_frequency 0 }"
+        },
+        "attrGlitterRoughnessB": {
+            "name": "glitter_roughness_B",
+            "label": "glitter roughness B",
+            "type": "Float",
+            "default": "0.14f",
+            "group": "Glitter",
+            "subgroup": "Glitter B Appearance",   
+            "comment": "specular roughness of individual flakes (0 makes flakes mirror-like)",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ show_glitter 0 } { glitter_style_B_frequency 0 }"
+        },
+        "attrGlitterColorB": {
+            "name": "glitter_color_B",
+            "label": "glitter color B",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",
+            "subgroup": "Glitter B Appearance",   
+            "comment": "base flake color (use physical metallic color values)",
+            "disable when": "{ show_glitter 0 } { glitter_style_B_frequency 0 }"
+        },
+        "attrGlitterTextureB": {
+            "name": "glitter_texture_B",
+            "label": "glitter texture B",
+            "type": "String",
+            "flags": "FLAGS_FILENAME",
+            "group": "Glitter",
+            "subgroup": "Glitter B Appearance",   
+            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx).",
+            "disable when": "{ show_glitter 0 } { glitter_style_B_frequency 0 }"
+        },
+        "attrGlitterTextureOrientationRandomness": {
+            "name": "glitter_texture_orientation_randomness",
+            "label": "glitter texture orientation randomness",
+            "type": "Float",
+            "default": "0.15f",
+            "group": "Glitter",
+            "subgroup": "Variation",
+            "comment": "randomly orient each texture",
+            "min": "0.0f",
+            "max": "1.0f",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterHueVariation": {
+            "name": "glitter_color_hue_variation",
+            "label": "glitter color hue variation",
+            "aliases": [ "flake color hue variation" ],
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",
+            "subgroup": "Variation",
+            "comment": "introduce hue variation in flake color centered at the base flake color's hue on the hue wheel",
+            "min": "0.0f",
+            "max": "1.0f",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterSaturationVariation": {
+            "name": "glitter_color_saturation_variation",
+            "label": "glitter color saturation variation",
+            "aliases": [ "flake color saturation variation" ],
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",
+            "subgroup": "Variation",
+            "comment": "introduce saturation variation in flake color centered at the base flake color's saturation",
+            "min": "0.0f",
+            "max": "1.0f",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterValueVariation": {
+            "name": "glitter_color_value_variation",
+            "label": "glitter color value variation",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",
+            "subgroup": "Variation",
+            "comment": "introduce value variation in flake color centered at the base flake color's value",
+            "min": "0.0f",
+            "max": "1.0f",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+         "attrGlitterJitter": {
+            "name": "glitter_jitter",
+            "label": "glitter jitter",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter",
+            "subgroup": "Advanced",
+            "comment": "Controls how much the flakes are randomly offset from a regular grid",
+            "min": "0.0f",
+            "max": "1.0f",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterCompensateDeformation": {
+            "name": "glitter_compensate_reference_space_deformation",
+            "label": "glitter compensate reference space deformation",
+            "type": "Bool",
+            "default": "true",
+            "group": "Glitter",
+            "subgroup": "Advanced",
+            "enable if": {
+                "show_glitter": "true",
+                "glitter_space": "5"
+            },            
+            "comment": "(In ReferenceSpace) Compensates for stretch/compression/shear in glitter shapes resulting from animation etc"
+        },
+       "attrGlitterApproximateForSecRays": {
+            "name": "glitter_approximate_for_secondary_rays",
+            "label": "glitter approximate for secondary rays",
+            "type": "Bool",
+            "default": "true",
+            "group": "Glitter",
+            "subgroup": "Advanced",
+            "comment": "use an approximation to shade glitter for non-mirror secondary rays",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterLodQuality": {
+            "name": "glitter_LOD_quality",
+            "label": "glitter LOD quality",
+            "aliases": [ "dense glitter LOD quality" ],
+            "type": "Float",
+            "default": "0.5f",
+            "group": "Glitter",
+            "subgroup": "Advanced",
+            "comment": "controls quality of glitter at distances where individual flakes cannot be perceived; at lower values, approximation kicks in earlier",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        },
+        "attrGlitterDebugMode": {
+            "name": "glitter_debug_mode",
+            "label": "glitter debug mode",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "off": "0",
+                "blend": "1",
+                "color": "2",
+                "averageColor": "3",
+                "footprintArea": "4",
+                "radius": "5"
+            },
+            "default": "0",
+            "group": "Glitter",
+            "subgroup": "Advanced",
+            "comment": "developer debug visualization modes",
+            "enable if": {
+                "show_glitter": "true"
+            }
+        }
+    }
+}

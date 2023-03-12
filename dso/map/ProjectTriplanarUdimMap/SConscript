@@ -1,0 +1,22 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+target = 'ProjectTriplanarUdimMap.so'
+cc_source = ['ProjectTriplanarUdimMap.cc']
+ispc_source = ['ProjectTriplanarUdimMap.ispc']
+json_source = ['ProjectTriplanarUdimMap.json']
+components = [
+    'map_primvar',
+    'map_projection',
+    'rendering_shading',
+    'scene_rdl2',
+    'shading_ispc'
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

@@ -1,0 +1,97 @@
+// Copyright 2023 DreamWorks Animation LLC
+// SPDX-License-Identifier: Apache-2.0
+
+/// @file Projection.isph
+
+#pragma once
+
+#include <moonray/rendering/shading/ispc/BasicTexture.isph>
+#include <moonray/rendering/shading/ispc/Shading.isph>
+#include <scene_rdl2/common/platform/IspcUtil.isph>
+
+enum PROJECTION_NumTextures {
+    PROJECTION_NUM_TEXTURES_ONE = 1,
+    PROJECTION_NUM_TEXTURES_THREE = 3,
+    PROJECTION_NUM_TEXTURES_SIX = 6
+};
+
+struct PROJECTION_TriplanarTexture
+{
+    uniform bool mActive, mValid;
+    const uniform BASIC_TEXTURE_Data * uniform mTexture;
+    uniform Xform3f m2DXform;
+    uniform Vec2f mScale;
+    uniform Color mFatalColor;
+};
+
+struct PROJECTION_TriplanarData
+{
+    const uniform Xform * uniform mProjectorXform;
+    const uniform Xform * uniform mObjXform;
+    uniform int mRefPKey;
+    uniform int mRefNKey;
+    uniform bool mHasValidProjector;
+    uniform PROJECTION_TriplanarTexture mTriplanarTextures[6];
+    uniform float mTransitionWidthPower;
+    uniform int mTextureIndices[6];
+    uniform int mReversedNormalsIndx;
+};
+
+void
+PROJECTION_swizzleTriplanarFace(
+    const varying Vec3f& pos,
+    const varying Vec3f& dPdx,
+    const varying Vec3f& dPdy,
+    const varying Vec3f& dPdz,
+    const varying int axis,
+    varying Vec3f * result,
+    varying Vec3f * result_ddx,
+    varying Vec3f * result_ddy,
+    varying Vec3f * result_ddz
+);
+
+Col4f
+PROJECTION_sampleTriplanarTexture(
+    const uniform PROJECTION_TriplanarTexture &texture, 
+    const varying Vec2f& st, 
+    varying float (&derivatives)[4],
+    uniform ShadingTLState* uniform tls,
+    const varying State& state
+);
+
+// Calculate blending factor for 3 directions.   The returned
+// components add up to 1.0 which normalizes the blended normal.
+Vec3f
+PROJECTION_calculateTriplanarBlending(const Vec3f& normal, float twp);
+
+void
+PROJECTION_fillTriplanarTextures(uniform ShadingTLState* uniform tls,
+                                 const varying State& state,
+                                 const uniform int * uniform textureIndices,
+                                 const uniform PROJECTION_TriplanarTexture * uniform triplanarTextures,
+                                 const uniform float transitionWidthPower,
+                                 const varying Vec3f& normal,
+                                 const varying Vec3f& pos,
+                                 const varying Vec3f& pos_ddx,
+                                 const varying Vec3f& pos_ddy,
+                                 const varying Vec3f& pos_ddz,
+                                 varying Vec3f& outputBlending,
+                                 varying Col4f * outputColors);
+
+void
+PROJECTION_fillTriplanarNormalTextures(const int normalMapEncoding,
+                                       uniform ShadingTLState* uniform tls,
+                                       const varying State& state,
+                                       const uniform int * uniform textureIndices,
+                                       const uniform PROJECTION_TriplanarTexture * uniform triplanarTextures,
+                                       const uniform float transitionWidthPower,
+                                       const uniform int reversedNormalsIndx,
+                                       const varying Vec3f& normal,
+                                       const varying Vec3f& pos,
+                                       const varying Vec3f& pos_ddx,
+                                       const varying Vec3f& pos_ddy,
+                                       const varying Vec3f& pos_ddz,
+                                       varying Vec3f& outputBlending,
+                                       varying Vec3f * outputNormals,
+                                       varying float * outputNormalLengths);
+

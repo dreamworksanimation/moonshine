@@ -1,0 +1,15 @@
+{
+    "name": "RgbToLabMap",
+    "type": "Map",
+    "attributes": {
+        "attrInputColor": {
+            "name": "input_color",
+            "label": "input color",
+            "aliases": [ "input color" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Input color to convert"
+        }
+    }
+}

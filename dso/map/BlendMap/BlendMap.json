@@ -1,0 +1,68 @@
+{
+    "name": "BlendMap",
+    "type": "Map",
+    "attributes": {
+        "attrColorA": {
+            "name": "color_A",
+            "label": "color A",
+            "aliases": [ "color A" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "The color you get if blend amount is 0"
+        },
+        "attrColorB": {
+            "name": "color_B",
+            "label": "color B",
+            "aliases": [ "color B" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "The color you get if blend amount is 1"
+        },
+        "attrBlendType": {
+            "name": "blend_type",
+            "label": "blend type",
+            "aliases": [ "blend type" ],
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "0",
+             "enum": {
+                "linear": "0",
+                "cubic": "1"
+            },
+            "comment": "The type of blending algorithm"
+        },
+        "attrBlendAmount": {
+            "name": "blend_amount",
+            "label": "blend amount",
+            "aliases": [ "blend amount" ],
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "The amount to blend between color A (0) and color B (1)"
+        },
+        "attrThresholdMin": {
+            "name": "threshold_min",
+            "label": "threshold min",
+            "aliases": [ "threshold min" ],
+            "type": "Float",
+            "default": "0.0f",
+            "min": "0.0f",
+            "max": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "If the blend amount is less than or equal to this amount, it will choose color A (0)"
+        },
+        "attrThresholdMax": {
+            "name": "threshold_max",
+            "label": "threshold max",
+            "aliases": [ "threshold max" ],
+            "type": "Float",
+            "default": "1.0f",
+            "min": "0.0f",
+            "max": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "If the blend amount is greater than this amount, it will choose color B (1)"
+        }
+    }
+}

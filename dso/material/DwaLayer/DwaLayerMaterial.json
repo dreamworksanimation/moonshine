@@ -1,0 +1,38 @@
+{
+    "name": "DwaLayerMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASELAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/labels.json",
+            "lib/material/dwabase/json/blend.json"
+        ]
+    },
+    "attributes": {
+        "attrMaterialA": {
+            "name": "material_A",
+            "label": "material A",
+            "aliases": [ "material A" ],
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_DWABASELAYERABLE",
+            "comment": "foreground material"
+        },
+        "attrMaterialB": {
+            "name": "material_B",
+            "label": "material B",
+            "aliases": [ "material B" ],
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_DWABASELAYERABLE",
+            "comment": "background material"
+        },
+        "attrMask": {
+            "name": "mask",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "foreground material weight"
+        }
+    }
+}

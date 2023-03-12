@@ -1,0 +1,178 @@
+{
+    "name": "DirectionalMap",
+    "type": "Map",
+    "attributes": {
+        "attrPrimeDirection": {
+            "name": "prime_direction",
+            "label": "prime direction",
+            "comment": "which source is used for the prime direction",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum" : {
+                "observer direction" : "0",
+                "custom direction" : "1",
+                "axis of object" : "2",
+                "look-at object" : "3"
+            }
+        },
+        "attrPolarity": {
+            "name": "polarity",
+            "comment": "determines which directions are given color A and which are given color B. Switching this effectively swaps the colors",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum" : {
+                "perpendicular" : "0",
+                "parallel" : "1"
+            }
+        },
+        "attrColorA": {
+            "name": "color_a",
+            "label": "color A",
+            "comment": "the color of the effect when the difference angle is greatest",
+            "type": "Rgb",
+            "default": "Rgb(0,0,0)",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrColorB": {
+            "name": "color_b",
+            "label": "color B",
+            "comment": "the color of the effect when the difference angle is smallest",
+            "type": "Rgb",
+            "default": "Rgb(1,1,1)",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrObject": {
+            "name": "object",
+            "comment": "the object to use when 'prime direction' is set to 'axis of object' or 'look-at object'",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_NODE",
+            "enable if" : {
+                "prime_direction" : "2",
+                "prime_direction" : "3"
+            }
+        },
+        "attrObjectAxis": {
+            "name": "object_axis",
+            "label": "object axis",
+            "comment": "which axis to use when 'prime direction' is set to 'axis of object'",
+            "type": "Int",
+            "default": "1",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum" : {
+                "+X axis" : "0",
+                "-X axis" : "1",
+                "+Y axis" : "2",
+                "-Y axis" : "3",
+                "+Z axis" : "4",
+                "-Z axis" : "5"
+            },
+            "enable if" : {
+                "prime_direction" : "2"
+            }
+        },
+        "attrCustomDirection": {
+            "name": "custom_direction",
+            "label": "custom direction",
+            "comment": "specifies a custom direction in world space as the prime direction",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 1.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "enable if" : {
+                "prime_direction" : "1"
+            }
+        },
+        "attrUseReferenceSpace": {
+            "name": "use_reference_space",
+            "label": "use reference space",
+            "type": "Bool",
+            "default": "false",
+            "comment": "use reference space position and normals"
+        },
+        "attrInputNormal": {
+            "name": "input_normal",
+            "label": "input normal",
+            "comment": "specifies an alternate shading normal when bound. The binding multiplier is ignored",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_NORMALMAP",
+            "group": "Normal"
+        },
+        "attrInputNormalDial": {
+            "name": "input_normal_dial",
+            "label": "input normal dial",
+            "comment": "controls the amount of influence of the alternate normal",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Normal"
+        },
+        "attrClamping": {
+            "name": "clamping_behavior",
+            "label": "clamping behavior",
+            "comment": "determines how surfaces facing opposite the prime direction are handled",
+            "type": "Int",
+            "default": "0",
+            "group": "Adjustment",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum" : {
+                "clamp" : "0",
+                "absolute" : "1"
+            }
+        },
+        "attrBias": {
+            "name": "bias",
+            "comment": "controls the rate at which the effect increases as the shading normal approaches the prime direction",
+            "type": "Float",
+            "default": "0.5",
+            "group": "Adjustment",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrUseSmoothstep": {
+            "name": "use_smoothstep",
+            "label": "use smoothstep",
+            "comment": "apply smoothstep function to result",
+            "type": "Bool",
+            "default": "false",
+            "group": "Adjustment"
+        },
+        "attrSmoothStart": {
+            "name": "smoothstep_start",
+            "label": "smoothstep start",
+            "comment": "the value at which the effect is considered 100% off",
+            "type": "Float",
+            "default": "0.45",
+            "group": "Adjustment",
+            "flags": "FLAGS_BINDABLE",
+            "enable if" : {
+                "use_smoothstep" : "true"
+            }
+        },
+        "attrSmoothEnd": {
+            "name": "smoothstep_end",
+            "label": "smoothstep end",
+            "comment": "the value at which the effect is considered 100% on",
+            "type": "Float",
+            "default": "0.55",
+            "group": "Adjustment",
+            "flags": "FLAGS_BINDABLE",
+            "enable if" : {
+                "use_smoothstep" : "true"
+            }
+        },
+        "attrFalloffType": {
+            "name": "falloff_type",
+            "label": "falloff type",
+            "comment": "determines how the effect falls off as the difference angle increases",
+            "type": "Int",
+            "default": "0",
+            "group": "Adjustment",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum" : {
+                "cosine" : "0",
+                "linear" : "1"
+            }
+        }
+    }
+}

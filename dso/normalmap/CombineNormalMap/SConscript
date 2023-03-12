@@ -1,0 +1,22 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_combinenormalmap'
+target = 'CombineNormalMap.so'
+cc_source = ['CombineNormalMap.cc']
+ispc_source = ['CombineNormalMap.ispc']
+json_source = ['CombineNormalMap.json']
+components = [
+    'common_math',
+    'rendering_shading',
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)
+env.DWAComponent(name, COMPONENTS=components)

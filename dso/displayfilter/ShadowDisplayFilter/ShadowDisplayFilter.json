@@ -1,0 +1,30 @@
+{
+    "name": "ShadowDisplayFilter",
+    "type": "DisplayFilter",
+    "attributes": {
+        "attrOccluded": {
+            "name": "occluded",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput containing the occluded image"
+        },
+        "attrUnoccluded": {
+            "name": "unoccluded",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput containing the unoccluded image"
+        },
+        "attrDensity": {
+            "name": "density",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "Blend value between occluded and unoccluded images. 1 = completely occluded. 0 = completely unoccluded."
+        },
+        "attrShadowColor": {
+            "name": "shadow_color",
+            "type": "Rgb",
+            "default": "Rgb(0.0, 0.0, 0.0)",
+            "comment": "Color of the shadow"
+        }
+    }
+}

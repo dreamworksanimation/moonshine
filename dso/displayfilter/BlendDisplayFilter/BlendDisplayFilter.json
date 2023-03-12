@@ -1,0 +1,40 @@
+{
+    "name": "BlendDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrBlendAmt": {
+            "name": "blendAmt",
+            "type": "Float",
+            "default": "0.5",
+            "comment": "Float between [0,1] determining amount of blend between input1 and input2"
+        },
+        "attrBlendType": {
+            "name": "blendType",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "linear": "0",
+                "cubic": "1"
+            },
+            "default": "0",
+            "comment": "Method used to blend between input1 and input2."
+        },
+        "attrInput1": {
+            "name": "input1",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "First RenderOutput to use in the blend operation"
+        },
+        "attrInput2": {
+            "name": "input2",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "Second RenderOutput to use in the blend operation"
+        }
+    }
+}

@@ -1,0 +1,67 @@
+{
+    "name": "RampDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrPositions": {
+            "name": "positions",
+            "type": "FloatVector",
+            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "comment": "List of ramp positions",
+            "group": "Ramp Knot",
+            "structure_type": "ramp_color",
+            "structure_name": "ramp",
+            "structure_path": "positions"
+        },
+        "attrColors": {
+            "name": "colors",
+            "type": "RgbVector",
+            "default": "{Rgb(0.0), Rgb(0.25), Rgb(0.75), Rgb(1.0)}",
+            "comment": "List of ramp colors",
+            "group": "Ramp Knot",
+            "structure_type": "ramp_color",
+            "structure_name": "ramp",
+            "structure_path": "values"
+        },
+        "attrRampType":{
+            "name": "ramp_type",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "v_ramp": "0",
+                "u_ramp": "1",
+                "diagonal_ramp": "2",
+                "radial_ramp": "3",
+                "circular_ramp": "4",
+                "box_ramp": "5",
+                "uxv_ramp": "6",
+                "four_corner_ramp": "7",
+                "input_ramp": "8"
+            },
+            "default": "0",
+            "group": "Ramp properties",
+            "comment": "Type of ramp"
+        },
+        "attrInterpolations":{
+            "name": "interpolations",
+            "type": "IntVector",
+            "default": "{0, 0, 0, 0}",
+            "comment": "List of ramp interpolations.",
+            "group": "Ramp Knot",
+            "structure_type": "ramp_color",
+            "structure_name": "ramp",
+            "structure_path": "interpolation_types"
+        },
+        "attrInput": {
+            "name": "input",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput fed into the ramp",
+            "group": "Ramp properties"
+        }
+    }
+}

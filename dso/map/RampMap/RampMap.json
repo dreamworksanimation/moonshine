@@ -1,0 +1,167 @@
+{
+    "name": "RampMap",
+    "type": "Map",
+    "attributes": {
+        "attrPositions": {
+            "name": "positions",
+            "type": "FloatVector",
+            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "comment": "Color ramp",
+            "group": "Ramp Knot",
+            "structure_type": "ramp_color",
+            "structure_name": "ramp",
+            "structure_path": "positions"
+        },
+        "attrColors": {
+            "name": "colors",
+            "type": "RgbVector",
+            "default": "{Rgb(0.0), Rgb(0.25), Rgb(0.75), Rgb(1.0)}",
+            "comment": "List of colors on the ramp",
+            "group": "Ramp Knot",
+            "structure_type": "ramp_color",
+            "structure_name": "ramp",
+            "structure_path": "values"
+        },
+        "attrInterpolations": {
+            "name": "interpolations",
+            "type": "IntVector",
+            "default": "{0, 0, 0, 0}",
+            "comment": "None: 0 | Linear: 1 | Exponential Up: 2 | Exponential Down: 3 |\\n\\t\\t\\tSmooth: 4 | Catmull Rom: 5 | Monotone Cubic: 6",
+            "group": "Ramp Knot",
+            "structure_type": "ramp_color",
+            "structure_name": "ramp",
+            "structure_path": "interpolation_types"
+        },
+        "attrRampType": {
+            "name": "ramp_type",
+            "label": "ramp type",
+            "aliases": [ "ramp type" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "v": "0",
+                "u": "1",
+                "diagonal": "2",
+                "radial": "3",
+                "circular": "4",
+                "box": "5",
+                "uxv": "6",
+                "four corner": "7",
+                "input": "8"
+            },
+            "group": "Ramp properties",
+            "comment": "Determines input signal / shape of the ramp"
+        },
+        "attrInput": {
+            "name": "input",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Input signal for ramp, used when ramp type is set to input",
+            "group": "Ramp properties"
+        },
+        "attrSpace": {
+            "name": "space",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "render": "0",
+                "camera": "1",
+                "world": "2",
+                "screen": "3",
+                "object": "4",
+                "reference": "5",
+                "texture": "6"
+            },
+            "comment": "Only applies when 'texture coordinates' is set to 'default state coordinates'",
+            "group": "Ramp properties"
+        },
+        "attrObject": {
+            "name": "object",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_GEOMETRY",
+            "group": "Ramp properties"
+        },
+        "attrCamera": {
+            "name": "camera",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_CAMERA",
+            "comment": "Camera used to define camera and screen space",
+            "group": "Ramp properties"
+        },
+        "attrColorSpace": {
+            "name": "color_space",
+            "label": "color space",
+            "aliases": [ "color space" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "comment": "Color space to perform interpolation in",
+            "enum" : {
+                "rgb": "0",
+                "hsv": "1",
+                "hsl": "2"
+            },
+            "group": "Ramp properties"
+        },
+        "attrTextureEnum": {
+            "name": "texture_coordinates",
+            "label": "texture coordinates",
+            "aliases": [ "texture coordinates" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "default state coordinates": "0",
+                "input texture coordinates": "1"
+            },
+            "comment": "Whether to read existing coordinates or bind custom ones"
+        },
+        "attrInputTextureCoordinate": {
+            "name": "input_texture_coordinates",
+            "label": "input texture coordinates",
+            "aliases": [ "input texture coordinates" ],
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Bind custom UV coordinates",
+            "group": "Additional properties"
+        },
+        "attrWrapType": {
+            "name": "wrap_type",
+            "label": "wrap type",
+            "aliases": [ "wrap type" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "wrap": "0",
+                "clamp": "1"
+            },
+            "group": "Additional properties",
+            "comment": "Whether to repeat the ramp or maintain the color at each edge"
+        },
+        "attrUvWave": {
+            "name": "uv_wave",
+            "label": "uv wave",
+            "aliases": [ "uv wave" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "comment": "Creates waves which perturb the ramp pattern",
+            "group": "Additional properties"
+        },
+        "attrUvRepeat": {
+            "name": "uv_repeat",
+            "label": "uv repeat",
+            "aliases": [ "uv repeat" ],
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "comment": "Number of times to repeat the ramp pattern",
+            "group": "Additional properties"
+        }
+    }
+}

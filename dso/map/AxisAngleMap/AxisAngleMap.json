@@ -1,0 +1,72 @@
+{
+    "name": "AxisAngleMap",
+    "type": "Map",
+    "attributes": {
+        "attrInputVector": {
+            "name": "input_vector",
+            "label": "input vector",
+            "comment": "input vector to be rotated",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrInputSpace": {
+            "name": "input_space",
+            "label": "input space",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "0",
+            "comment": "the space to transform from",
+             "enum": {
+                "render": "0",
+                "camera": "1",
+                "world": "2",
+                "screen": "3",
+                "object": "4"
+            }
+        },
+        "attrRotationAxis": {
+            "name": "rotation_axis",
+            "label": "rotation axis",
+            "comment": "axis to be rotated around",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 1.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrAxisSpace": {
+            "name": "axis_space",
+            "label": "axis space",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "2",
+            "comment": "the space of the axis to rotate about",
+             "enum": {
+                "world": "2",
+                "object": "4"
+            }
+        },
+        "attrAngle": {
+            "name": "angle",
+            "label": "angle",
+            "comment": "the angle of rotation in degrees",
+            "type": "Float",
+            "default": "0.0",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrOutputSpace": {
+            "name": "output_space",
+            "label": "output space",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "0",
+            "comment": "the space to transform the resulting vector to",
+             "enum": {
+                "render": "0",
+                "camera": "1",
+                "world": "2",
+                "screen": "3",
+                "object": "4"
+            }
+        }
+    }
+}

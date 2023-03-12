@@ -1,0 +1,121 @@
+{
+    "name": "ProjectTriplanarUdimMap",
+    "type": "Map",
+    "directives": {
+        "include": ["lib/map/projection/json/projection.json"]
+    },
+    "attributes": {
+        "attrUseCorrectUv": {
+            "name": "use_correct_uv",
+            "label": "use correct uv",
+            "aliases": [ "use correct uv" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "use correct uv orientation"
+        },
+        "attrUseReferenceSpace": {
+            "name": "use_reference_space",
+            "label": "use reference space",
+            "aliases": [ "use reference space" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "use reference space"
+        },
+        "attrXOffset": {
+            "name": "x_offset",
+            "label": "x offset",
+            "aliases": [ "x offset" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "comment": "2D offset for x projected map"
+        },
+        "attrXScale": {
+            "name": "x_scale",
+            "label": "x scale",
+            "aliases": [ "x scale" ],
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "comment": "2D scale for x projected map"
+        },
+        "attrXRotation": {
+            "name": "x_rotation",
+            "label": "x rotation",
+            "aliases": [ "x rotation" ],
+            "type": "float",
+            "default": "0",
+            "comment": "2D rotation for x projected map"
+        },
+        "attrXRotationCenter": {
+            "name": "x_rotation_center",
+            "label": "x rotation center",
+            "aliases": [ "x rotation center" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.5f, 0.5f)",
+            "comment": "2D rotation center for x projected map"
+        },
+        "attrYOffset": {
+            "name": "y_offset",
+            "label": "y offset",
+            "aliases": [ "y offset" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "comment": "2D offset for y projected map"
+        },
+        "attrYScale": {
+            "name": "y_scale",
+            "label": "y scale",
+            "aliases": [ "y scale" ],
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "comment": "2D scale for y projected map"
+        },
+        "attrYRotation": {
+            "name": "y_rotation",
+            "label": "y rotation",
+            "aliases": [ "y rotation" ],
+            "type": "float",
+            "default": "0",
+            "comment": "2D rotation for y projected map"
+        },
+        "attrYRotationCenter": {
+            "name": "y_rotation_center",
+            "label": "y rotation center",
+            "aliases": [ "y rotation center" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.5f, 0.5f)",
+            "comment": "2D rotation center for y projected map"
+        },
+        "attrZOffset": {
+            "name": "z_offset",
+            "label": "z offset",
+            "aliases": [ "z offset" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "comment": "2D offset for z projected map"
+        },
+        "attrZScale": {
+            "name": "z_scale",
+            "label": "z scale",
+            "aliases": [ "z scale" ],
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "comment": "2D scale for z projected map"
+        },
+        "attrZRotation": {
+            "name": "z_rotation",
+            "label": "z rotation",
+            "aliases": [ "z rotation" ],
+            "type": "float",
+            "default": "0",
+            "comment": "2D rotation for z projected map"
+        },
+        "attrZRotationCenter": {
+            "name": "z_rotation_center",
+            "label": "z rotation center",
+            "aliases": [ "z rotation center" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.5f, 0.5f)",
+            "comment": "2D rotation center for z projected map"
+        }
+    }
+}

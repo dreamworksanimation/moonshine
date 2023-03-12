@@ -1,0 +1,37 @@
+{
+    "name": "TransformNormalMap",
+    "type": "Map",
+    "attributes": {
+        "attrInputNormal": {
+            "name": "input_normal",
+            "label": "input normal",
+            "aliases": [ "input normal" ],
+            "comment": "input normal in either tangent or render space",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Normal"
+        },
+        "attrTransform": {
+            "name": "transform",
+            "label": "transform",
+            "aliases": [ "transform" ],
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "0",
+            "comment": "transform to apply to the normals",
+             "enum": {
+                "tangent to render": "0",
+                "render to tangent": "1"
+            }
+        },
+        "attrDecodeInputNormal": {
+            "name": "decode_input_normal",
+            "label": "decode_input_normal",
+            "aliases": [ "decode input normal" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "decode the input normal if it's in tangent space [0,1] -> [-1,1]"
+        }
+    }
+}

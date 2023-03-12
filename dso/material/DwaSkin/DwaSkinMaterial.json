@@ -1,0 +1,145 @@
+{
+    "name": "DwaSkinMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASELAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/fuzz.json",
+            "lib/material/dwabase/json/glitter.json",
+            "lib/material/dwabase/json/specular.json",
+            "lib/material/dwabase/json/refractive_index.json",
+            "lib/material/dwabase/json/roughness.json",
+            "lib/material/dwabase/json/anistropy.json",
+            "lib/material/dwabase/json/iridescence.json",
+            "lib/material/dwabase/json/diffuse.json",
+            "lib/material/dwabase/json/subsurface.json",
+            "lib/material/dwabase/json/diffuse_transmission.json",
+            "lib/material/dwabase/json/normal.json",
+            "lib/material/dwabase/json/normal_aa_strategy.json",
+            "lib/material/dwabase/json/misc.json",
+            "lib/material/dwabase/json/emission.json",
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "attributes": {
+        "attrShowMoisture": {
+            "name": "show_moisture",
+            "label": "show moisture",
+            "aliases": [ "show moisture" ],
+            "comment": "enables/disables moisture reflections",
+            "type": "Bool",
+            "default": "false",
+            "group": "Moisture"
+        },
+        "attrMoistureModel" : {
+            "name": "moisture_model",
+            "label": "moisture model",
+            "aliases": [ "moisture model" ],
+            "comment": "sets the normal distribution function for the moisture specular.  GGX is currently isotropic only",
+            "type": "Int",
+            "default" : "1",
+            "flags": "FLAGS_ENUMERABLE",
+            "group": "Moisture",
+            "enum": {
+                "Beckmann": "0",
+                "GGX": "1"
+            },
+            "enable if": {
+                "show_moisture": "true"
+            }
+        },
+        "attrMoistureMask": {
+            "name": "moisture_mask",
+            "label": "moisture mask",
+            "aliases": [ "moisture mask" ],
+            "comment": "bind map here, higher values for oily zones",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Moisture",
+            "enable if": {
+                "show_moisture": "true"
+            }
+        },
+        "attrMoistureRefractiveIndex" : {
+            "name": "moisture_refractive_index",
+            "label": "moisture refractive index",
+            "aliases": [ "moisture refractive index" ],
+            "comment": "defines the Fresnel behavior of moisture, and all underlying skin layers",
+            "type": "Float",
+            "default": "1.5f",
+            "group": "Moisture",
+            "enable if": {
+                "show_moisture": "true"
+            }
+        },
+        "attrMoistureRoughness": {
+            "name": "moisture_roughness",
+            "label": "moisture roughness",
+            "aliases": [ "moisture roughness" ],
+            "comment": "roughness of moisture; binding a map here should rarely be necessary",
+            "type": "Float",
+            "default": "0.25f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Moisture",
+            "enable if": {
+                "show_moisture": "true"
+            }
+        },
+        "attrUseMoistureNormal": {
+            "name": "use_independent_moisture_normal",
+            "label": "use independent moisture normal",
+            "aliases": [ "use independent moisture normal" ],
+            "comment": "specifies whether the moisture lobe should use an independent normal",
+            "type": "Bool",
+            "default": "false",
+            "group": "Moisture",
+            "enable if": {
+                "show_moisture": "true"
+            }
+        },
+        "attrMoistureNormal": {
+            "name": "independent_moisture_normal",
+            "label": "independent moisture normal",
+            "aliases": [ "independent moisture normal" ],
+            "comment": "specifies an independent shading normal (normal map) for the Moisture lobe",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_NORMALMAP",
+            "group": "Moisture",
+            "enable if": {
+                "show_moisture": "true",
+                "use_independent_moisture_normal": "true"
+            }
+        },
+        "attrMoistureNormalDial": {
+            "name": "moisture_normal_dial",
+            "label": "moisture normal dial",
+            "aliases": [ "moisture normal dial" ],
+            "comment": "controls the amount of influence of the alternate Moisture normal",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Moisture",
+            "enable if": {
+                "show_moisture": "true",
+                "use_independent_moisture_normal": "true"
+            }
+        }
+    },
+    "groups": {
+        "order": [
+            "Fuzz",
+            "Moisture",
+            "Glitter",
+            "Specular",
+            "Iridescence",
+            "Diffuse",
+            "Emission",
+            "Normal",
+            "Normal Anti-aliasing",
+            "Common",
+            "Advanced"
+        ]
+    }
+}

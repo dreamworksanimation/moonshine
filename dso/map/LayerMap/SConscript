@@ -1,0 +1,22 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_layer_map'
+target = 'LayerMap.so'
+cc_source = ['LayerMap.cc']
+ispc_source = ['LayerMap.ispc']
+json_source = ['LayerMap.json']
+components = [
+    'rendering_shading',
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)
+env.DWAComponent(name, COMPONENTS=components)

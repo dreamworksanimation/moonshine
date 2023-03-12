@@ -1,0 +1,27 @@
+import os
+Import('env')
+
+name = 'dso_dwabasematerial'
+target = 'DwaBaseMaterial.so'
+cc_source = ['DwaBaseMaterial.cc']
+ispc_source = ['DwaBaseMaterial.ispc']
+json_source = ['DwaBaseMaterial.json']
+components = [
+    'render_util',
+    'shading_ispc',
+    'material_dwabase',
+    'scene_rdl2'
+]
+
+# --------------------------------------------------------------
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+
+env.DWAInstallIspcDso(dso)
+
+baseDso = env.DWAComponent(
+    name,
+    COMPONENTS=components
+)
+env.AlwaysBuild(baseDso)
+

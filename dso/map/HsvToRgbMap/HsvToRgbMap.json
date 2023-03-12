@@ -1,0 +1,13 @@
+{
+    "name": "HsvToRgbMap",
+    "type": "Map",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "comment": "bind the input here",
+            "flags": "FLAGS_BINDABLE"
+        }
+    }
+}

@@ -1,0 +1,20 @@
+import os
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_ShadowDisplayFilter'
+target = 'ShadowDisplayFilter.so'
+cc_source = ['ShadowDisplayFilter.cc']
+ispc_source = ['ShadowDisplayFilter.ispc']
+json_source = ['ShadowDisplayFilter.json']
+components = [
+    'rendering_displayfilter',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

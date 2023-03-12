@@ -1,0 +1,22 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_curvature_map'
+target = 'CurvatureMap.so'
+cc_source = ['CurvatureMap.cc']
+ispc_source = ['CurvatureMap.ispc']
+json_source = ['CurvatureMap.json']
+components = [
+    'shading_ispc',
+    'scene_rdl2',
+    'rendering_shading'
+]
+
+# ---------------------------------------------------------------
+
+env.DWAForceWarningAsError()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)
+env.DWAComponent(name, COMPONENTS=components)

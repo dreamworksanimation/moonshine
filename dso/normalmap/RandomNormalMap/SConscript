@@ -1,0 +1,23 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+target = 'RandomNormalMap.so'
+cc_source = ['RandomNormalMap.cc']
+ispc_source = ['RandomNormalMap.ispc']
+json_source = ['RandomNormalMap.json']
+components = [
+    'rendering_shading',
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)
+
+# TODO: re-write code to avoid performance warnings
+env.AppendUnique(ISPCFLAGS = ['--wno-perf'])

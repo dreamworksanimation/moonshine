@@ -1,0 +1,34 @@
+{
+    "attributes": {
+        "attrMetallicColor": {
+            "name": "metallic_color",
+            "label": "metallic color",
+            "aliases": [ "metallic color" ],
+            "comment": "the overall reflection color, defines Fresnel behavior",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "metadata": {
+                "recolorable": "true",
+                "recolorSample": "true"
+            },
+            "enable if": {
+                "show_specular": "true"
+            }
+        },
+        "attrMetallicEdgeColor": {
+            "name": "metallic_edge_color",
+            "label": "metallic edge color",
+            "aliases": [ "metallic edge color" ],
+            "comment": "the reflection color at grazing angles, defines Fresnel behavior",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "enable if": {
+                "show_specular": "true"
+            }
+        }
+    }
+}

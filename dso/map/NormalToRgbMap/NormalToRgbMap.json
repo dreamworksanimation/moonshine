@@ -1,0 +1,12 @@
+{
+    "name": "NormalToRgbMap",
+    "type": "Map",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_NORMALMAP",
+            "comment": "Input normal map to convert to a color"
+        }
+    }
+}

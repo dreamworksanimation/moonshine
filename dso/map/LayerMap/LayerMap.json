@@ -1,0 +1,56 @@
+{
+    "name": "LayerMap",
+    "type": "Map",
+    "attributes": {
+        "attrA": {
+            "name": "input_A",
+            "label": "input A",
+            "aliases": [ "input A" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Foreground color to blend"
+        },
+        "attrB": {
+            "name": "input_B",
+            "label": "input B",
+            "aliases": [ "input B" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Background color to blend"
+        },
+        "attrMask": {
+            "name": "mask",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Blending amount"
+        },
+        "attrMode": {
+            "name": "mode",
+            "type": "Int",
+            "default": "1",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum" : {
+                "off" : "0",
+                "over" : "1",
+                "add" : "2",
+                "subtract" : "3",
+                "multiply" : "4",
+                "screen" : "5",
+                "overlay" : "6",
+                "overlay contrast" : "7",
+                "darken" : "8",
+                "lighten" : "9",
+                "color dodge" : "10",
+                "color burn" : "11",
+                "hard light" : "12",
+                "soft light" : "13",
+                "difference" : "14",
+                "exclusion" : "15"
+            },
+            "comment": "Method of blending"
+        }
+    }
+}

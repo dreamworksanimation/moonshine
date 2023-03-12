@@ -1,0 +1,84 @@
+{
+    "attributes": {
+        "attrSubsurface": {
+            "name": "bssrdf",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "normalized diffusion": "0",
+                "dipole": "1",
+                "random walk": "2"
+            },
+            "default": "0",
+            "comment": "0 for NormalizedDiffuse, 1 for Dipole, 2 for random walk",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true"
+            }            
+        },
+        "attrScatteringColor" : {
+            "name": "scattering_color",
+            "label": "scattering color",
+            "aliases": [ "scattering color" ],
+            "comment": "the subsurface scattering 'falloff' color",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true"
+            }
+        },
+        "attrScatteringRadius" : {
+            "name": "scattering_radius",
+            "label": "scattering radius",
+            "aliases": [ "scattering radius" ],
+            "comment": "the distance the light scatters beneath the surface. When 0 surface diffuse (lambertian or toon) is used",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true"
+            },
+            "min": "0.0f"
+        },
+        "attrSubsurfaceTraceSet" : {
+            "name": "sss_trace_set",
+            "label": "sss trace set",
+            "aliases": [ "sss trace set" ],
+            "comment": "Set of geometries that contribute neighboring subsurface points. By default, only the geometry associated with this material contributes to subsurface. If you want adjacent geometry with different material to contribute as well, specify all those parts here.",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_TRACESET",
+            "group": "Advanced",
+            "enable if": {
+                "show_diffuse": "true"
+            }
+        },
+        "attrEnableSubsurfaceInputNormal" : {
+            "name": "enable_sss_input_normal",
+            "label": "enable sss input normal",
+            "aliases": [ "enable sss input normal" ],
+            "comment": "enables sampling the normal map for sss samples. More accurate but potentially expensive",
+            "type": "Bool",
+            "default": "false",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true"
+            }
+        },
+        "attrSSSResolveSelfIntersections" : {
+            "name": "resolve_self_intersections",
+            "label": "resolve self intersections",
+            "comment": "tries to resolve self-intersecting geometry automatically by only evaluating 'exiting' intersections for subsurface evaluations",
+            "type": "Bool",
+            "default": "true",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true",
+                "bssrdf"      : "random walk"
+            }
+        }
+    }
+}

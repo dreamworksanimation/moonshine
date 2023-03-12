@@ -1,0 +1,90 @@
+{
+    "name": "ProjectCameraMap_v2",
+    "type": "Map",
+    "attributes": {
+        "attrProjector": {
+            "name": "projector",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_CAMERA",
+            "comment": "The camera to project from"
+        },
+        "attrProjectOnBackFaces": {
+            "name": "project_on_back_faces",
+            "label": "project on back faces",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Toggles whether camera projections appear on back faces."
+        },
+        "attrBlackOutsideProjection": {
+            "name": "black_outside_projection",
+            "label": "black outside projection",
+            "type": "Bool",
+            "default": "true",
+            "comment": "Toggles whether projections appear outside the 0-1 uv range of the projector"
+        },
+        "attrUseReferenceSpace": {
+            "name": "use_reference_space",
+            "label": "use reference space",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Use reference space"
+        },
+        "attrTexture": {
+            "name": "texture",
+            "type": "String",
+            "flags": "FLAGS_FILENAME",
+            "comment": "Filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+        },
+        "attrAlphaOnly": {
+            "name": "alpha_only",
+            "label": "alpha only",
+            "type": "Bool",
+            "default": "false",
+            "comment": "When enabled, the alpha channel is returned instead of RGB"
+        },
+        "attrUnpremultiply": {
+            "name": "unpremultiply",
+            "type": "Bool",
+            "default": "false",
+            "comment": "When enabled, the rgb channels are divided by the alpha channel (where non-zero)",
+            "enable if": {
+                "alpha_only": "true"
+            }
+        },
+        "attrAspectRatioSource": {
+            "name": "aspect_ratio_source",
+            "label": "aspect ratio source",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "from texture": "0",
+                "custom": "1"
+            },
+            "comment": "Whether to use the image and pixel aspect ratio of the texture being projected, or a custom aspect ratio"
+        },
+        "attrCustomAspectRatio": {
+            "name": "custom_aspect_ratio",
+            "label": "custom aspect ratio",
+            "type": "Float",
+            "default": "1.f",
+            "comment": "Custom aspect ratio for the projected texture",
+            "enable if": {
+                "aspect_ratio_source": "1"
+            }
+        },
+        "attrGamma": {
+            "name": "gamma",
+            "type": "Int",
+            "default": "2",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "off": "0",
+                "on": "1",
+                "auto": "2"
+            },
+            "comment": "Controls application of gamma to images (off -0, on - 1, auto - 2).   Auto will apply gamma decoding to 8-bit images"
+        }
+    }
+}

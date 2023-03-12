@@ -1,0 +1,30 @@
+{
+    "attributes": {
+        "attrPresence" : {
+            "name": "presence",
+            "comment": "controls the visibility of this object. Useful for fading an object in/out, or to specify a cut-out mask on thin single-sided geometry (eg. a complex leaf texture on a simple card).",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Common"
+        },
+        "attrThinGeometry": {
+            "name": "thin_geometry",
+            "label": "thin geometry",
+            "aliases": [ "thin geometry" ],
+            "comment": "enables proper shading of infinitely thin geometry such as paper or leaves.",
+            "type": "Bool",
+            "default": "false",
+            "group": "Common"
+        },
+        "attrCastsCaustics": {
+            "name": "casts_caustics",
+            "label": "casts caustics",
+            "aliases": [ "casts caustics" ],
+            "comment": "allows continuation of caustic light paths.",
+            "type": "Bool",
+            "default": "false",
+            "group": "Common"
+        }
+    }
+}

@@ -1,0 +1,789 @@
+{
+    "name": "HairToonMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASEHAIRLAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/emission.json",
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "attributes": {
+        "attrShowHairDiffuse": {
+            "name": "show_hair_diffuse",
+            "label": "show hair diffuse",
+            "comment": "Show the hair diffuse lobe",
+            "type": "Bool",
+            "default": "true",
+            "group": "Diffuse"
+        },
+        "attrHairDiffuse" : {
+            "name": "hair_diffuse",
+            "comment": "Amount of hair diffuse",
+            "type": "Float",
+            "default": "1.0f",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ show_hair_diffuse == 0}",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse"
+        },
+        "attrHairColor": {
+            "name": "hair_color",
+            "label": "hair color",
+            "aliases": [ "hair color" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0, 1.0f, 1.0f)",
+            "disable when": "{ use_independent_front_and_back_hair_color == 1 }",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse"
+        },
+
+
+        "attrHairToonS1Show": {
+            "name": "specular_1_show",
+            "label": "specular 1 show",
+            "comment": "Show first toon specular lobe",
+            "type": "Bool",
+            "default": "true",
+            "group": "Specular 1"
+        },
+        "attrHairToonS1Model" : {
+            "name": "specular_1_model",
+            "label": "specular 1 model",
+            "comment": "sets the normal distribution function for specular",
+            "type": "Int",
+            "default": "2",
+            "flags": "FLAGS_ENUMERABLE",
+            "group": "Specular 1",
+            "enum": {
+                "Toon_Surface": "2",
+                "Toon_Hair": "3"
+            },
+            "disable when": "{ specular_1_show == 0 }"
+        },
+        "attrHairToonS1Intensity": {
+            "name": "specular_1_intensity",
+            "label": "specular 1 intensity",
+            "comment": "The overall intensity of the specular response",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 1",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_1_show == 0 }"
+        },
+        "attrHairToonS1Tint": {
+            "name": "specular_1_tint",
+            "label": "specular 1 tint",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 1",
+            "disable when": "{ specular_1_show == 0 }"
+        },
+        "attrHairToonS1Roughness": {
+            "name": "specular_1_roughness",
+            "label": "specular 1 roughness",
+            "comment": "The roughness of the toon specular.   Smaller values produce tighter highlights",
+            "type": "Float",
+            "default": "0.9f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 1",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_1_show == 0 }"
+        },
+        "attrHairToonS1StretchU": {
+            "name": "specular_1_stretch_u",
+            "label": "specular 1 stretch u",
+            "comment": "Amount to stretch or compress the specular in the u direction ",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 1",
+            "min": "-1.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_1_show == 0 } { specular_1_model != Toon_Surface }"
+        },
+        "attrHairToonS1StretchV": {
+            "name": "specular_1_stretch_v",
+            "label": "specular 1 stretch v",
+            "comment": "Amount to stretch or compress the specular in the v direction ",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 1",
+            "min": "-1.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_1_show == 0 } { specular_1_model != Toon_Surface }"
+        },
+        "attrHairToonS1UseInputVectors": {
+            "name": "specular_1_use_input_vectors_for_stretch",
+            "label": "specular 1 use input vectors for stretch",
+            "comment": "when checked, use input_U and V. otherwise use geometry dPds/t",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular 1",
+            "disable when": "{ specular_1_show == 0 } { specular_1_model != Toon_Surface }"
+        },
+        "attrHairToonS1InputU": {
+            "name": "specular_1_input_U",
+            "label": "specular 1 input U",
+            "comment": "input U / tangent for specular stretch",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 1",
+            "disable when": "{ specular_1_show == 0 }  { specular_1_model != Toon_Surface } { specular_1_use_input_vectors_for_stretch == 0 }"
+        },
+        "attrHairToonS1InputV": {
+            "name": "specular_1_input_V",
+            "label": "specular 1 input V",
+            "comment": "input V / bitangent for specular stretch",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 1",
+            "disable when": "{ specular_1_show == 0 } { specular_1_model != Toon_Surface } { specular_1_use_input_vectors_for_stretch == 0 }"
+        },
+        "attrHairToonS1RampPositions": {
+            "name": "specular_1_positions",
+            "type": "FloatVector",
+            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "comment": "ramp positions, maximum 10 allowed",
+            "structure_type": "ramp_float",
+            "structure_name": "specular_1_ramp",
+            "structure_path": "positions",
+            "group": "Specular 1",
+            "disable when": "{ specular_1_show == 0 }"
+        },
+        "attrHairToonS1RampValues": {
+            "name": "specular_1_values",
+            "type": "FloatVector",
+            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "comment": "List of colors on the ramp",
+            "structure_type": "ramp_float",
+            "structure_name": "specular_1_ramp",
+            "structure_path": "values",
+            "group": "Specular 1",
+            "disable when": "{ specular_1_show == 0 }"
+        },
+        "attrHairToonS1RampInterpolators": {
+            "name": "specular_1_interpolations",
+            "type": "IntVector",
+            "default": "{4, 4, 4, 4}",
+            "comment": "None: 0 | Linear: 1 | Exponential Up: 2 | Exponential Down: 3 |\\n\\t\\t\\tSmooth: 4 | Catmull Rom: 5 | Monotone Cubic: 6",
+            "structure_type": "ramp_float",
+            "structure_name": "specular_1_ramp",
+            "structure_path": "interpolation_types",
+            "group": "Specular 1",
+            "disable when": "{ specular_1_show == 0 }"
+        },
+        "attrHairToonS1EnableInputNormal" : {
+            "name": "specular_1_enable_input_normal",
+            "label": "specular 1 enable input normal",
+            "comment": "enables sampling the normal map for toon specular 1",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular 1",
+            "disable when": "{ specular_1_show == 0 } { specular_1_model != Toon_Surface }"
+        },
+        "attrHairToonS1InputNormal": {
+            "name": "specular_1_input_normal",
+            "label": "specular 1 input normal",
+            "comment": "specifies an alternate shading normal for toon specular 1",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_NORMALMAP",
+            "group": "Specular 1",
+            "disable when": "{ specular_1_show == 0 } { specular_1_model != Toon_Surface } { specular_1_enable_input_normal == 0 }"
+        },
+        "attrHairToonS1InputNormalDial": {
+            "name": "specular_1_input_normal_dial",
+            "label": "specular 1 input normal dial",
+            "comment": "controls influence of input normal versus hair normal for toon specular 1",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 1",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_1_show == 0 } { specular_1_model != Toon_Surface } { specular_1_enable_input_normal == 0 }"
+        },
+        "attrHairToonS1EnableIndirectReflections" : {
+            "name": "specular_1_enable_indirect_reflections",
+            "label": "specular 1 enable indirect reflections",
+            "comment": "enables indirect GGX reflections for toon specular model",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular 1",
+            "disable when": "{ specular_1_show == 0 }"
+        },
+        "attrHairToonS1IndirectReflectionsIntensity" : {
+            "name": "specular_1_indirect_reflections_intensity",
+            "label": "specular 1 indirect reflections intensity",
+            "comment": "the intensity for the indirect reflections of the toon specular model",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 1",
+            "min" : "0.0f",
+            "max" : "1.0f",
+            "disable when": "{ specular_1_show == 0 } { specular_1_enable_indirect_reflections == 0 }"
+        },
+        "attrHairToonS1IndirectReflectionsRoughness" : {
+            "name": "specular_1_indirect_reflections_roughness",
+            "label": "specular 1 indirect reflections roughness",
+            "comment": "the roughness for the indirect reflections of the toon specular model",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 1",
+            "min" : "0.0f",
+            "max" : "1.0f",
+            "disable when": "{ specular_1_show == 0 } { specular_1_enable_indirect_reflections == 0 } { specular_1_indirect_reflections_intensity == 0.0 }"
+        },
+
+
+        "attrHairToonS2Show": {
+            "name": "specular_2_show",
+            "label": "specular 2 show",
+            "comment": "Show second toon specular lobe",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular 2"
+        },
+        "attrHairToonS2Model" : {
+            "name": "specular_2_model",
+            "label": "specular 2 model",
+            "comment": "sets the normal distribution function for specular",
+            "type": "Int",
+            "default": "2",
+            "flags": "FLAGS_ENUMERABLE",
+            "group": "Specular 2",
+            "enum": {
+                "Toon_Surface": "2",
+                "Toon_Hair": "3"
+            },
+            "disable when": "{ specular_2_show == 0 }"
+        },
+        "attrHairToonS2Intensity": {
+            "name": "specular_2_intensity",
+            "label": "specular 2 intensity",
+            "comment": "The overall intensity of the specular response",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 2",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_2_show == 0 }"
+        },
+        "attrHairToonS2Tint": {
+            "name": "specular_2_tint",
+            "label": "specular 2 tint",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 2",
+            "disable when": "{ specular_2_show == 0 }"
+        },
+        "attrHairToonS2Roughness": {
+            "name": "specular_2_roughness",
+            "label": "specular 2 roughness",
+            "comment": "The roughness of the toon specular.   Smaller values produce tighter highlights",
+            "type": "Float",
+            "default": "0.9f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 2",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_2_show == 0 }"
+        },
+        "attrHairToonS2StretchU": {
+            "name": "specular_2_stretch_u",
+            "label": "specular 2 stretch u",
+            "comment": "Amount to stretch or compress the specular in the u direction ",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 2",
+            "min": "-1.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_2_show == 0 } { specular_2_model != Toon_Surface }"
+        },
+        "attrHairToonS2StretchV": {
+            "name": "specular_2_stretch_v",
+            "label": "specular 2 stretch v",
+            "comment": "Amount to stretch or compress the specular in the v direction ",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 2",
+            "min": "-1.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_2_show == 0 } { specular_2_model != Toon_Surface }"
+        },
+        "attrHairToonS2UseInputVectors": {
+            "name": "specular_2_use_input_vectors_for_stretch",
+            "label": "specular 2 use input vectors for stretch",
+            "comment": "when checked, use input_U and V. otherwise use geometry dPds/t",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular 2",
+            "disable when": "{ specular_2_show == 0 } { specular_2_model != Toon_Surface }"
+        },
+        "attrHairToonS2InputU": {
+            "name": "specular_2_input_U",
+            "label": "specular 2 input U",
+            "comment": "input U / tangent for specular stretch",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 2",
+            "disable when": "{ specular_2_show == 0 } { specular_2_model != Toon_Surface } { specular_2_use_input_vectors_for_stretch == 0 }"
+        },
+        "attrHairToonS2InputV": {
+            "name": "specular_2_input_V",
+            "label": "specular 2 input V",
+            "comment": "input V / bitangent for specular stretch",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 2",
+            "disable when": "{ specular_2_show == 0 } { specular_2_model != Toon_Surface } { specular_2_use_input_vectors_for_stretch == 0 }"
+        },
+        "attrHairToonS2RampPositions": {
+            "name": "specular_2_positions",
+            "type": "FloatVector",
+            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "comment": "ramp positions, maximum 10 allowed",
+            "structure_type": "ramp_float",
+            "structure_name": "specular_2_ramp",
+            "structure_path": "positions",
+            "group": "Specular 2",
+            "disable when": "{ specular_2_show == 0 }"
+        },
+        "attrHairToonS2RampValues": {
+            "name": "specular_2_values",
+            "type": "FloatVector",
+            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "comment": "List of colors on the ramp",
+            "structure_type": "ramp_float",
+            "structure_name": "specular_2_ramp",
+            "structure_path": "values",
+            "group": "Specular 2",
+            "disable when": "{ specular_2_show == 0 }"
+        },
+        "attrHairToonS2RampInterpolators": {
+            "name": "specular_2_interpolations",
+            "type": "IntVector",
+            "default": "{4, 4, 4, 4}",
+            "comment": "None: 0 | Linear: 1 | Exponential Up: 2 | Exponential Down: 3 |\\n\\t\\t\\tSmooth: 4 | Catmull Rom: 5 | Monotone Cubic: 6",
+            "structure_type": "ramp_float",
+            "structure_name": "specular_2_ramp",
+            "structure_path": "interpolation_types",
+            "group": "Specular 2",
+            "disable when": "{ specular_2_show == 0 }"
+        },
+        "attrHairToonS2EnableInputNormal" : {
+            "name": "specular_2_enable_input_normal",
+            "label": "specular 2 enable input normal",
+            "comment": "enables sampling the normal map for toon specular 2",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular 2",
+            "disable when": "{ specular_2_show == 0 } { specular_2_model != Toon_Surface }"
+        },
+        "attrHairToonS2InputNormal": {
+            "name": "specular_2_input_normal",
+            "label": "specular 2 input normal",
+            "comment": "specifies an alternate shading normal for toon specular 2",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_NORMALMAP",
+            "group": "Specular 2",
+            "disable when": "{ specular_2_show == 0 } { specular_2_model != Toon_Surface } { specular_2_enable_input_normal == 0}"
+        },
+        "attrHairToonS2InputNormalDial": {
+            "name": "specular_2_input_normal_dial",
+            "label": "specular 2 input normal dial",
+            "comment": "controls influence of input normal versus hair normal for toon specular 2",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 2",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_2_show == 0 } { specular_2_model != Toon_Surface } { specular_2_enable_input_normal == 0}"
+        },
+        "attrHairToonS2EnableIndirectReflections" : {
+            "name": "specular_2_enable_indirect_reflections",
+            "label": "specular 2 enable indirect reflections",
+            "comment": "enables indirect GGX reflections for toon specular model",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular 2",
+            "disable when": "{ specular_2_show == 0 }"
+        },
+        "attrHairToonS2IndirectReflectionsIntensity" : {
+            "name": "specular_2_indirect_reflections_intensity",
+            "label": "specular 2 indirect reflections intensity",
+            "comment": "the intensity for the indirect reflections of the toon specular model",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 2",
+            "min" : "0.0f",
+            "max" : "1.0f",
+            "disable when": "{ specular_2_show == 0 } { specular_2_enable_indirect_reflections == 0 }"
+        },
+        "attrHairToonS2IndirectReflectionsRoughness" : {
+            "name": "specular_2_indirect_reflections_roughness",
+            "label": "specular 2 indirect reflections roughness",
+            "comment": "the roughness for the indirect reflections of the toon specular model",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 2",
+            "min" : "0.0f",
+            "max" : "1.0f",
+            "disable when": "{ specular_2_show == 0 } { specular_2_enable_indirect_reflections == 0 } { specular_2_indirect_reflections_intensity == 0.0 }"
+        },
+
+
+        "attrHairToonS3Show": {
+            "name": "specular_3_show",
+            "label": "specular 3 show",
+            "comment": "Show third toon specular lobe",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular 3"
+        },
+        "attrHairToonS3Model" : {
+            "name": "specular_3_model",
+            "label": "specular 3 model",
+            "comment": "sets the normal distribution function for specular",
+            "type": "Int",
+            "default": "2",
+            "flags": "FLAGS_ENUMERABLE",
+            "group": "Specular 3",
+            "enum": {
+                "Toon_Surface": "2",
+                "Toon_Hair": "3"
+            },
+            "disable when": "{ specular_3_show == 0 }"
+        },
+        "attrHairToonS3Intensity": {
+            "name": "specular_3_intensity",
+            "label": "specular 3 intensity",
+            "comment": "The overall intensity of the specular response",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 3",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_3_show == 0 }"
+        },
+        "attrHairToonS3Tint": {
+            "name": "specular_3_tint",
+            "label": "specular 3 tint",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 3",
+            "disable when": "{ specular_3_show == 0 }"
+        },
+        "attrHairToonS3Roughness": {
+            "name": "specular_3_roughness",
+            "label": "specular 3 roughness",
+            "comment": "The roughness of the toon specular.   Smaller values produce tighter highlights",
+            "type": "Float",
+            "default": "0.9f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 3",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_3_show == 0 }"
+        },
+        "attrHairToonS3StretchU": {
+            "name": "specular_3_stretch_u",
+            "label": "specular 3 stretch u",
+            "comment": "Amount to stretch or compress the specular in the u direction ",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 3",
+            "min": "-1.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_3_show == 0 } { specular_3_model != Toon_Surface }"
+        },
+        "attrHairToonS3StretchV": {
+            "name": "specular_3_stretch_v",
+            "label": "specular 3 stretch v",
+            "comment": "Amount to stretch or compress the specular in the v direction ",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 3",
+            "min": "-1.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_3_show == 0 } { specular_3_model != Toon_Surface }"
+        },
+        "attrHairToonS3UseInputVectors": {
+            "name": "specular_3_use_input_vectors_for_stretch",
+            "label": "specular 3 use input vectors for stretch",
+            "comment": "when checked, use input_U and V. otherwise use geometry dPds/t",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular 3",
+            "disable when": "{ specular_3_show == 0 } { specular_3_model != Toon_Surface }"
+        },
+        "attrHairToonS3InputU": {
+            "name": "specular_3_input_U",
+            "label": "specular 3 input U",
+            "comment": "input U / tangent for specular stretch",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 3",
+            "disable when": "{ specular_3_show == 0 } { specular_3_model != Toon_Surface } { specular_3_use_input_vectors_for_stretch == 0 }"
+        },
+        "attrHairToonS3InputV": {
+            "name": "specular_3_input_V",
+            "label": "specular 3 input V",
+            "comment": "input V / bitangent for specular stretch",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 3",
+            "disable when": "{ specular_3_show == 0 } { specular_3_model != Toon_Surface } { specular_3_use_input_vectors_for_stretch == 0 }"
+        },
+        "attrHairToonS3RampPositions": {
+            "name": "specular_3_positions",
+            "type": "FloatVector",
+            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "comment": "ramp positions, maximum 10 allowed",
+            "structure_type": "ramp_float",
+            "structure_name": "specular_3_ramp",
+            "structure_path": "positions",
+            "group": "Specular 3",
+            "disable when": "{ specular_3_show == 0 }"
+        },
+        "attrHairToonS3RampValues": {
+            "name": "specular_3_values",
+            "type": "FloatVector",
+            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "comment": "List of colors on the ramp",
+            "structure_type": "ramp_float",
+            "structure_name": "specular_3_ramp",
+            "structure_path": "values",
+            "group": "Specular 3",
+            "disable when": "{ specular_3_show == 0 }"
+        },
+        "attrHairToonS3RampInterpolators": {
+            "name": "specular_3_interpolations",
+            "type": "IntVector",
+            "default": "{4, 4, 4, 4}",
+            "comment": "None: 0 | Linear: 1 | Exponential Up: 2 | Exponential Down: 3 |\\n\\t\\t\\tSmooth: 4 | Catmull Rom: 5 | Monotone Cubic: 6",
+            "structure_type": "ramp_float",
+            "structure_name": "specular_3_ramp",
+            "structure_path": "interpolation_types",
+            "group": "Specular 3",
+            "disable when": "{ specular_3_show == 0 }"
+        },
+        "attrHairToonS3EnableInputNormal" : {
+            "name": "specular_3_enable_input_normal",
+            "label": "specular 3 enable input normal",
+            "comment": "enables sampling the normal map for toon specular 3",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular 3",
+            "disable when": "{ specular_3_show == 0 } { specular_3_model != Toon_Surface }"
+        },
+        "attrHairToonS3InputNormal": {
+            "name": "specular_3_input_normal",
+            "label": "specular 3 input normal",
+            "comment": "specifies an alternate shading normal for toon specular 3",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_NORMALMAP",
+            "group": "Specular 3",
+            "disable when": "{ specular_3_show == 0 } { specular_3_model != Toon_Surface } { specular_3_enable_input_normal == 0 }"
+        },
+        "attrHairToonS3InputNormalDial": {
+            "name": "specular_3_input_normal_dial",
+            "label": "specular 3 input normal dial",
+            "comment": "controls influence of input normal versus hair normal for toon specular 3",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 3",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ specular_3_show == 0 } { specular_3_model != Toon_Surface } { specular_3_enable_input_normal == 0 }"
+        },
+        "attrHairToonS3EnableIndirectReflections" : {
+            "name": "specular_3_enable_indirect_reflections",
+            "label": "specular 3 enable indirect reflections",
+            "comment": "enables indirect GGX reflections for toon specular model",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular 3",
+            "disable when": "{ specular_3_show == 0 }"
+        },
+        "attrHairToonS3IndirectReflectionsIntensity" : {
+            "name": "specular_3_indirect_reflections_intensity",
+            "label": "specular 3 indirect reflections intensity",
+            "comment": "the intensity for the indirect reflections of the toon specular model",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 3",
+            "min" : "0.0f",
+            "max" : "1.0f",
+            "disable when": "{ specular_3_show == 0 } { specular_3_enable_indirect_reflections == 0 }"
+        },
+        "attrHairToonS3IndirectReflectionsRoughness" : {
+            "name": "specular_3_indirect_reflections_roughness",
+            "label": "specular 3 indirect reflections roughness",
+            "comment": "the roughness for the indirect reflections of the toon specular model",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular 3",
+            "min" : "0.0f",
+            "max" : "1.0f",
+            "disable when": "{ specular_3_show == 0 } { specular_3_enable_indirect_reflections == 0 } { specular_3_indirect_reflections_intensity == 0.0 }"
+        },
+
+
+        "attrUseIndependentFrontAndBackHairColor": {
+            "name": "use_independent_front_and_back_hair_color",
+            "label": "use independent front and back hair color",
+            "comment": "(advanced) use a separate hair color for front and back",
+            "type": "Bool",
+            "default": "false",
+            "group": "Advanced"
+        },
+        "attrFrontHairColor": {
+            "name": "front_hair_color",
+            "label": "front hair color",
+            "comment": "(advanced only) hair color used for front-lit hair (backward reflectance)",
+            "type": "Rgb",
+            "default": "Rgb(1.0, 1.0f, 1.0f)",
+            "group": "Advanced",
+            "disable when": "{ use_independent_front_and_back_hair_color == 0 }",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrBackHairColor": {
+            "name": "back_hair_color",
+            "label": "back hair color",
+            "comment": "(advanced only) hair color used for back-lit hair (transmission/forward reflectance)",
+            "type": "Rgb",
+            "default": "Rgb(1.0, 1.0f, 1.0f)",
+            "group": "Advanced",
+            "disable when": "{ use_independent_front_and_back_hair_color == 0 }",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrHairSubsurfaceBlend" : {
+            "name": "subsurface_blend",
+            "label": "subsurface blend",
+            "aliases": [ "subsurface blend" ],
+            "comment": "0 is fully hair diffuse, 1 is fully SSS. No effect if scattering radius is 0.",
+            "type": "Float",
+            "default": "1.0",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Subsurface",
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrHairSubsurface": {
+            "name": "bssrdf",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "normalized diffusion": "0",
+                "dipole": "1"
+            },
+            "default": "0",
+            "comment": "0 for NormalizedDiffuse, 1 for Dipole. Random walk unsupported for hair.",
+            "group": "Subsurface"
+        },
+        "attrHairScatteringColor" : {
+            "name": "scattering_color",
+            "label": "scattering color",
+            "aliases": [ "scattering color" ],
+            "comment": "the subsurface scattering 'falloff' color",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Subsurface"
+        },
+        "attrHairScatteringRadius" : {
+            "name": "scattering_radius",
+            "label": "scattering radius",
+            "aliases": [ "scattering radius" ],
+            "comment": "the distance the light scatters beneath the surface.  When 0 surface diffuse is used",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Subsurface",
+            "min": "0.0f"
+        },
+        "attrHairSubsurfaceTraceSet" : {
+            "name": "sss_trace_set",
+            "label": "sss trace set",
+            "aliases": [ "sss trace set" ],
+            "comment": "Set of geometries that contribute neighboring subsurface points. By default, only the geometry associated with this material contributes to subsurface. If you want adjacent geometry with different material to contribute as well, specify all those parts here.",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_TRACESET",
+            "group": "Advanced"
+        },
+        "attrHairEnableSubsurfaceInputNormal" : {
+            "name": "enable_sss_input_normal",
+            "label": "enable sss input normal",
+            "aliases": [ "enable sss input normal" ],
+            "comment": "enables sampling the normal map for sss samples. More accurate but potentially expensive",
+            "type": "Bool",
+            "default": "false",
+            "group": "Subsurface"
+        },
+        "attrHairInputNormal": {
+            "name": "input_normal",
+            "label": "input normal",
+            "aliases": [ "input normal" ],
+            "comment": "specifies an alternate shading normal (only for SSS lobe)",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "disable when": "{ enable_sss_input_normal == 0 }",
+            "interface": "INTERFACE_NORMALMAP",
+            "group": "Subsurface"
+        },
+        "attrHairInputNormalDial": {
+            "name": "input_normal_dial",
+            "label": "input normal dial",
+            "aliases": [ "input normal dial" ],
+            "comment": "controls influence of input normal versus hair normal for SSS",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "disable when": "{ enable_sss_input_normal == 0 }",
+            "group": "Subsurface",
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrPresence" : {
+            "name": "presence",
+            "comment": "controls the visibility of this object. Useful for fading an object in/out, or to specify a cut-out mask on thin single-sided geometry (eg. a complex leaf texture on a simple card).",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Common"
+        }
+    }
+}

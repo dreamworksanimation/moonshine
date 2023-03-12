@@ -1,0 +1,20 @@
+Import('env')
+
+
+# ---------------------------------------------------------------
+
+target = 'ColorCorrectNukeMap.so'
+cc_source = ['ColorCorrectNukeMap.cc']
+ispc_source = ['ColorCorrectNukeMap.ispc']
+json_source = ['ColorCorrectNukeMap.json']
+components = [
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

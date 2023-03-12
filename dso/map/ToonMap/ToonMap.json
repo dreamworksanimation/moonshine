@@ -1,0 +1,82 @@
+{
+    "name": "ToonMap",
+    "type": "Map",
+    "attributes": {
+        "attrMode": {
+            "name": "mode",
+            "type": "Int",
+            "default": "2",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "outline": "0",
+                "crease": "1",
+                "both": "2"
+            },
+            "comment": "Pick which features are displayed"
+        },
+        "attrFillColor": {
+            "name": "fill_color",
+            "label": "fill color",
+            "aliases": [ "fill color" ],
+            "type": "Rgb",
+            "flags": "FLAGS_BINDABLE",
+            "default": "Rgb(0.0f, 0.0f, 0.0f)",
+            "comment": "Default color, within the outlines and creases"
+        },
+        "attrOutlineColor": {
+            "name": "outline_color",
+            "label": "outline color",
+            "aliases": [ "outline color" ],
+            "type": "Rgb",
+            "flags": "FLAGS_BINDABLE",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "comment": "Outlines are silhouettes of the geometry"
+        },
+        "attrCreaseColor": {
+            "name": "crease_color",
+            "label": "crease color",
+            "aliases": [ "crease color" ],
+            "type": "Rgb",
+            "flags": "FLAGS_BINDABLE",
+            "default": "Rgb(1.0f, 0.0f, 0.0f)",
+            "comment": "Creases are sharp edges like corners in the geometry."
+        },
+        "attrOutlineThreshold": {
+            "name": "outline_threshold",
+            "label": "outline threshold",
+            "aliases": [ "outline threshold" ],
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "default": "0.0f",
+            "comment": "In most cases, the shader would trace an outline of a model well when this threshold is zero."
+        },
+        "attrOutlineScale": {
+            "name": "outline_scale",
+            "label": "outline scale",
+            "aliases": [ "outline scale" ],
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "default": "1.0f",
+            "comment": "This attribute controls the thickness of outlines."
+        },
+        "attrCreaseThreshold": {
+            "name": "crease_threshold",
+            "label": "crease threshold",
+            "aliases": [ "crease threshold" ],
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "default": "45.0f",
+            "comment": "This attribute sets the threshold angle (in degree units) to draw creases. The more the threshold angle is, the less the creases are traced."
+
+        },
+        "attrCreaseScale": {
+            "name": "crease_scale",
+            "label": "crease scale",
+            "aliases": [ "crease scale" ],
+            "type": "Float",
+             "flags": "FLAGS_BINDABLE",
+           "default": "1.0f",
+            "comment": "This attribute controls the thickness of creases."
+        }
+    }
+}

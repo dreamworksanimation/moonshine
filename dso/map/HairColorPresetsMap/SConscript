@@ -1,0 +1,24 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_haircolorpresets_map'
+target = 'HairColorPresetsMap.so'
+cc_source = ['HairColorPresetsMap.cc']
+ispc_source = ['HairColorPresetsMap.ispc']
+json_source = ['HairColorPresetsMap.json']
+components = [
+    'render_util',
+    'rendering_shading',
+    'scene_rdl2',
+    'shading_ispc',
+    'rendering_shading'
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)
+env.DWAComponent(name, COMPONENTS=components)

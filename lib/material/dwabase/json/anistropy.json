@@ -1,0 +1,28 @@
+{
+    "attributes": {
+            "attrAnisotropy" : {
+                "name": "anisotropy",
+                "comment": "controls the shape of the primary reflection",
+                "type": "Float",
+                "default": "0.0f",
+                "flags": "FLAGS_BINDABLE",
+                "group": "Specular",
+                "enable if": {
+                    "show_specular": "true"
+                }
+            },
+            "attrShadingTangent": {
+                "name": "shading_tangent",
+                "label": "shading tangent",
+                "aliases": [ "shading tangent" ],
+                "comment": "controls the orientation of anistropy",
+                "type": "Vec2f",
+                "default": "Vec2f(1.0f, 0.0f)",
+                "flags": "FLAGS_BINDABLE",
+                "group": "Specular",
+                "enable if": {
+                    "show_specular": "true"
+                }
+            }
+    }
+}

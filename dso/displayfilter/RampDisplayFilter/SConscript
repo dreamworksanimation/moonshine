@@ -1,0 +1,20 @@
+import os
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_rampdisplayfilter'
+target = 'RampDisplayFilter.so'
+cc_source = ['RampDisplayFilter.cc']
+ispc_source = ['RampDisplayFilter.ispc']
+json_source = ['RampDisplayFilter.json']
+components = [
+    'rendering_displayfilter',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

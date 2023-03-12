@@ -1,0 +1,17 @@
+{
+    "labels": {
+        "aovGlitter":               "glitter",
+        "aovHair":                  "hair",
+        "aovHairR":                 "hair R",
+        "aovHairTT":                "hair TT",
+        "aovHairTRT":               "hair TRT",
+        "aovHairTRRT":              "hair TRRT",
+        "aovHairDiffuse":           "hair diffuse",
+        "aovFuzz":                  "fuzz",
+        "aovOuterSpecular":         "outer specular",
+        "aovSpecular":              "specular",
+        "aovDiffuse":               "diffuse",
+        "aovSpecularTransmission":  "specular transmission",
+        "aovDiffuseTransmission":   "diffuse transmission"
+    }
+}

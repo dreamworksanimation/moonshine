@@ -1,0 +1,27 @@
+{
+    "name": "FloatToRgbMap",
+    "type": "Map",
+    "attributes": {
+        "attrR": {
+            "name": "R",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Red Channel"
+        },
+        "attrG": {
+            "name": "G",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Green Channel"
+        },
+        "attrB": {
+            "name": "B",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Blue Channel"
+        }
+    }
+}

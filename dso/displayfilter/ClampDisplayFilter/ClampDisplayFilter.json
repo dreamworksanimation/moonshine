@@ -1,0 +1,29 @@
+{
+    "name": "ClampDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput to clamp"
+        },
+        "attrMin": {
+            "name": "min",
+            "type": "Rgb",
+            "default": "Rgb(0.0, 0.0, 0.0)",
+            "comment": "Minimum color value"
+        },
+        "attrMax": {
+            "name": "max",
+            "type": "Rgb",
+            "default": "Rgb(1.0, 1.0, 1.0)",
+            "comment": "Maximum color value"
+        }
+    }
+}

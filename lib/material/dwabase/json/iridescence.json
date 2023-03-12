@@ -1,0 +1,164 @@
+{
+    "attributes": {
+        "attrIridescence": {
+            "name": "iridescence",
+            "comment": "controls the strength of the iridescence effect",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Iridescence",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 }"
+        },
+        "attrIridescenceApplyTo" : {
+            "name": "iridescence_apply_to",
+            "label": "iridescence apply to",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "primary specular": "0",
+                "clearcoat/moisture specular": "1"
+            },
+            "default": "0",
+            "group": "Iridescence",
+            "comment": "Apply iridescence to primary specular lobe or clearcoat/moisture lobe",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 }"
+        },
+        "attrIridescenceColorControl" : {
+            "name": "iridescence_color_control",
+            "label": "iridescence color control",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "use hue interpolation": "0",
+                "use ramp": "1"
+            },
+            "default": "0",
+            "group": "Iridescence",
+            "comment": "use hue interpolation: automatically cycles through hue wheel, use ramp: user specified color ramp",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 }"
+        },
+        "attrIridescencePrimaryColor": {
+            "name": "iridescence_primary_color",
+            "label": "iridescence primary color",
+            "aliases": [ "iridescence primary color" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Iridescence",
+            "comment": "First color to interpolate from around the hue wheel",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 } { iridescence_color_control == 'use ramp' }" 
+        },
+        "attrIridescenceSecondaryColor": {
+            "name": "iridescence_secondary_color",
+            "label": "iridescence secondary color",
+            "aliases": [ "iridescence secondary color" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Iridescence",
+            "comment": "Second color to interpolate to around the hue wheel",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 } { iridescence_color_control == 'use ramp' }" 
+        },
+        "attrIridescenceFlipHueDirection": {
+            "name": "iridescence_flip_hue_direction",
+            "label": "iridescence flip hue direction",
+            "aliases": [ "iridescence flip hue direction" ],
+            "comment": "flip interpolation around the hue wheel to counter-clockwise direction",
+            "type": "Bool",
+            "default": "false",
+            "group": "Iridescence",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 } { iridescence_color_control == 'use ramp' }" 
+        },
+        "attrIridescenceRampInterpolationMode" : {
+            "name": "iridescence_ramp_interpolation_mode",
+            "label": "iridescence ramp interpolation mode",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "RGB": "0",
+                "HSV": "1"
+            },
+            "default": "0",
+            "group": "Iridescence",
+            "comment": "RGB: lerp in RGB space which matches UI preview but can lose saturation, HSV: lerp in HSV space which preserves saturation",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 } { iridescence_color_control == 'use hue interpolation' }" 
+        },
+        "attrIridescenceRampPositions": {
+            "name": "iridescence_positions",
+            "type": "FloatVector",
+            "default": "{0.0, 0.167, 0.333, 0.5, 0.667, 0.833, 1.0}",
+            "comment": "ramp positions",
+            "structure_type": "ramp_color",
+            "structure_name": "iridescence_ramp",
+            "structure_path": "positions",
+            "group": "Iridescence",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 } { iridescence_color_control == 'use hue interpolation' }"
+        },
+        "attrIridescenceRampColors": {
+            "name": "iridescence_colors",
+            "type": "RgbVector",
+            "default": "{Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 1.0, 0.0), Rgb(0.0, 1.0, 1.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)}",
+            "comment": "List of colors on the ramp",
+            "structure_type": "ramp_color",
+            "structure_name": "iridescence_ramp",
+            "structure_path": "values",
+            "group": "Iridescence",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 } { iridescence_color_control == 'use hue interpolation' }"
+        },
+        "attrIridescenceRampInterpolators": {
+            "name": "iridescence_interpolations",
+            "type": "IntVector",
+            "default": "{4, 4, 4, 4, 4, 4, 4}",
+            "comment": "None: 0 | Linear: 1 | Exponential Up: 2 | Exponential Down: 3 |\\n\\t\\t\\tSmooth: 4 | Catmull Rom: 5 | Monotone Cubic: 6",
+            "structure_type": "ramp_color",
+            "structure_name": "iridescence_ramp",
+            "structure_path": "interpolation_types",
+            "group": "Iridescence",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 } { iridescence_color_control == 'use hue interpolation' }"
+        },
+        "attrIridescenceThickness": {
+            "name": "iridescence_thickness",
+            "label": "iridescence thickness",
+            "aliases": [ "iridescence thickness" ],
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Iridescence",
+            "comment": "Controls how much the color spectrum is repeated",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 }"
+        },
+        "attrIridescenceExponent": {
+            "name": "iridescence_exponent",
+            "label": "iridescence exponent",
+            "aliases": [ "iridescence exponent" ],
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Iridescence",
+            "comment": "Tightens or broadens the distribution of colors",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 }"
+        },
+        "attrIridescenceAt0": {
+            "name": "iridescence_at_0_incidence",
+            "label": "iridescence at 0 incidence",
+            "aliases": [ "iridescence at 0 incidence" ],
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Iridescence",
+            "comment": "Iridescence effect at 0 degree viewing angle",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 }"           
+        },
+        "attrIridescenceAt90": {
+            "name": "iridescence_at_90_incidence",
+            "label": "iridescence at 90 incidence",
+            "aliases": [ "iridescence at 90 incidence" ],
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Iridescence",
+            "comment": "Iridescence effect at 90 degree viewing angle",
+            "disable when": "{ show_specular == 0 show_clearcoat == 0 } { show_specular == 0 show_moisture == 0 } { iridescence 0 }"
+        }
+    }
+}

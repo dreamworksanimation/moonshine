@@ -1,0 +1,327 @@
+{
+    "name": "NoiseWorleyMap_v2",
+    "type": "Map",
+    "attributes": {
+        "attrSeed": {
+            "name": "seed",
+            "type": "Int",
+            "default": "0",
+            "comment": "The seed for the random number generator"
+        },
+        "attrFrequency": {
+            "name": "frequency",
+            "type": "Float",
+            "default": "1.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Scalar multiplier for the frequency vector"
+        },
+        "attrJitter": {
+            "name": "jitter",
+            "type": "Float",
+            "default": "1.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Controls the distortion of the cells",
+	    "min": "0.0f",
+            "max": "1.0f"	
+        },
+        "attrMaxLevel": {
+            "name": "max_level",
+            "label": "max level",
+            "type": "Float",
+            "default": "1.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Number of octaves of noise to add together for the final result"
+        },
+        "attrColorA": {
+            "name": "color_A",
+            "label": "color A",
+            "aliases": [ "color A" ],
+            "type": "Rgb",
+            "default": "Rgb(0.f, 0.f, 0.f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "The interpolated color value at distance equals zero"
+	},
+        "attrColorB": {
+            "name": "color_B",
+            "label": "color B",
+            "aliases": [ "color B" ],
+            "type": "Rgb",
+            "default": "Rgb(1.f, 1.f, 1.f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "The interpolated color value at distance equals one"
+        },
+        "attrOutputMode": {
+            "name": "output_mode",
+            "label": "output mode",
+            "aliases": [ "output mode" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "distance": "0",
+                "gradient": "1",
+                "cell id": "2",
+                "cell edges" : "3",
+                "points" : "4"
+            },
+            "comment": "Method by which the shader outputs a color.  Distance uses F1..F4 interpolated between color A and color B, gradient outputs the gradient of the noise, and cell ID outputs a random color for each cell",
+            "group": "Output"
+        },
+        "attrDistanceMethod": {
+            "name": "distance_method",
+            "label": "distance method",
+            "aliases": [ "distance method" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "linear": "0",
+                "linear squared": "1",
+                "manhattan": "2",
+                "chebyshev": "3",
+                "quadratic": "4",
+                "minkowski": "5"
+            },
+            "enable if": {
+                "output_mode": "distance"
+            },
+            "comment": "Metric for calculating distance to feature points which controls the shape of the falloff when output mode is distance",
+            "group": "Output"
+	},
+        "attrMinkowskiNumber": {
+            "name": "minkowski_number",
+            "label": "minkowski number",
+            "aliases": [ "minkowski number" ],
+            "type": "Float",
+            "default": "3.0f",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "distance_method": "minkowski"
+            },
+            "comment": "Exponent on distances when distance method is set to Minkowski",
+            "group": "Output"
+        },
+        "attrSpace": {
+            "name": "space",
+            "type": "Int",
+            "default": "2",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "render": "0",
+                "camera": "1",
+                "world":  "2",
+                "screen": "3",
+                "object": "4",
+                "reference": "5",
+                "texture": "6",
+                "input texture coordinates": "7",
+                "hair_surface_uv": "8",
+                "hair_closest_surface_uv": "9"
+            },
+            "comment": "The space to calculate the noise in",
+            "group": "Space"
+        },
+        "attrInputTextureCoordinate": {
+            "name": "input_texture_coordinates",
+            "label": "input texture coordinates",
+            "aliases": [ "input texture coordinates" ],
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "space": "texture"
+            },
+            "group": "Space",
+            "comment": "User specified UVs"
+        },
+        "attrObject": {
+            "name": "object_space",
+            "label": "object space",
+            "aliases": [ "object space" ],
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_GEOMETRY",
+            "comment": "Directly connect object to use that object's space.",
+            "enable if": {
+                "space": "object"
+            },
+            "group": "Space"
+        },
+        "attrCamera": {
+            "name": "camera",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_CAMERA",
+            "comment": "Camera used to define camera and screen space",
+            "group": "Space"
+        },
+        "attrPointSize" : {
+            "name": "point_size",
+            "label": "point size",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "For points output mode, relative radius of points",
+            "disable when": "{ output_mode != points }",
+            "group": "Adjustment"
+        },
+        "attrRemap": {
+            "name": "remap",
+            "type": "Vec2f",
+            "default": "Vec2f(0.f, 1.f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Allows mapping the distances from the specified min/max range into the 0..1 range",
+            "group": "Adjustment"
+        },
+        "attrUseSmoothstep": {
+            "name": "use_smoothstep",
+            "label": "use smoothstep",
+            "aliases": [ "use smoothstep" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "Put the noise value through a smoothstep function defined by min/max",
+            "group": "Adjustment"
+        },
+        "attrSmoothstep": {
+            "name": "smoothstep",
+            "type": "Vec2f",
+            "default": "Vec2f(0.f, 1.f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "min/max values between which the smoothstep will interpolate",
+            "enable if": {
+                "use_smoothstep": "true"
+            },
+            "group": "Adjustment"
+        },
+        "attrBias": {
+            "name": "bias",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Bias of interpolation from color A to color B",
+            "group": "Adjustment"
+	},
+        "attrGain": {
+            "name": "gain",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Gain of interpolation from color A to color B",
+            "group": "Adjustment"
+	},
+        "attrInvert": {
+            "name": "invert",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Invert the final pattern",
+            "group": "Adjustment"
+        },
+        "attrTranslation": {
+            "name": "translation",
+            "type": "Vec3f",
+            "default": "0.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Translation of the noise in space",
+            "group": "Transform"
+        },
+        "attrScale": {
+            "name": "scale",
+            "type": "Vec3f",
+            "default": "1.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Vector to scale the noise non-proportionally",
+            "group": "Transform"
+	},
+        "attrRotation": {
+            "name": "rotation",
+            "type": "Vec3f",
+            "default": "0.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Rotates the noise in space based on the specified rotation order",
+            "group": "Transform"
+        },
+        "attrRotationOrder": {
+            "name": "rotation_order",
+            "label": "rotation order",
+            "aliases": [ "rotation order" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "xyz": "0",
+                "xzy": "1",
+                "yxz": "2",
+                "yzx": "3",
+                "zxy": "4",
+                "zyx": "5"
+            },
+            "comment": "Order in which to apply the euler rotations",
+            "group": "Transform"
+        },
+        "attrTransformationOrder": {
+            "name": "transformation_order",
+            "label": "transformation order",
+            "aliases": [ "transformation order" ],
+            "type": "Int",
+            "default": "4",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "srt": "0",
+                "str": "1",
+                "rst": "2",
+                "rts": "3",
+                "tsr": "4",
+                "trs": "5"
+            },
+            "comment": "Order in which to apply the translation, rotation, and frequency",
+            "group": "Transform"
+        },
+         "attrF1": {
+            "name": "F1",
+            "type": "Float",
+            "default": "1.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Influence of F1 (the closest feature point)",
+            "group": "Advanced"
+        },
+        "attrF2": {
+            "name": "F2",
+            "type": "Float",
+            "default": "0.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Influence of F2 (the second closest feature point)",
+            "group": "Advanced"
+        },
+        "attrF3": {
+            "name": "F3",
+            "type": "Float",
+            "default": "0.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Influence of F3 (the third closest feature point)",
+            "group": "Advanced"
+        },
+        "attrF4": {
+            "name": "F4",
+            "type": "Float",
+            "default": "0.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Influence of F4 (the fourth closest feature point)",
+            "group": "Advanced"
+        },
+        "attrCellId": {
+            "name": "cell_id",
+            "label": "cell id",
+            "aliases": [ "cell id" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "f1": "0",
+                "f2": "1",
+                "f3": "2",
+                "f4": "3"
+            },
+            "comment": "Which of the distances determines the cell id",
+            "group": "Advanced"
+        }
+}
+}

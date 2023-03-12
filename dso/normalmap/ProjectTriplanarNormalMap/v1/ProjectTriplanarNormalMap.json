@@ -1,0 +1,32 @@
+{
+    "name": "ProjectTriplanarNormalMap",
+    "type": "NormalMap",
+    "directives": {
+        "include": ["lib/map/projection/json/projection_triplanar.json",
+                    "lib/map/projection/json/projection.json"]
+    },
+    "attributes": {
+        "attrUseReferenceSpace": {
+            "name": "use_reference_space",
+            "label": "use reference space",
+            "aliases": [ "use reference space" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "Project onto reference positions ('ref_P') and normals ('ref_N')"
+        },
+        "attrNormalEncoding": {
+            "name": "normal_encoding",
+            "label": "normal encoding",
+            "aliases": [ "normal encoding" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "[0,1]": "0",
+                "[-1,1]": "1"
+            },
+            "comment": "Most normal maps are encoded [0,1].   Only certain rare floating point normal maps are encoded [-1,1]"
+        }
+    }
+}
+

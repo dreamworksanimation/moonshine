@@ -1,0 +1,103 @@
+{
+    "attributes": {
+        "attrProjectionMode": {
+            "name": "projection_mode",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "projector": "0",
+                "projection_matrix": "1",
+                "TRS": "2"
+            },
+            "comment": "Source parameters to use for projection transform"
+        },
+        "attrProjector": {
+            "name": "projector",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_NODE",
+            "enable if": {
+                "projection_mode": "projector"
+            },
+            "comment": "the object whose transform to use for projection"
+        },
+        "attrProjectionMatrix": {
+            "name": "projection_matrix",
+            "label": "projection matrix",
+            "type": "Mat4d",
+            "default": "Mat4d(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f)",
+            "flags": "FLAGS_NONE",
+            "enable if": {
+                "projection_mode": "projection_matrix"
+            },
+            "comment": "the transform to use for projection"
+        },
+        "attrTRSOrder": {
+            "name": "TRS_order",
+            "label": "TRS order",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "Scale Rot Trans": "0",
+                "Scale Trans Rot": "1",
+                "Rot Scale Trans": "2",
+                "Rot Trans Scale": "3",
+                "Trans Scale Rot": "4",
+                "Trans Rot Scale": "5"
+            },
+            "enable if": {
+                "projection_mode": "TRS"
+            },
+            "comment": "Order in which to apply transformations"
+        },
+        "attrRotationOrder": {
+            "name": "rotation_order",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "xyz": "0",
+                "xzy": "1",
+                "yxz": "2",
+                "yzx": "3",
+                "zxy": "4",
+                "zyx": "5"
+            },
+            "enable if": {
+                "projection_mode": "TRS"
+            },
+            "comment": "Order in which to apply rotation transformations"
+        },
+        "attrTranslate": {
+            "name": "translate",
+            "label": "translate",
+            "type": "Vec3d",
+            "default": "Vec3d(0.0f, 0.0f, 0.0f)",
+            "enable if": {
+                "projection_mode": "TRS"
+            },
+            "comment": "Tranlation of the projection transform"
+        },
+        "attrRotate": {
+            "name": "rotate",
+            "label": "rotate",
+            "type": "Vec3d",
+            "default": "Vec3d(0.0f, 0.0f, 0.0f)",
+            "enable if": {
+                "projection_mode": "TRS"
+            },
+            "comment": "Rotation of the projection transform"
+        },
+        "attrScale": {
+            "name": "scale",
+            "label": "scale",
+            "type": "Vec3d",
+            "default": "Vec3d(1.0f, 1.0f, 1.0f)",
+            "enable if": {
+                "projection_mode": "TRS"
+            },
+            "comment": "Scale of the projection transform"
+        }
+    }
+}

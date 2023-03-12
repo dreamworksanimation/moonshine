@@ -1,0 +1,62 @@
+{
+    "name": "DwaBaseMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASELAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/fuzz.json",
+            "lib/material/dwabase/json/clearcoat.json",
+            "lib/material/dwabase/json/glitter.json",
+            "lib/material/dwabase/json/specular.json",
+            "lib/material/dwabase/json/refractive_index.json",
+            "lib/material/dwabase/json/metallic.json",
+            "lib/material/dwabase/json/roughness.json",
+            "lib/material/dwabase/json/anistropy.json",
+            "lib/material/dwabase/json/iridescence.json",
+            "lib/material/dwabase/json/diffuse.json",
+            "lib/material/dwabase/json/subsurface.json",
+            "lib/material/dwabase/json/diffuse_transmission.json",
+            "lib/material/dwabase/json/transmission.json",
+            "lib/material/dwabase/json/normal.json",
+            "lib/material/dwabase/json/normal_aa_strategy.json",            
+            "lib/material/dwabase/json/misc.json",
+            "lib/material/dwabase/json/emission.json",
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "attributes": {
+        "attrMetallic" : {
+            "name": "metallic",
+            "comment": "enables/disables metallic model (binary 0|1 for plausibility)",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular"
+        },
+        "attrTransmission" : {
+            "name": "transmission",
+            "comment": "enables/disables refractive solid model (binary 0|1 for plausibility)",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Transmission"
+        }
+    },
+    "groups": {
+        "order": [
+            "Fuzz",
+            "Clearcoat",
+            "Glitter",
+            "Specular",
+            "Iridescence",
+            "Diffuse",
+            "Transmission",
+            "Emission",
+            "Normal",
+            "Normal Anti-aliasing",
+            "Common",
+            "Advanced"
+        ]
+    }
+}
+

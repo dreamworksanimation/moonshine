@@ -1,0 +1,48 @@
+{
+    "name": "DwaEmissiveMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASELAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "attributes": {
+        "attrShowEmission" : {
+            "name": "show_emission",
+            "label": "show emission",
+            "aliases": [ "show emission" ],
+            "comment": "enables/disable emission",
+            "type": "Bool",
+            "default": "true",
+            "group": "Emission"
+        },
+        "attrEmission": {
+            "name": "emission",
+            "comment": "the energy emitted from this material",
+            "aliases": [ "emission color", "emission_color" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Emission",
+            "enable if": {
+                "show_emission": "true"
+            }        
+        },
+        "attrPresence" : {
+            "name": "presence",
+            "comment": "controls the visibility of this object. Useful for fading an object in/out, or to specify a cut-out mask on thin single-sided geometry (eg. a complex leaf texture on a simple card).",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Common"
+        }
+    },
+    "groups": {
+        "order": [
+            "Emission",
+            "Common"
+        ]
+    }
+}
+

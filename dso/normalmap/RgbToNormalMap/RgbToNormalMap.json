@@ -1,0 +1,13 @@
+{
+    "name": "RgbToNormalMap",
+    "type": "NormalMap",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "comment": "Input color to convert to a normal map",
+            "flags": "FLAGS_BINDABLE"
+        }
+    }
+}

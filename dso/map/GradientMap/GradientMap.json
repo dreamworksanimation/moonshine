@@ -1,0 +1,144 @@
+{
+    "name": "GradientMap",
+    "type": "Map",
+    "attributes": {
+        "attrColorA": {
+            "name": "color_A",
+            "label": "color A",
+            "aliases": [ "color A" ],
+            "type": "Rgb",
+            "default": "Rgb(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Start color",
+            "group": "Gradient properties"
+        },
+        "attrColorB": {
+            "name": "color_B",
+            "label": "color B",
+            "aliases": [ "color B" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "End color",
+            "group": "Gradient properties"
+        },
+        "attrStart": {
+            "name": "start",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "comment": "Start position in the chosen space",
+            "group": "Gradient properties"
+        },
+        "attrEnd": {
+            "name": "end",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 1.0f, 0.0f)",
+            "comment": "End position in the chosen space",
+            "group": "Gradient properties"
+        },
+        "attrFalloffType": {
+            "name": "falloff_type",
+            "label": "falloff type",
+            "aliases": [ "falloff type" ],
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "1",
+             "enum": {
+                "none": "0",
+                "natural": "1",
+                "linear": "2",
+                "squared": "3",
+                "gaussian": "4",
+                "ease out": "5"
+            },
+            "comment": "Falloff blend mode",
+            "group": "Falloff properties"
+        },
+        "attrFalloffExponent": {
+            "name": "falloff_exponent",
+            "label": "falloff exponent",
+            "aliases": [ "falloff exponent" ],
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "Adjusts rate of blending",
+            "group": "Falloff properties"
+        },
+        "attrFalloffStart": {
+            "name": "falloff_start",
+            "label": "falloff start",
+            "aliases": [ "falloff start" ],
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "Shifts where the falloff starts",
+            "group": "Falloff properties"
+        },
+        "attrFalloffEnd": {
+            "name": "falloff_end",
+            "label": "falloff end",
+            "aliases": [ "falloff end" ],
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "Shifts where the falloff ends",
+            "group": "Falloff properties"
+        },
+        "attrFalloffEndIntensity": {
+            "name": "falloff_end_intensity",
+            "label": "falloff end intensity",
+            "aliases": [ "falloff end intensity" ],
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "Adjust the intensity of the end color",
+            "group": "Falloff properties"
+        },
+        "attrFalloffBias": {
+            "name": "falloff_bias",
+            "label": "falloff bias",
+            "aliases": [ "falloff bias" ],
+            "type": "Float",
+            "default": "0.5f",
+            "comment": "Compresses the blending towards the start or end color",
+            "group": "Falloff properties"
+        },
+        "attrSpace": {
+            "name": "space",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "0",
+             "enum": {
+                "render": "0",
+                "camera": "1",
+                "world": "2",
+                "screen": "3",
+                "object": "4",
+                "reference": "5",
+                "texture": "6"
+            },
+            "comment": "The transformation space in which to perform the blending",
+            "group": "Gradient properties"
+        },
+        "attrObject": {
+            "name": "object",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_GEOMETRY",
+            "comment": "Use the provided object's transformation space (only used if object space is also specified)",
+            "group": "Gradient properties"
+        },
+        "attrSymmetric": {
+            "name": "symmetric",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Color A blends into Color B and then back into Color A from the start to the end point",
+            "group": "Additional properties"
+        },
+        "attrSymmetricCenter": {
+            "name": "symmetric_center",
+            "label": "symmetric center",
+            "aliases": [ "symmetric center" ],
+            "type": "Float",
+            "default": "0.5f",
+            "comment": "Shifts the center of the symmetric falloff",
+            "group": "Additional properties"
+        }
+    }
+}

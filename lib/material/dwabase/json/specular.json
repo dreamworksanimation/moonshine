@@ -1,0 +1,43 @@
+{
+    "attributes": {
+        "attrShowSpecular" : {
+            "name": "show_specular",
+            "label": "show specular",
+            "aliases": [ "show specular" ],
+            "comment": "enables/disables specular reflections",
+            "type": "Bool",
+            "default": "true",
+            "group": "Specular"
+        },
+        "attrSpecular" : {
+            "name": "specular",
+            "comment": "enables/disables specular reflections (binary 0|1 for plausibility)",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Advanced",
+            "enable if": {
+                "show_specular": "true"
+            },
+            "min" : "0.0f",
+            "max" : "1.0f"
+        },
+        "attrSpecularModel" : {
+            "name": "specular_model",
+            "label": "specular model",
+            "aliases": [ "specular model" ],
+            "comment": "sets the normal distribution function for specular.  GGX is currently isotropic only",
+            "type": "Int",
+            "default": "1",
+            "flags": "FLAGS_ENUMERABLE",
+            "group": "Specular",
+            "enum": {
+                "Beckmann": "0",
+                "GGX": "1"
+            },
+            "enable if": {
+                "show_specular": "true"
+            }
+        }
+    }
+}

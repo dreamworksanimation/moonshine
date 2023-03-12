@@ -1,0 +1,49 @@
+{
+    "name": "DwaSwitchMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASELAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "attributes": {
+         "attrChoice": {
+            "name": "choice",
+            "type": "Int",
+            "default": "0",
+            "comment": "which of the 64 inputs (0 to 63) to use"
+        },
+        "attrMaterial": {
+            "name": "material",
+            "label": "material",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_DWABASELAYERABLE",
+            "multi": "64"
+        },
+        "attrFallbackBSSRDF": {
+            "name": "fallback_bssrdf",
+            "label": "fallback bssrdf",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "normalized diffusion": "0",
+                "dipole": "1",
+                "random walk": "2"
+            },
+            "default": "0",
+            "comment": "If the two materials disagree on the type of bssrdf, this type will be used instead.",
+            "group": "Advanced"
+        },
+        "attrSubsurfaceTraceSet" : {
+            "name": "sss_trace_set",
+            "label": "sss trace set",
+            "aliases": [ "sss trace set" ],
+            "comment": "By default, only the geometry associated with this material contributes to subsurface. The DwaSwitchMaterial ignores the sss trace sets of the submaterials. If you want adjacent geometry with different material to contribute as well, specify all those parts here.",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_TRACESET",
+            "group": "Advanced"
+        }
+    }
+}

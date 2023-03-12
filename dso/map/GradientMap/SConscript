@@ -1,0 +1,20 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+target = 'GradientMap.so'
+cc_source = ['GradientMap.cc']
+ispc_source = ['GradientMap.ispc']
+json_source = ['GradientMap.json']
+components = [
+    'rendering_shading',
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+
+env.DWAForceWarningAsError()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

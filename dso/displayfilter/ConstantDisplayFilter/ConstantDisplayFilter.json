@@ -1,0 +1,17 @@
+{
+    "name": "ConstantDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrColor": {
+            "name": "color",
+            "type": "Rgb",
+            "default": "Rgb(0.0, 0.0, 0.0)",
+            "comment": "Fill color value"
+        }
+    }
+}

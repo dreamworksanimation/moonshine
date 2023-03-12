@@ -1,0 +1,20 @@
+Import('env')
+
+
+# ---------------------------------------------------------------
+
+target = 'ColorCorrectTMIMap.so'
+cc_source = ['ColorCorrectTMIMap.cc']
+ispc_source = ['ColorCorrectTMIMap.ispc']
+json_source = ['ColorCorrectTMIMap.json']
+components = [
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

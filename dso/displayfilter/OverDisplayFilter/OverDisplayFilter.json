@@ -1,0 +1,40 @@
+{
+    "name": "OverDisplayFilter",
+    "type": "DisplayFilter",
+    "attributes": {
+        "attrInputTop": {
+            "name": "input_top",
+            "label": "input top",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput on top"
+        },
+        "attrInputBottom": {
+            "name": "input_bottom",
+            "label": "input bottom",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput on bottom"
+        },
+        "attrAlpha": {
+            "name": "alpha",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "Alpha for over operation"
+        },
+        "attrInvertAlpha": {
+            "name": "invert_alpha",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Invert value of alpha"
+        },
+        "attrMix": {
+            "name": "mix",
+            "type": "Float",
+            "default": "1.0f",
+            "min": "0.0f",
+            "max": "1.0f",
+            "comment": "Blend between input_top and input_bottom, using alpha as a mask."
+        }
+    }
+}

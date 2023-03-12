@@ -1,0 +1,25 @@
+{
+    "attributes": {
+        "attrShowEmission" : {
+            "name": "show_emission",
+            "label": "show emission",
+            "aliases": [ "show emission" ],
+            "comment": "enables/disable emission",
+            "type": "Bool",
+            "default": "false",
+            "group": "Emission"
+        },
+        "attrEmission": {
+            "name": "emission",
+            "comment": "the energy emitted from this material",
+            "aliases": [ "emission color", "emission_color" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Emission",
+            "enable if": {
+                "show_emission": "true"
+            }        
+        }
+    }
+}

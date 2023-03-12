@@ -1,0 +1,62 @@
+{
+    "name": "OpDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrOperation": {
+            "name": "operation",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "add": "0",
+                "subtract": "1",
+                "multiply": "2",
+                "divide": "3",
+                "min": "4",
+                "max": "5",
+                "power": "6",
+                "cross": "7",
+                "dot": "8",
+                "modulo": "9",
+                "greater_than": "10",
+                "greater_than_or_equal": "11",
+                "less_than": "12",
+                "less_than_or_equal": "13",
+                "equal": "14",
+                "not_equal": "15",
+                "and": "16",
+                "or": "17",
+                "xor": "18",
+                "invert": "19",
+                "normalize": "20",
+                "abs": "21",
+                "ceil": "22",
+                "floor": "23",
+                "length": "24",
+                "sine": "25",
+                "cosine": "26",
+                "round": "27",
+                "acos": "28",
+                "not": "29"
+            },
+            "default": "0",
+            "comment": "Operation to use on the input(s)"
+        },
+        "attrInput1": {
+            "name": "input1",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "First RenderOutput; required"
+        },
+        "attrInput2": {
+            "name": "input2",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "Second RenderOutput; optional"
+        }
+    }
+}

@@ -1,0 +1,74 @@
+{
+    "name": "ColorCorrectLegacyMap",
+    "type": "Map",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrOn": {
+            "name": "on",
+            "type": "Bool",
+            "default": "true"
+        },
+        "attrMask": {
+            "name": "mask",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrBrightness": {
+            "name": "brightness",
+            "type": "Float",
+            "default": "0.0f"
+        },
+        "attrContrast": {
+            "name": "contrast",
+            "type": "Float",
+            "default": "0.0f"
+        },
+        "attrHue": {
+            "name": "hue",
+            "type": "Float",
+            "default": "0.0f"
+        },
+        "attrSaturation": {
+            "name": "saturation",
+            "type": "Float",
+            "default": "0.0f"
+        },
+        "attrInvert": {
+            "name": "invert",
+            "type": "Bool",
+            "default": "false"
+        },
+        "attrMonochrome": {
+            "name": "monochrome",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "0",
+            "enum": {
+                "off": "0",
+                "luminance": "1",
+                "average": "2",
+                "minimum": "3",
+                "maximum": "4",
+                "red channel": "5",
+                "green channel": "6",
+                "blue channel": "7"
+            }
+        },
+        "attrMultiplier": {
+            "name": "multiplier",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)"
+        },
+        "attrClamp": {
+            "name": "clamp",
+            "type": "Bool",
+            "default": "false"
+        }
+    }
+}

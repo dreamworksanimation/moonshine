@@ -1,0 +1,58 @@
+{
+    "name": "UVTransformMap",
+    "type": "Map",
+    "attributes": {
+        "attrSpace": {
+            "name": "space",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "6",
+             "enum": {
+                "render": "0",
+                "camera": "1",
+                "world": "2",
+                "screen": "3",
+                "object": "4",
+                "reference": "5",
+                "texture": "6"
+            },
+            "comment": "Determines source of coordinates. Default is mesh UVs. Other options procedurally create UVs from the chosen space."
+        },
+        "attrOffset": {
+            "name": "offset",
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "comment": "Shifts UV coordinates"
+        },
+        "attrScale": {
+            "name": "scale",
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "comment": "Scales UV coordinates (after rotation, before offset)"
+        },
+        "attrRotationAngle": {
+            "name": "rotation_angle",
+            "label": "rotation angle",
+            "aliases": [ "rotation angle" ],
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "Rotation in degrees"
+        },
+        "attrRotationCenter": {
+            "name": "rotation_center",
+            "label": "rotation center",
+            "aliases": [ "rotation center" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.5f, 0.5f)",
+            "comment": "UV coordinate around which to rotate"
+        },
+        "attrRotationAxis": {
+            "name": "rotation_axis",
+            "label": "rotation axis",
+            "aliases": [ "rotation axis" ],
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 1.0f)",
+            "comment": "Axis in which to rotate (only for 3D spaces)"
+        }
+    }
+}

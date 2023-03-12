@@ -1,0 +1,41 @@
+{
+    "name": "DwaSolidDielectricMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASELAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/fuzz.json",
+            "lib/material/dwabase/json/clearcoat.json",
+            "lib/material/dwabase/json/glitter.json",
+            "lib/material/dwabase/json/specular.json",
+            "lib/material/dwabase/json/refractive_index.json",
+            "lib/material/dwabase/json/roughness.json",
+            "lib/material/dwabase/json/anistropy.json",
+            "lib/material/dwabase/json/iridescence.json",
+            "lib/material/dwabase/json/diffuse.json",
+            "lib/material/dwabase/json/subsurface.json",
+            "lib/material/dwabase/json/diffuse_transmission.json",
+            "lib/material/dwabase/json/normal.json",
+            "lib/material/dwabase/json/normal_aa_strategy.json",
+            "lib/material/dwabase/json/misc.json",
+            "lib/material/dwabase/json/emission.json",
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "groups": {
+        "order": [
+            "Fuzz",
+            "Clearcoat",
+            "Glitter",
+            "Specular",
+            "Iridescence",
+            "Diffuse",
+            "Emission",
+            "Normal",
+            "Normal Anti-aliasing",
+            "Common",
+            "Advanced"
+        ]
+    }
+}
+

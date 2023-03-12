@@ -1,0 +1,20 @@
+Import('env')
+
+
+# ---------------------------------------------------------------
+
+target = 'HsvToRgbMap.so'
+cc_source = ['HsvToRgbMap.cc']
+ispc_source = ['HsvToRgbMap.ispc']
+json_source = ['HsvToRgbMap.json']
+components = [
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

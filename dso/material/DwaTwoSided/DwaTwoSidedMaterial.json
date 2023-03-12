@@ -1,0 +1,100 @@
+{
+    "name": "DwaTwoSidedMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASELAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "attributes": {
+        "attrFrontMaterial": {
+            "name": "front_material",
+            "label": "front material",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_DWABASELAYERABLE",
+            "comment": "material to use on front-facing surfaces"
+        },
+        "attrBackMaterial": {
+            "name": "back_material",
+            "label": "back material",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_DWABASELAYERABLE",
+            "comment": "material to use on back-facing surfaces"
+        },
+        "attrFallbackBSSRDF": {
+            "name": "fallback_bssrdf",
+            "label": "fallback bssrdf",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "normalized diffusion": "0",
+                "dipole": "1",
+                "random walk": "2"
+            },
+            "default": "0",
+            "comment": "If the two materials disagree on the type of bssrdf, this type will be used instead.",
+            "group": "Advanced"
+        },
+        "attrFallbackSpecularModel": {
+            "name": "fallback_specular_model",
+            "label": "fallback specular model",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "Beckmann": "0",
+                "GGX": "1"
+            },
+            "default": "1",
+            "comment": "If child materials disagree on the type of specular model, this type will be used instead.",
+            "group": "Advanced"
+        },
+	"attrFallbackToonSpecularModel": {
+            "name": "fallback_toon_specular_model",
+            "label": "fallback toon specular model",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "Beckmann": "0",
+                "GGX": "1",
+                "Toon": "2"
+            },
+            "default": "1",
+            "comment": "If child materials disagree on the type of toon specular model, this type will be used instead.",
+            "group": "Advanced"
+        },
+	"attrFallbackOuterSpecularModel": {
+            "name": "fallback_outer_specular_model",
+            "label": "fallback outer specular model",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "Beckmann": "0",
+                "GGX": "1"
+            },
+            "default": "1",
+            "comment": "If child materials disagree on the type of outer specular model, this type will be used instead.",
+            "group": "Advanced"
+        },
+	"attrFallbackOuterSpecularUseBending": {
+            "name": "fallback_clearcoat_use_bending",
+            "label": "fallback clearcoat use bending",
+            "type": "Bool",
+            "default": "true",
+            "comment": "If child materials disagree on the type of clearcoat use bending, this type will be used instead.",
+            "group": "Advanced"
+        },
+        "attrSubsurfaceTraceSet" : {
+            "name": "sss_trace_set",
+            "label": "sss trace set",
+            "aliases": [ "sss trace set" ],
+            "comment": "By default, only the geometry associated with this material contributes to subsurface. The DwaTwoSidedMaterial ignores the sss trace sets of the submaterials. If you want adjacent geometry with different material to contribute as well, specify all those parts here.",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_TRACESET",
+            "group": "Advanced"
+        }
+    }
+}

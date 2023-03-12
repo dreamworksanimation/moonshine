@@ -1,0 +1,43 @@
+{
+    "name": "ProjectTriplanarMap",
+    "type": "Map",
+    "directives": {
+        "include": ["lib/map/projection/json/projection_triplanar.json",
+                    "lib/map/projection/json/projection.json"]
+    },
+    "attributes": {
+        "attrUseReferenceSpace": {
+            "name": "use_reference_space",
+            "label": "use reference space",
+            "aliases": [ "use reference space" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "Project onto reference positions ('ref_P') and normals ('ref_N')"
+        },
+        "attrGamma": {
+            "name": "gamma",
+            "type": "Int",
+            "default": "2",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "off": "0",
+                "on": "1",
+                "auto": "2"
+            },
+            "comment": "Controls application of gamma to images (off -0, on - 1, auto - 2).   Auto will apply gamma decoding to 8-bit images"
+        },
+        "attrDebugMode": {
+            "name": "debug_mode",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "none": "0",
+                "dSdx/dSdy": "1",
+                "dTdx/dTdy": "2"
+            },
+            "comment": "for testing"
+        }
+    }
+}
+

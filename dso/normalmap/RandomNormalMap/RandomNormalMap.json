@@ -1,0 +1,20 @@
+{
+    "name": "RandomNormalMap",
+    "type": "NormalMap",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "the input color used as a base seed to generate the random value"
+        },
+        "attrSeed": {
+            "name": "seed",
+            "label": "seed",
+            "type": "Int",
+            "default": "0",
+            "comment": "additional seed added to input for random number generator"
+        }
+    }
+}

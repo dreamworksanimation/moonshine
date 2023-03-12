@@ -1,0 +1,31 @@
+{
+    "name": "HairDiffuseMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASEHAIRLAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/hair_diffuse.json",
+            "lib/material/dwabase/json/emission.json",
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "attributes": {
+        "attrPresence" : {
+            "name": "presence",
+            "comment": "controls the visibility of this object. Useful for fading an object in/out, or to specify a cut-out mask on thin single-sided geometry (eg. a complex leaf texture on a simple card).",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Common"
+        },
+        "attrCastsCaustics": {
+            "name": "casts_caustics",
+            "label": "casts caustics",
+            "aliases": [ "casts caustics" ],
+            "comment": "allows continuation of caustic light paths.",
+            "type": "Bool",
+            "default": "false",
+            "group": "Common"
+        }
+    }
+}

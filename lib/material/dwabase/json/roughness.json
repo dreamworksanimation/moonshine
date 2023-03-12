@@ -1,0 +1,17 @@
+{
+    "attributes": {
+        "attrRoughness" : {
+            "name": "roughness",
+            "comment": "the roughness of the surface (currently only affects reflection)",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "enable if": {
+                "show_specular": "true"
+            },
+            "min" : "0.0f",
+            "max" : "1.0f"
+        }
+    }
+}

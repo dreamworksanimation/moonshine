@@ -1,0 +1,41 @@
+{
+    "name": "ProjectCylindricalMap",
+    "type": "Map",
+    "directives": {
+        "include": ["lib/map/projection/json/projection.json"]
+    },
+    "attributes": {
+        "attrUseReferenceSpace": {
+            "name": "use_reference_space",
+            "label": "use reference space",
+            "aliases": [ "use reference space" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "Use reference space"
+        },
+        "attrProjectInward": {
+            "name": "project_on_inward_surfaces",
+            "display_name": "project on inward surfaces",
+            "aliases": [ "project on inward surfaces" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "Enables projection on surfaces with inward facing normals"
+        },
+        "attrProjectOutward": {
+            "name": "project_on_outward_surfaces",
+            "display_name": "project on outward surfaces",
+            "aliases": [ "project on outward surfaces" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "Enables projection on surfaces with outward facing normals"
+        },
+        "attrBlackOutsideProjection": {
+            "name": "black_outside_projection",
+            "label": "black outside projection",
+            "aliases": [ "black outside projection" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "Toggles whether projections appear outside the 0-1 uv range of the projector"
+        }
+    }
+}

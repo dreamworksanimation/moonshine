@@ -1,0 +1,341 @@
+{
+    "name": "DwaToonMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASELAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/fuzz.json",
+            "lib/material/dwabase/json/clearcoat.json",
+            "lib/material/dwabase/json/glitter.json",
+            "lib/material/dwabase/json/iridescence.json",
+            "lib/material/dwabase/json/toon_diffuse.json",
+            "lib/material/dwabase/json/subsurface.json",
+            "lib/material/dwabase/json/diffuse_transmission.json",
+            "lib/material/dwabase/json/transmission.json",
+            "lib/material/dwabase/json/normal.json",
+            "lib/material/dwabase/json/normal_aa_strategy.json",            
+            "lib/material/dwabase/json/misc.json",
+            "lib/material/dwabase/json/emission.json",
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "attributes": {
+        "attrTransmission" : {
+            "name": "transmission",
+            "comment": "enables/disables refractive solid model (binary 0|1 for plausibility)",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Transmission",
+            "min" : "0.0f",
+            "max" : "1.0f"
+        },
+        "attrShowSpecular" : {
+            "name": "show_specular",
+            "label": "show specular",
+            "aliases": [ "show specular" ],
+            "comment": "enables/disables specular reflections",
+            "type": "Bool",
+            "default": "true",
+            "group": "Specular"
+        },
+        "attrSpecularModel" : {
+            "name": "specular_model",
+            "label": "specular model",
+            "aliases": [ "specular model" ],
+            "comment": "sets the normal distribution function for specular.  GGX is currently isotropic only",
+            "type": "Int",
+            "default": "1",
+            "flags": "FLAGS_ENUMERABLE",
+            "group": "Specular",
+            "enum": {
+                "Beckmann": "0",
+                "GGX": "1",
+                "Toon": "2"
+            },
+            "disable when": "{ show_specular == 0 }"
+        },
+        "attrRoughness" : {
+            "name": "roughness",
+            "comment": "the roughness of the surface",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "min" : "0.0f",
+            "max" : "1.0f"
+        },
+        "attrRefractiveIndex" : {
+            "name": "refractive_index",
+            "label": "refractive index",
+            "aliases": [ "refractive index" ],
+            "comment": "defines the Fresnel behavior (affects only refraction when model is Toon)",
+            "type": "Float",
+            "default": "1.5f",
+            "group": "Specular"
+        },
+        "attrAnisotropy" : {
+            "name": "anisotropy",
+            "comment": "controls the shape of the primary reflection",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model == Toon }"
+        },
+        "attrShadingTangent": {
+            "name": "shading_tangent",
+            "label": "shading tangent",
+            "aliases": [ "shading tangent" ],
+            "comment": "controls the orientation of anistropy",
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model == Toon } { anisotropy == 0.0 }"
+        },
+        "attrMetallic" : {
+            "name": "metallic",
+            "comment": "enables/disables metallic model (binary 0|1 for plausibility)",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model == Toon }"
+        },
+        "attrMetallicColor": {
+            "name": "metallic_color",
+            "label": "metallic color",
+            "aliases": [ "metallic color" ],
+            "comment": "the overall reflection color, defines Fresnel behavior",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "metadata": {
+                "recolorable": "true",
+                "recolorSample": "true"
+            },
+            "disable when": "{ show_specular == 0 } { specular_model == Toon } { metallic == 0.0 }"
+        },
+        "attrMetallicEdgeColor": {
+            "name": "metallic_edge_color",
+            "label": "metallic edge color",
+            "aliases": [ "metallic edge color" ],
+            "comment": "the reflection color at grazing angles, defines Fresnel behavior",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model == Toon } { metallic == 0.0 }"
+        },
+        "attrToonSpecularIntensity": {
+            "name": "toon_specular_intensity",
+            "label": "toon specular intensity",
+            "comment": "The overall intensity of the toon specular response",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
+        "attrToonSpecularTint": {
+            "name": "toon_specular_tint",
+            "label": "toon specular tint",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
+        "attrToonSpecularStretchU": {
+            "name": "toon_specular_stretch_u",
+            "label": "toon specular stretch u",
+            "comment": "Amount to stretch or compress the specular in the u direction ",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "min": "-1.0f",
+            "max": "1.0f",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
+        "attrToonSpecularStretchV": {
+            "name": "toon_specular_stretch_v",
+            "label": "toon specular stretch v",
+            "comment": "Amount to stretch or compress the specular in the v direction ",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "min": "-1.0f",
+            "max": "1.0f",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
+        "attrToonSpecularUseInputVectors": {
+            "name": "toon_specular_use_input_vectors_for_stretch",
+            "label": "toon specular use input vectors for stretch",
+            "comment": "when checked, use input_U and V. otherwise use geometry dPds/t",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
+        "attrToonSpecularInputU": {
+            "name": "toon_specular_input_U",
+            "label": "toon specular input U",
+            "comment": "input U / tangent for specular stretch",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon } { toon_specular_use_input_vectors_for_stretch == 0 }"
+        },
+        "attrToonSpecularInputV": {
+            "name": "toon_specular_input_V",
+            "label": "toon specular input V",
+            "comment": "input V / bitangent for specular stretch",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon } { toon_specular_use_input_vectors_for_stretch == 0 }"
+        },
+        "attrToonSpecularRampPositions": {
+            "name": "toon_specular_positions",
+            "type": "FloatVector",
+            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "comment": "ramp positions, maximum 10 allowed",
+            "structure_type": "ramp_float",
+            "structure_name": "toon_specular_ramp",
+            "structure_path": "positions",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
+        "attrToonSpecularRampValues": {
+            "name": "toon_specular_values",
+            "type": "FloatVector",
+            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "comment": "List of colors on the ramp",
+            "structure_type": "ramp_float",
+            "structure_name": "toon_specular_ramp",
+            "structure_path": "values",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
+        "attrToonSpecularRampInterpolators": {
+            "name": "toon_specular_interpolations",
+            "type": "IntVector",
+            "default": "{4, 4, 4, 4}",
+            "comment": "None: 0 | Linear: 1 | Exponential Up: 2 | Exponential Down: 3 |\\n\\t\\t\\tSmooth: 4 | Catmull Rom: 5 | Monotone Cubic: 6",
+            "structure_type": "ramp_float",
+            "structure_name": "toon_specular_ramp",
+            "structure_path": "interpolation_types",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
+        "attrToonSpecularEnableInputNormal" : {
+            "name": "toon_specular_enable_input_normal",
+            "label": "toon specular enable input normal",
+            "comment": "enables sampling the normal map for toon toon specular",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
+        "attrToonSpecularInputNormal": {
+            "name": "toon_specular_input_normal",
+            "label": "toon specular input normal",
+            "comment": "specifies an alternate shading normal for toon toon specular",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_NORMALMAP",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon } { toon_specular_enable_input_normal == 0 }"
+        },
+        "attrToonSpecularInputNormalDial": {
+            "name": "toon_specular_input_normal_dial",
+            "label": "toon specular input normal dial",
+            "comment": "controls influence of input normal versus hair normal for toon toon specular",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "min": "0.0f",
+            "max": "1.0f",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon } { toon_specular_enable_input_normal == 0 }"
+        },
+        "attrToonSpecularEnableIndirectReflections" : {
+            "name": "toon_specular_enable_indirect_reflections",
+            "label": "toon specular enable indirect reflections",
+            "comment": "enables indirect GGX reflections for toon specular model",
+            "type": "Bool",
+            "default": "false",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
+        "attrToonSpecularIndirectReflectionsIntensity" : {
+            "name": "toon_specular_indirect_reflections_intensity",
+            "label": "toon specular indirect reflections intensity",
+            "comment": "the intensity for the indirect reflections of the toon specular model",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "min" : "0.0f",
+            "max" : "1.0f",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon } { toon_specular_enable_indirect_reflections == 0 }"
+        },
+        "attrToonSpecularIndirectReflectionsRoughness" : {
+            "name": "toon_specular_indirect_reflections_roughness",
+            "label": "toon specular indirect reflections roughness",
+            "comment": "the roughness for the indirect reflections of the toon specular model",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "min" : "0.0f",
+            "max" : "1.0f",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon } { toon_specular_enable_indirect_reflections == 0 } { toon_specular_indirect_reflections_intensity == 0.0 }"
+        },
+        "attrSpecular" : {
+            "name": "specular",
+            "comment": "enables/disables specular reflections (binary 0|1 for plausibility)",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Advanced",
+            "min" : "0.0f",
+            "max" : "1.0f",
+            "disable when": "{ show_specular == 0 }"
+        },
+        "attrPreventLightCulling": {
+            "name": "prevent_light_culling",
+            "label": "prevent light culling",
+            "comment": "WARNING: Experimental and must be used with max_depth: 0 and only for non-photoreal looks. Prevents culling of lights so surfaces can be lit purely with respect to the shading normal irrespective of geometry",
+            "type": "Bool",
+            "default": "false",
+            "group": "Advanced"
+        }
+    },
+    "groups": {
+        "order": [
+            "Fuzz",
+            "Clearcoat",
+            "Glitter",
+            "Specular",
+            "Iridescence",
+            "Diffuse",
+            "Toon Diffuse",
+            "Transmission",
+            "Emission",
+            "Normal",
+            "Normal Anti-aliasing",
+            "Common",
+            "Advanced"
+        ]
+    }
+}
+

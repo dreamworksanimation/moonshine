@@ -1,0 +1,42 @@
+{
+    "attributes": {
+        "attrShowDiffuse" : {
+            "name": "show_diffuse",
+            "label": "show diffuse",
+            "aliases": [ "show diffuse" ],
+            "comment": "enables/disables diffuse reflectance",
+            "type": "Bool",
+            "default": "true",
+            "group": "Diffuse"
+        },
+        "attrAlbedo" : {
+            "name": "albedo",
+            "comment": "the overall surface color as seen from a distance (ie. diffuse color)",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse",
+            "metadata": {
+                "recolorable": "true",
+                "recolorSample": "true"
+            },
+            "enable if": {
+                "show_diffuse": "true"
+            }
+        },
+        "attrDiffuseRoughness": {
+            "name": "diffuse_roughness",
+            "label": "diffuse roughness",
+            "comment": "Roughness of the diffuse shading.  If the value is zero a Lambertian model is used.  If it's above zero the Oren Nayar model is used.   Not compatible with subsurface scattering.",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"            
+        }
+    }
+}

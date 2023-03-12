@@ -1,0 +1,37 @@
+{
+    "name": "MultiChannelToFloatMap",
+    "type": "Map",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrMode" : {
+            "name" : "mode",
+            "type" : "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "0",
+            "enum": {
+                "Red" : "0",
+                "Green" : "1",
+                "Blue" : "2",
+                "Cyan" : "3",
+                "Magenta" : "4",
+                "Yellow" : "5",
+                "White" : "6"
+            },
+            "comment" : "Specifies which color channels including combination channels (Cyan, Magenta, Yellow, and White) to convert to float."
+        },
+        "attrTolerance": {
+            "name": "tolerance",
+            "type": "Float",
+            "default": "0.2",
+            "flags": "FLAGS_BINDABLE",
+            "min": "0.0",
+            "max": "1.0",
+            "comment": "Low tolerance values will tend to produce harsher edges near overlapping colors, while high tolerance values may result in cross-color bleeding."
+        }
+    }
+}

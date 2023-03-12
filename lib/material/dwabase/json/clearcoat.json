@@ -1,0 +1,148 @@
+{
+    "attributes": {
+        "attrShowClearcoat" : {
+            "name": "show_clearcoat",
+            "label": "show clearcoat",
+            "aliases": [ "show clearcoat" ],
+            "comment": "enables/disables clearcoat",
+            "type": "Bool",
+            "default": "false",
+            "group": "Clearcoat"
+        },
+        "attrClearcoat" : {
+            "name": "clearcoat",
+            "comment": "enables/disables clearcoat (binary 0|1 for plausibility)",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Clearcoat",
+            "enable if": {
+                "show_clearcoat": "true"
+            }
+        },
+        "attrClearcoatModel" : {
+            "name": "clearcoat_model",
+            "label": "clearcoat model",
+            "aliases": [ "clearcoat model" ],
+            "comment": "sets the normal distribution function for clearcoat.  GGX is currently isotropic only",
+            "type": "Int",
+            "default": "1",
+            "flags": "FLAGS_ENUMERABLE",
+            "group": "Clearcoat",
+            "enum": {
+                "Beckmann": "0",
+                "GGX": "1"
+            },
+            "enable if": {
+                "show_clearcoat": "true"
+            }
+        },
+        "attrClearcoatRefractiveIndex" : {
+            "name": "clearcoat_refractive_index",
+            "label": "clearcoat refractive index",
+            "aliases": [ "clearcoat refractive index" ],
+            "comment": "defines the Fresnel behavior",
+            "type": "Float",
+            "default": "1.5f",
+            "group": "Clearcoat",
+            "enable if": {
+                "show_clearcoat": "true"
+            }
+        },
+        "attrClearcoatRoughness" : {
+            "name": "clearcoat_roughness",
+            "label": "clearcoat roughness",
+            "aliases": [ "clearcoat roughness" ],
+            "comment": "the roughness of the clearcoat lobe",
+            "type": "Float",
+            "default": "0.1f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Clearcoat",
+            "enable if": {
+                "show_clearcoat": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrClearcoatThickness" : {
+            "name": "clearcoat_thickness",
+            "label": "clearcoat thickness",
+            "aliases": [ "clearcoat thickness" ],
+            "comment": "the thickness of the virtual clearcoat layer. Values > 0 enable absorption",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Clearcoat",
+            "enable if": {
+                "show_clearcoat": "true"
+            }
+        },
+        "attrClearcoatAttenuationColor": {
+            "name": "clearcoat_attenuation_color",
+            "label": "clearcoat attenuation color",
+            "aliases": [ "clearcoat attenuation color" ],
+            "comment": "the attenuation color of the clearcoat when 'cleacoat thickness' > 0",
+            "type": "Rgb",
+            "default": "Rgb(0.5f, 0.5f, 0.5f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Clearcoat",
+            "enable if": {
+                "show_clearcoat": "true"
+            }
+        },
+        "attrClearcoatUseBending": {
+            "name": "clearcoat_bending",
+            "label": "clearcoat bending",
+            "aliases": [ "clearcoat bending" ],
+            "comment": "(advanced, recommended ON) bends rays based on the clearcoat-refractive-index before evaluating the lobes under clearcoat",
+            "type": "Bool",
+            "default": "true",
+            "group": "Clearcoat",
+            "enable if": {
+                "show_clearcoat": "true"
+            }
+        },
+        "attrUseClearcoatNormal": {
+            "name": "use_independent_clearcoat_normal",
+            "label": "use independent clearcoat normal",
+            "aliases": [ "use independent clearcoat normal" ],
+            "comment": "specifies whether the clearcoat lobe should use an independent normal",
+            "type": "Bool",
+            "default": "false",
+            "group": "Clearcoat",
+            "enable if": {
+                "show_clearcoat": "true"
+            }
+        },
+        "attrClearcoatNormal": {
+            "name": "independent_clearcoat_normal",
+            "label": "independent clearcoat normal",
+            "aliases": [ "independent clearcoat normal" ],
+            "comment": "specifies an independent shading normal (normal map) for the clearcoat lobe",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_NORMALMAP",
+            "group": "Clearcoat",
+            "enable if": {
+                "show_clearcoat": "true",
+                "use_independent_clearcoat_normal": "true"
+            }
+        },
+        "attrClearcoatNormalDial": {
+            "name": "clearcoat_normal_dial",
+            "label": "clearcoat normal dial",
+            "aliases": [ "clearcoat normal dial" ],
+            "comment": "controls the amount of infuence of the alternate clearcoat normal",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Clearcoat",
+            "min": "0.0f",
+            "max": "1.0f",
+            "enable if": {
+                "show_clearcoat": "true",
+                "use_independent_clearcoat_normal": "true"
+            }
+        }
+    }
+}

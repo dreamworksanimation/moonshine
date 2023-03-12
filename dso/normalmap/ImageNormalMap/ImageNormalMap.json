@@ -1,0 +1,115 @@
+{
+    "name": "ImageNormalMap",
+    "type": "NormalMap",
+    "attributes": {
+        "attrTexture": {
+            "name": "tangent_space_normal_texture",
+            "type": "String",
+            "flags": "FLAGS_FILENAME",
+            "comment": "filename that points to a tangent space normal texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+        },
+        "attrUseDefaultValue": {
+            "name": "use_default_value_when_missing",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Uses the 'default_value' for missing udims and does not report error"
+        },
+        "attrDefaultValue": {
+            "name": "default_value",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 1.0f)",
+            "comment": "default value to be used for missing udims when 'use_default_value_when_missing' is enabled",
+            "enable if": {
+                "use_default_value_when_missing": "true"
+            }
+        },
+        "attrWrapAround": {
+            "name": "wrap_around",
+            "label": "wrap around",
+            "type": "Bool",
+            "default": "true",
+            "comment": "Controls whether to repeat (true) or clamp (false) the texture"
+        },
+        "attrNormalEncoding": {
+            "name": "normal_encoding",
+            "label": "normal encoding",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "[0,1]": "0",
+                "[-1,1]": "1"
+            },
+            "comment": "Most normal maps are encoded [0,1]. Only certain rare floating point normal maps are encoded [-1,1]"
+        },
+        "attrTextureEnum": {
+            "name": "texture_coordinates",
+            "label": "texture coordinates",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "texture": "0",
+                "input texture coordinates": "1"
+            }
+        },
+        "attrInputTextureCoordinate": {
+            "name": "input_texture_coordinates",
+            "label": "input texture coordinates",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "texture_coordinates": "1"
+            }
+        },
+        "attrOffset": {
+            "name": "offset",
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "group": "UVs"
+        },
+        "attrScale": {
+            "name": "scale",
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "group": "UVs"
+        },
+        "attrRotationAngle": {
+            "name": "rotation_angle",
+            "label": "rotation angle",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "Rotation in degrees",
+            "group": "UVs"
+        },
+        "attrRotationCenter": {
+            "name": "rotation_center",
+            "label": "rotation center",
+            "type": "Vec2f",
+            "default": "Vec2f(0.5f, 0.5f)",
+            "comment": "UV coordinate around which to rotate",
+            "group": "UVs"
+        },
+        "attrUDimValues": {
+            "name": "udim_values",
+            "label": "udim values",
+            "type": "IntVector",
+            "group": "UVs"
+        },
+        "attrUDimFiles": {
+            "name": "udim_files",
+            "label": "udim files",
+            "type": "StringVector",
+            "group": "UVs"
+        },
+        "attrMaxVdim": {
+            "name": "udim_max_v",
+            "label": "udim max v",
+            "type": "Int",
+            "default": "10",
+            "comment": "udim maximum v value",
+            "group": "UVs"
+        }
+    }
+}

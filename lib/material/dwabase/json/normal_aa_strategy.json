@@ -1,0 +1,28 @@
+{
+    "attributes": {
+        "attrNormalAAStrategy": {
+            "name": "normal_AA_strategy",
+            "label": "normal AA strategy",
+            "comment": "Normal map anti-aliasing strategy to use - 'none' uses regular mip-mapping, 'toksvig' increases specular roughness corresponding to the geometric details filtered out because of mip-mapping.",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "group": "Normal Anti-aliasing",
+            "enum": {
+                "none": "0",
+                "toksvig": "1"
+            },
+            "default": "0"
+        },
+        "attrNormalAADial": {
+            "name": "normal_AA_dial",
+            "label": "normal AA dial",
+            "comment": "Controls the amount roughness compensation from the normal map AA strategy.",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Normal Anti-aliasing",
+            "enable if": {
+                "normal_AA_strategy": "1"
+            }
+        }
+    }
+}

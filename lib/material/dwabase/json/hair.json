@@ -1,0 +1,367 @@
+{
+    "attributes": {
+        "attrHairColor": {
+            "name": "hair_color",
+            "label": "hair color",
+            "aliases": [ "hair color" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrRefractiveIndex" : {
+            "name": "refractive_index",
+            "label": "refractive index",
+            "aliases": [ "refractive index" ],
+            "comment": "keep this value between [1.3,2.0] for realistic behavior (human hair is around 1.55)",
+            "type": "Float",
+            "default": "1.45f",
+            "group": "Fresnel"
+        },
+        "attrFresnelType": {
+            "name": "fresnel_type",
+            "label": "fresnel type",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "simple longitudinal": "0",
+                "dielectric cylinder": "1",
+                "layered cuticles": "2"
+            },
+            "default": "1",
+            "group": "Fresnel"
+        },
+        "attrCuticleLayerThickness" : {
+            "name": "cuticle_layer_thickness",
+            "label": "cuticle layer thickness",
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "default": "0.1f",
+            "enable if": {
+                "fresnel_type": "layered cuticles"
+            },            
+            "min": "0.0f",
+            "max": "1.0f",            
+            "group": "Fresnel"
+        },
+        "attrShowR": {
+            "name": "show_primary_specular",
+            "label": "show primary specular",
+            "aliases": [ "show primary specular" ],
+            "comment": "show primary specular",
+            "type": "Bool",
+            "default": "true",
+            "group": "Primary Specular"
+        },
+        "attrROffset": {
+            "name": "primary_specular_offset",
+            "label": "primary specular offset",
+            "aliases": [ "primary specular offset" ],
+            "comment": "offset specular highlight along hair direction (in degrees) [-10,+10], around -3 for human hair",
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "default": "-3.0f",
+            "group": "Primary Specular",
+            "enable if": {
+                "show_primary_specular": "true"
+            },            
+            "min": "-10.0f",
+            "max": "10.0f"            
+        },
+        "attrRRoughness": {
+            "name": "primary_specular_roughness",
+            "label": "primary specular roughness",
+            "aliases": [ "primary specular roughness" ],
+            "comment": "roughness of the primary specular highlight, also sets the transmission roughness to 0.5x and secondary specular roughness to 2x by default unless independent roughnesses are being used for both",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Primary Specular",
+            "enable if": {
+                "show_primary_specular": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrRTintColor": {
+            "name": "primary_specular_tint",
+            "label": "primary specular tint",
+            "aliases": [ "primary specular tint" ],
+            "comment": "tint the primary specular highlight with this color (leave white for physical behavior)",
+            "type": "Rgb",
+            "default": "Rgb(1.0, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Primary Specular",
+            "enable if": {
+                "show_primary_specular": "true"
+            }            
+        },
+        "attrShowTRT": {
+            "name": "show_secondary_specular",
+            "label": "show secondary specular",
+            "aliases": [ "show secondary specular" ],
+            "comment": "show secondary specular",
+            "type": "Bool",
+            "default": "true",
+            "group": "Secondary Specular"
+        },
+        "attrTRTOffset": {
+            "name": "secondary_specular_offset",
+            "label": "secondary specular offset",
+            "aliases": [ "secondary specular offset" ],
+            "comment": "offset secondary specular highlight along hair direction (in degrees) [-10,+10], around -4.5 for human hair",
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "default": "-4.5f",
+            "group": "Secondary Specular",
+            "enable if": {
+                "show_secondary_specular": "true"
+            },            
+            "min": "-10.0f",
+            "max": "10.0f"            
+        },        
+        "attrUseTRTRoughness": {
+            "name": "use_independent_secondary_specular_roughness",
+            "label": "use independent secondary specular roughness",
+            "aliases": [ "use independent secondary specular roughness" ],
+            "comment": "when disabled, uses a physically correct value for secondary specular roughness which is linked to the primary specular roughness",
+            "type": "Bool",
+            "default": "false",
+            "group": "Secondary Specular",
+            "enable if": {
+                "show_secondary_specular": "true"
+            }            
+        },
+        "attrTRTRoughness": {
+            "name": "independent_secondary_specular_roughness",
+            "label": "independent secondary specular roughness",
+            "aliases": [ "independent secondary specular roughness" ],
+            "comment": "secondary specular roughness",
+            "type": "Float",
+            "default": "0.4f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Secondary Specular",
+            "enable if": {
+                "show_secondary_specular": "true",
+                "use_independent_secondary_specular_roughness": "true"
+            },            
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrTRTTintColor": {
+            "name": "secondary_specular_tint",
+            "label": "secondary specular tint",
+            "aliases": [ "secondary specular tint" ],
+            "comment": "tint secondary specular with this color (leave white for physical behavior)",
+            "type": "Rgb",
+            "default": "Rgb(1.0, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Secondary Specular",
+            "enable if": {
+                "show_secondary_specular": "true"
+            }            
+        },
+        "attrShowHairGlint": {
+            "name": "show_hair_glint",
+            "label": "show hair glint",
+            "comment": "show hair glint",
+            "type": "Bool",
+            "default": "false",
+            "group": "Secondary Specular",
+            "subgroup": "Glint",
+            "enable if": {
+                "show_secondary_specular": "true"
+            }
+        },
+        "attrGlintRoughness": {
+            "name": "glint_roughness",
+            "label": "glint roughness",
+            "comment": "secondary specular glint roughness",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Secondary Specular",
+            "subgroup": "Glint",
+            "enable if": {
+                "show_secondary_specular": "true",
+                "show_hair_glint": "true"
+            },            
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrGlintEccentricity": {
+            "name": "glint_eccentricity",
+            "label": "glint eccentricity",
+            "comment": "secondary specular glint eccentricity [0.85, 1], values that deviate from 1 make the hair fiber more elliptical and more glinty",
+            "type": "Float",
+            "default": "0.85f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Secondary Specular",
+            "subgroup": "Glint",
+            "enable if": {
+                "show_secondary_specular": "true",
+                "show_hair_glint": "true"
+            },
+            "min": "0.85f",
+            "max": "1.0f" 
+        },
+	"attrGlintMinTwists" : {
+            "name": "glint_min_twists",
+            "label": "glint min twists",
+            "comment": "the minimum number of twists along the hair's length. More twists means more glints. Each hair strand will be randomly assigned a twist amount between [min twists, max twists]",
+            "type": "Float",
+            "default": "1.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Secondary Specular",
+            "subgroup": "Glint",
+            "enable if": {
+                "show_secondary_specular": "true",
+                "show_hair_glint": "true"
+            },
+            "min": "0.0f"
+        },
+	"attrGlintMaxTwists" : {
+            "name": "glint_max_twists",
+            "label": "glint max twists",
+            "comment": "the maximum number of twists along the hair's length. More twists means more glints. Each hair strand will be randomly assigned a twist amount between [min twists, max twists]",
+            "type": "Float",
+            "default": "2.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Secondary Specular",
+            "subgroup": "Glint",
+            "enable if": {
+                "show_secondary_specular": "true",
+                "show_hair_glint": "true"
+            },
+            "min": "0.0f"
+        },
+        "attrGlintSaturation": {
+            "name": "glint_saturation",
+            "label": "glint saturation",
+            "comment": "secondary specular glint saturation",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Secondary Specular",
+            "subgroup": "Glint",
+            "enable if": {
+                "show_secondary_specular": "true",
+                "show_hair_glint": "true"
+            },            
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrShowTT": {
+            "name": "show_transmission",
+            "label": "show transmission",
+            "aliases": [ "show transmission" ],
+            "comment": "show tranmission specular",
+            "type": "Bool",
+            "default": "true",
+            "group": "Transmission"
+        },
+        "attrTTOffset": {
+            "name": "transmission_offset",
+            "label": "transmission offset",
+            "aliases": [ "transmission offset" ],
+            "comment": "offset transmission highlight along hair direction (in degrees) [-10,+10], around -1.5 for human hair",
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "default": "-1.5f",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true"
+            },            
+            "min": "-10.0f",
+            "max": "10.0f"            
+        },        
+        "attrUseTTRoughness": {
+            "name": "use_independent_transmission_roughness",
+            "label": "use independent transmission roughness",
+            "aliases": [ "use independent transmission roughness" ],
+            "comment": "when disabled, uses a physically correct value for Transmission roughness which is linked to the primary specular roughness",
+            "type": "Bool",
+            "default": "false",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true"
+            }            
+        },
+        "attrTTRoughness": {
+            "name": "independent_transmission_roughness",
+            "label": "independent transmission roughness",
+            "aliases": [ "independent transmission roughness" ],
+            "comment": "transmission roughness",
+            "type": "Float",
+            "default": "0.1f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true",
+                "use_independent_transmission_roughness": "true"
+            },            
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrTTAzimuthalRoughness": {
+            "name": "transmission_azimuthal_roughness",
+            "label": "transmission azimuthal roughness",
+            "aliases": [ "transmission azimuthal roughness" ],
+            "comment": "higher values create a softer look",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true"
+            },            
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrTTTintColor": {
+            "name": "transmission_tint",
+            "label": "transmission tint",
+            "aliases": [ "transmission tint" ],
+            "comment": "tint transmission with this color (leave white for physical behavior)",
+            "type": "Rgb",
+            "default": "Rgb(1.0, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true"
+            }            
+        },
+        "attrTTSaturation": {
+            "name": "direct_transmission_saturation",
+            "label": "direct transmission saturation",
+            "comment": "(Non-Physical, Advanced) saturate/desaturate direct transmission highlights.",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Transmission",
+            "subgroup": "Advanced",
+            "enable if": {
+                "show_transmission": "true"
+            },            
+            "min": "0.0f",
+            "max": "4.0f"            
+        },
+        "attrUseOptimizedSampling": {
+            "name": "use_optimized_sampling",
+            "display_name": "use optimized sampling",
+            "aliases": [ "use optimized sampling" ],
+            "comment": "optimized sampling of all the hair lobes, results in 2x-4x speedup on average (disables individual hair lobe AOVs). When false, the look may slightly change if using biased techniques like roughness/sample clamping. ",
+            "type": "Bool",
+            "default": "true",
+            "group": "Advanced"
+        },    
+        "attrShowTRRTPlus": {
+            "name": "show_multiple_scattering",
+            "label": "show multiple scattering",
+            "aliases": [ "show multiple scattering" ],
+            "comment": "show the amount of light scattered after TRT bounce, good for blonde/white hair",
+            "type": "Bool",
+            "default": "true",
+            "group": "Advanced"
+        }
+    }
+}

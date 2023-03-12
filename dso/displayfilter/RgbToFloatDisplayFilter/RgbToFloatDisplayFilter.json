@@ -1,0 +1,34 @@
+{
+    "name": "RgbToFloatDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput to use in the RgbToFloat operation"
+        },
+        "attrMode" : {
+            "name" : "mode",
+            "type" : "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "5",
+            "enum": {
+                "r" : "0",
+                "g" : "1",
+                "b" : "2",
+                "min" : "3",
+                "max" : "4",
+                "average" : "5",
+                "sum" : "6",
+                "luminance" : "7"
+            },
+            "comment" : "The method used to convert RGB Color to float"
+        }
+    }
+}

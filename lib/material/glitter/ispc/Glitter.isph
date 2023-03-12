@@ -1,0 +1,157 @@
+// Copyright 2023 DreamWorks Animation LLC
+// SPDX-License-Identifier: Apache-2.0
+
+/// @file Glitter.isph
+
+#pragma once
+
+#include <moonray/rendering/shading/ispc/Shading.isph>
+#include <moonray/rendering/shading/ispc/BasicTexture.isph>
+#include <scene_rdl2/common/platform/IspcUtil.isph>
+#include <moonray/rendering/shading/ispc/Ior.isph>
+#include <moonray/rendering/bvh/shading/ispc/Xform.isph>
+#include <moonray/rendering/shading/ispc/ShaderDataAux.isph>
+#include <moonshine/common/noise/ispc/Worley.isph>
+
+// ===================================================================
+// ENUMS
+// ===================================================================
+
+enum GLITTER_DebugModes
+{
+    GLITTER_DEBUG_MODE_OFF = 0,
+    GLITTER_DEBUG_MODE_BLEND = 1,
+    GLITTER_DEBUG_MODE_COLOR = 2,
+    GLITTER_DEBUG_MODE_AVERAGE_COLOR = 3,
+    GLITTER_DEBUG_MODE_FOOTPRINT_AREA = 4,
+    GLITTER_DEBUG_MODE_RADIUS = 5
+};
+
+enum GLITTER_ResultCode
+{
+    GLITTER_RESULTCODE_SUCCESS = 0,
+    GLITTER_RESULTCODE_NO_REFN = 1,
+    GLITTER_RESULTCODE_NO_REFP_PARTIALS = 2,
+    GLITTER_RESULTCODE_NO_REFP = 3
+};
+
+enum GLITTER_LayeringModes
+{
+    GLITTER_LAYERING_MODE_PHYSICAL = 0,
+    GLITTER_LAYERING_MODE_ADDITIVE = 1,
+};
+
+// ===================================================================
+// STRUCTURES
+// ===================================================================
+struct GLITTER_StaticData {
+    // shade time error events - these can be static as long as we
+    // ensure they have the same value across all instances.
+    // no conditional registration of log events is allowed.
+    uniform int sErrorNoRefN;
+    uniform int sWarnNoRefPpartials;
+};
+
+struct GLITTER_UniformParameters
+{
+    GLITTER_DebugModes mDebugMode;
+
+    int mSeed;
+    SHADING_Space mSpace;
+
+    // Flake params
+    float mFlakeRandomness; // Used in constructor
+    float mDenseGlitterLodQuality; // Used in constructor
+    float mSearchRadiusFactor; // Hard coded to 0.25
+    int mLayeringMode;
+};
+
+struct GLITTER_VaryingParameters
+{
+    Color mFlakeColor[NOISE_WORLEY_GLITTER_NUM_STYLES];
+    float mFlakeRoughness[NOISE_WORLEY_GLITTER_NUM_STYLES];
+    Vec3f mFlakeHSVColorVariation;
+    float mFlakeStyleFrequency[NOISE_WORLEY_GLITTER_NUM_STYLES];
+    float mFlakeSize[NOISE_WORLEY_GLITTER_NUM_STYLES];
+    float mFlakeDensity;
+    float mFlakeJitter;
+    float mGlitterMask;
+    float mFlakeOrientationRandomness;
+    bool mApproximateForSecRays;
+
+    // Tries to compensate deformation in ref space resulting from
+    // animation etc
+    bool mCompensateDeformation;
+};
+
+struct GLITTER_Glitter
+{
+    const Xform *mXform;
+    const NOISE_Worley *mNoiseWorley;
+    uniform float mRandomTable[NOISE_WORLEY_GLITTER_TABLE_SIZE];
+    float mCoverageFactor;
+    int mMicrofacetBlendStart;
+    int mMicrofacetBlendEnd;
+    uniform int mRefPKey;
+    uniform int mRefNKey;
+    const uniform BASIC_TEXTURE_Data * uniform mFlakeTextureData[NOISE_WORLEY_GLITTER_NUM_TEXTURES];
+    uniform float mFlakeTextureCDF[NOISE_WORLEY_GLITTER_NUM_TEXTURES];
+};
+
+/// API functions
+
+// Main function that creates all the lobes for glitter and populates them in the bsdf container
+void
+GLITTER_createLobes(
+        const uniform GLITTER_Glitter * uniform me,
+        varying BsdfBuilder& bsdfBuilder,
+        uniform ShadingTLState * uniform  tls,
+        const varying State& state,
+        const uniform GLITTER_UniformParameters * uniform uParams,
+        const varying GLITTER_VaryingParameters& vParams,
+        const uniform int label,
+        GLITTER_ResultCode& resultCode);
+
+// Debug functions
+void
+GLITTER_createDebugBlendLobes(
+        const uniform GLITTER_Glitter * uniform me,
+        varying BsdfBuilder& bsdfBuilder,
+        uniform ShadingTLState * uniform  tls,
+        const varying State& state,
+        const uniform GLITTER_UniformParameters * uniform uParams,
+        const varying GLITTER_VaryingParameters& vParams,
+        GLITTER_ResultCode& resultCode);
+
+
+void
+GLITTER_createDebugColorLobes(
+        const uniform GLITTER_Glitter * uniform me,
+        varying BsdfBuilder& bsdfBuilder,
+        uniform ShadingTLState * uniform  tls,
+        const varying State& state,
+        const uniform GLITTER_UniformParameters * uniform uParams,
+        const varying GLITTER_VaryingParameters& vParams,
+        GLITTER_ResultCode& resultCode);
+
+void
+GLITTER_createDebugAverageColorLobes(
+        const uniform GLITTER_Glitter * uniform me,
+        varying BsdfBuilder& bsdfBuilder,
+        uniform ShadingTLState * uniform  tls,
+        const varying State& state,
+        const uniform GLITTER_UniformParameters * uniform uParams,
+        const varying GLITTER_VaryingParameters& vParams);
+
+void
+GLITTER_createDebugSampleLobes(
+        const uniform GLITTER_Glitter * uniform me,
+        varying BsdfBuilder& bsdfBuilder,
+        uniform ShadingTLState * uniform  tls,
+        const varying State& state,
+        const uniform GLITTER_UniformParameters * uniform uParams,
+        const varying GLITTER_VaryingParameters& vParams,
+        const int mode,
+        GLITTER_ResultCode& resultCode);
+
+

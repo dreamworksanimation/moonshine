@@ -1,0 +1,13 @@
+{
+    "name": "ConstantColorMap",
+    "type": "Map",
+    "attributes": {
+        "attrColorValue": {
+            "name": "color_value",
+            "label": "color value",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "comment": "constant color value"
+        }
+    }
+}

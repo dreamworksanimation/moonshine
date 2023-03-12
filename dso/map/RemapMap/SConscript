@@ -1,0 +1,21 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_remap_map'
+target = 'RemapMap.so'
+cc_source = ['RemapMap.cc']
+ispc_source = ['RemapMap.ispc']
+json_source = ['RemapMap.json']
+components = [
+    'rendering_shading',
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)
+env.DWAComponent(name, COMPONENTS=components)

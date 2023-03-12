@@ -1,0 +1,151 @@
+{
+    "name": "ColorCorrectGainOffsetMap",
+    "type": "Map",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "comment": "bind the input here",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrOn": {
+            "name": "on",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables/disables all color correct operations"
+        },
+        "attrMix": {
+            "name": "mix",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "how much of the overall color correct to mix in",
+            "enable if": {
+                "on": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrGain": {
+            "name": "gain",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "multiplies the input channels by the specified values",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gain_offset": "false"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrOffset": {
+            "name": "offset",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "adds the specified values to the input",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gain_offset": "false"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        },
+        "attrGainOffsetPerChannel": {
+            "name": "use_per_channel_gain_offset",
+            "label": "use per channel gain offset",
+            "type": "Bool",
+            "default": "false",
+            "comment": "enables separate RGB controls for gain and offset",
+            "enable if": {
+                "on": "true"
+            }
+        },
+        "attrGainR": {
+            "name": "gain_r",
+            "label": "gain r",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "multiplies the red channel by the specified values",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrGainG": {
+            "name": "gain_g",
+            "label": "gain g",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "multiplies the green channel by the specified values",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrGainB": {
+            "name": "gain_b",
+            "label": "gain b",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "multiplies the blue channel by the specified values",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrOffsetR": {
+            "name": "offset_r",
+            "label": "offset r",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "adds the specified values to the red channel",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        },
+        "attrOffsetG": {
+            "name": "offset_g",
+            "label": "offset g",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "adds the specified values to the green channel",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        },
+        "attrOffsetB": {
+            "name": "offset_b",
+            "label": "offset b",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "adds the specified values to the blue channel",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        }
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "name": "TangentSpaceDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrNormalMapOutput": {
+            "name": "normal_map_output",
+            "type": "Bool",
+            "default": "true",
+            "comment": "When on, encodes the output to clamped [0, 1] in the same manner as a normal map"
+        },
+        "attrInput": {
+            "name": "input",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput to transform into tangent space"
+        },
+        "attrNormal": {
+            "name": "N",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "Connect a RenderOutput with State N AOV here. Used to construct tangent space."
+        },
+        "attrdPds": {
+            "name": "dPds",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "Connect a RenderOutput with State dPds AOV here. Used to construct tangent space."
+        }
+    }
+}

@@ -1,0 +1,789 @@
+{
+    "attributes": {
+        "attrNumTextures": {
+            "name": "number_of_textures",
+            "label": "number of textures",
+            "aliases": [ "number of textures" ],
+            "type": "Int",
+            "default": "3",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "one": "1",
+                "three": "3",
+                "six": "6"
+            },
+            "comment": "Controls the number of active textures.   If set to 'one', only the 'pos x' texture settings will be used for all sides.   If set to 'three' the pos x, pos y, and pos z settings will be used for their respective negative sides.   If set to 'six', each side has independent controls and texture."
+        },
+        "attrTransitionWidth": {
+            "name": "transition_width",
+            "label": "transition width",
+            "aliases": [ "transition width" ],
+            "type": "Float",
+            "default": "0.5",
+            "comment": "Controls blending of per-axis projections.   Valid range is 0.0 (no blending) to 1.0 (max blending)"
+        },
+        "attrRandomSeed": {
+            "name": "random_seed",
+            "label": "random seed",
+            "aliases": [ "random seed" ],
+            "type": "Int",
+            "default": "8241",
+            "comment": "Seed for randomizing orientation, offset, and flip"
+        },
+        "attrRandomRot": {
+            "name": "randomize_rotation",
+            "label": "randomize rotation",
+            "aliases": [ "randomize rotation" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "Rnd 2d rotation of each active texture"
+        },
+        "attrRandomFlip": {
+            "name": "randomize_flip",
+            "label": "randomize flip",
+            "aliases": [ "randomize flip" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "Rnd flipping in S or T for each active texture"
+        },
+        "attrRandomOffset": {
+            "name": "randomize_offset",
+            "label": "randomize offset",
+            "aliases": [ "randomize offset" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "Rnd offset in S or T for each active texture"
+        },
+
+
+        "attrPXActive": {
+            "name": "positive_x_active",
+            "label": "positive x active",
+            "aliases": [ "positive x active" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "Turns this direction on/off.  Output is black if off."
+        },
+        "attrPXTexture": {
+            "name": "positive_x_texture",
+            "label": "positive x texture",
+            "aliases": [ "positive x texture" ],
+            "type": "String",
+            "flags": "FLAGS_FILENAME",
+            "enable if": {
+                "positive_x_active": "true"
+            },
+            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+        },
+        "attrPYActive": {
+            "name": "positive_y_active",
+            "label": "positive y active",
+            "aliases": [ "positive y active" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "Turns this direction on/off.  Output is black if off."
+        },
+        "attrPYTexture": {
+            "name": "positive_y_texture",
+            "label": "positive y texture",
+            "aliases": [ "positive y texture" ],
+            "type": "String",
+            "flags": "FLAGS_FILENAME",
+            "enable if": {
+                "positive_y_active": "true"
+            },
+            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+        },
+        "attrPZActive": {
+            "name": "positive_z_active",
+            "label": "positive z active",
+            "aliases": [ "positive z active" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "Turns this direction on/off.  Output is black if off."
+        },
+        "attrPZTexture": {
+            "name": "positive_z_texture",
+            "label": "positive z texture",
+            "aliases": [ "positive z texture" ],
+            "type": "String",
+            "enable if": {
+                "positive_z_active": "true"
+            },
+            "flags": "FLAGS_FILENAME",
+            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+        },
+        "attrNXActive": {
+            "name": "negative_x_active",
+            "label": "negative x active",
+            "aliases": [ "negative x active" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "Turns this direction on/off.  Output is black if off."
+        },
+        "attrNXTexture": {
+            "name": "negative_x_texture",
+            "label": "negative x texture",
+            "aliases": [ "negative x texture" ],
+            "type": "String",
+            "enable if": {
+                "negative_x_active": "true",
+                "number_of_textures": "six"
+            },
+            "flags": "FLAGS_FILENAME",
+            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+        },
+        "attrNYActive": {
+            "name": "negative_y_active",
+            "label": "negative y active",
+            "aliases": [ "negative y active" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "Turns this direction on/off.  Output is black if off."
+        },
+        "attrNYTexture": {
+            "name": "negative_y_texture",
+            "label": "negative y texture",
+            "aliases": [ "negative y texture" ],
+            "type": "String",
+            "enable if": {
+                "negative_y_active": "true",
+                "number_of_textures": "six"
+            },
+            "flags": "FLAGS_FILENAME",
+            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+        },
+        "attrNZActive": {
+            "name": "negative_z_active",
+            "label": "negative z active",
+            "aliases": [ "negative z active" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "Turns this direction on/off.  Output is black if off."
+        },
+        "attrNZTexture": {
+            "name": "negative_z_texture",
+            "label": "negative z texture",
+            "aliases": [ "negative z texture" ],
+            "type": "String",
+            "enable if": {
+                "negative_z_active": "true",
+                "number_of_textures": "six"
+            },
+            "flags": "FLAGS_FILENAME",
+            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+        },
+
+
+        "attrPXScale": {
+            "name": "positive_x_scale",
+            "label": "positive x scale",
+            "aliases": [ "positive x scale" ],
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "enable if": {
+                "positive_x_active": "true"
+            },
+            "group": "Positive X Modifiers",
+            "comment": "2D scale"
+        },
+        "attrPXOffset": {
+            "name": "positive_x_offset",
+            "label": "positive x offset",
+            "aliases": [ "positive x offset" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "positive_x_active": "true"
+            },
+            "group": "Positive X Modifiers",
+            "comment": "2D offset"
+        },
+        "attrPXInvS": {
+            "name": "positive_x_invert_s",
+            "label": "positive x invert s",
+            "aliases": [ "positive x invert s" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "positive_x_active": "true"
+            },
+            "group": "Positive X Modifiers",
+            "comment": "Flip in the s direction (horizontal)"
+        },
+        "attrPXInvT": {
+            "name": "positive_x_invert_t",
+            "label": "positive x invert t",
+            "aliases": [ "positive x invert t" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "positive_x_active": "true"
+            },
+            "group": "Positive X Modifiers",
+            "comment": "Flip in the t direction (vertical)"
+        },
+        "attrPXSwapST": {
+            "name": "positive_x_swap_st",
+            "label": "positive x swap st",
+            "aliases": [ "positive x swap st" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "positive_x_active": "true"
+            },
+            "group": "Positive X Modifiers",
+            "comment": "Swap the s and t directions.   Same as a 90 degree rotation"
+        },
+        "attrPXRot": {
+            "name": "positive_x_rotation",
+            "label": "positive x rotation",
+            "aliases": [ "positive x rotation" ],
+            "type": "float",
+            "default": "0",
+            "enable if": {
+                "positive_x_active": "true"
+            },
+            "group": "Positive X Modifiers",
+            "comment": "2D rotation amount"
+        },
+        "attrPXRotCntr": {
+            "name": "positive_x_rotation_center",
+            "label": "positive x rotation center",
+            "aliases": [ "positive x rotation center" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "positive_x_active": "true"
+            },
+            "group": "Positive X Modifiers",
+            "comment": "2D rotation center"
+        },
+        "attrPXWrap": {
+            "name": "positive_x_wrap_around",
+            "label": "positive x wrap around",
+            "aliases": [ "positive x wrap around" ],
+            "type": "Bool",
+            "default": "true",
+            "enable if": {
+                "positive_x_active": "true"
+            },
+            "group": "Positive X Modifiers",
+            "comment": "Controls whether to repeat (true) or clamp (false) the texture"
+        },
+
+
+        "attrPYScale": {
+            "name": "positive_y_scale",
+            "label": "positive y scale",
+            "aliases": [ "positive y scale" ],
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "enable if": {
+                "positive_y_active": "true"
+            },
+            "group": "Positive Y Modifiers",
+            "comment": "2D scale"
+        },
+        "attrPYOffset": {
+            "name": "positive_y_offset",
+            "label": "positive y offset",
+            "aliases": [ "positive y offset" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "positive_y_active": "true"
+            },
+            "group": "Positive Y Modifiers",
+            "comment": "2D offset"
+        },
+        "attrPYInvS": {
+            "name": "positive_y_invert_s",
+            "label": "positive y invert s",
+            "aliases": [ "positive y invert s" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "positive_y_active": "true"
+            },
+            "group": "Positive Y Modifiers",
+            "comment": "Flip in the s direction (horizontal)"
+        },
+        "attrPYInvT": {
+            "name": "positive_y_invert_t",
+            "label": "positive y invert t",
+            "aliases": [ "positive y invert t" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "positive_y_active": "true"
+            },
+            "group": "Positive Y Modifiers",
+            "comment": "Flip in the t direction (vertical)"
+        },
+        "attrPYSwapST": {
+            "name": "positive_y_swap_st",
+            "label": "positive y swap st",
+            "aliases": [ "positive y swap st" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "positive_y_active": "true"
+            },
+            "group": "Positive Y Modifiers",
+            "comment": "Swap the s and t directions.   Same as a 90 degree rotation"
+        },
+        "attrPYRot": {
+            "name": "positive_y_rotation",
+            "label": "positive y rotation",
+            "aliases": [ "positive y rotation" ],
+            "type": "float",
+            "default": "0",
+            "enable if": {
+                "positive_y_active": "true"
+            },
+            "group": "Positive Y Modifiers",
+            "comment": "2D rotation amount"
+        },
+        "attrPYRotCntr": {
+            "name": "positive_y_rotation_center",
+            "label": "positive y rotation center",
+            "aliases": [ "positive y rotation center" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "positive_y_active": "true"
+            },
+            "group": "Positive Y Modifiers",
+            "comment": "2D rotation center"
+        },
+        "attrPYWrap": {
+            "name": "positive_y_wrap_around",
+            "label": "positive y wrap around",
+            "aliases": [ "positive y wrap around" ],
+            "type": "Bool",
+            "default": "true",
+            "enable if": {
+                "positive_y_active": "true"
+            },
+            "group": "Positive Y Modifiers",
+            "comment": "Controls whether to repeat (true) or clamp (false) the texture"
+        },
+
+
+        "attrPZScale": {
+            "name": "positive_z_scale",
+            "label": "positive z scale",
+            "aliases": [ "positive z scale" ],
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "enable if": {
+                "positive_z_active": "true"
+            },
+            "group": "Positive Z Modifiers",
+            "comment": "2D scale"
+        },
+        "attrPZOffset": {
+            "name": "positive_z_offset",
+            "label": "positive z offset",
+            "aliases": [ "positive z offset" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "positive_z_active": "true"
+            },
+            "group": "Positive Z Modifiers",
+            "comment": "2D offset"
+        },
+        "attrPZInvS": {
+            "name": "positive_z_invert_s",
+            "label": "positive z invert s",
+            "aliases": [ "positive z invert s" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "positive_z_active": "true"
+            },
+            "group": "Positive Z Modifiers",
+            "comment": "Flip in the s direction (horizontal)"
+        },
+        "attrPZInvT": {
+            "name": "positive_z_invert_t",
+            "label": "positive z invert t",
+            "aliases": [ "positive z invert t" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "positive_z_active": "true"
+            },
+            "group": "Positive Z Modifiers",
+            "comment": "Flip in the t direction (vertical)"
+        },
+        "attrPZSwapST": {
+            "name": "positive_z_swap_st",
+            "label": "positive z swap st",
+            "aliases": [ "positive z swap st" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "positive_z_active": "true"
+            },
+            "group": "Positive Z Modifiers",
+            "comment": "Swap the s and t directions.   Same as a 90 degree rotation"
+        },
+        "attrPZRot": {
+            "name": "positive_z_rotation",
+            "label": "positive z rotation",
+            "aliases": [ "positive z rotation" ],
+            "type": "float",
+            "default": "0",
+            "enable if": {
+                "positive_z_active": "true"
+            },
+            "group": "Positive Z Modifiers",
+            "comment": "2D rotation amount"
+        },
+        "attrPZRotCntr": {
+            "name": "positive_z_rotation_center",
+            "label": "positive z rotation center",
+            "aliases": [ "positive z rotation center" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "positive_z_active": "true"
+            },
+            "group": "Positive Z Modifiers",
+            "comment": "2D rotation center"
+        },
+        "attrPZWrap": {
+            "name": "positive_z_wrap_around",
+            "label": "positive z wrap around",
+            "aliases": [ "positive z wrap around" ],
+            "type": "Bool",
+            "default": "true",
+            "enable if": {
+                "positive_z_active": "true"
+            },
+            "group": "Positive Z Modifiers",
+            "comment": "Controls whether to repeat (true) or clamp (false) the texture"
+        },
+
+
+        "attrNXScale": {
+            "name": "negative_x_scale",
+            "label": "negative x scale",
+            "aliases": [ "negative x scale" ],
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "enable if": {
+                "negative_x_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative X Modifiers",
+            "comment": "2D scale"
+        },
+        "attrNXOffset": {
+            "name": "negative_x_offset",
+            "label": "negative x offset",
+            "aliases": [ "negative x offset" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "negative_x_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative X Modifiers",
+            "comment": "2D offset"
+        },
+        "attrNXInvS": {
+            "name": "negative_x_invert_s",
+            "label": "negative x invert s",
+            "aliases": [ "negative x invert s" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "negative_x_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative X Modifiers",
+            "comment": "Flip in the s direction (horizontal)"
+        },
+        "attrNXInvT": {
+            "name": "negative_x_invert_t",
+            "label": "negative x invert t",
+            "aliases": [ "negative x invert t" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "negative_x_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative X Modifiers",
+            "comment": "Flip in the t direction (vertical)"
+        },
+        "attrNXSwapST": {
+            "name": "negative_x_swap_st",
+            "label": "negative x swap st",
+            "aliases": [ "negative x swap st" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "negative_x_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative X Modifiers",
+            "comment": "Swap the s and t directions.   Same as a 90 degree rotation"
+        },
+        "attrNXRot": {
+            "name": "negative_x_rotation",
+            "label": "negative x rotation",
+            "aliases": [ "negative x rotation" ],
+            "type": "float",
+            "default": "0",
+            "enable if": {
+                "negative_x_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative X Modifiers",
+            "comment": "2D rotation amount"
+        },
+        "attrNXRotCntr": {
+            "name": "negative_x_rotation_center",
+            "label": "negative x rotation center",
+            "aliases": [ "negative x rotation center" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "negative_x_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative X Modifiers",
+            "comment": "2D rotation center"
+        },
+        "attrNXWrap": {
+            "name": "negative_x_wrap_around",
+            "label": "negative x wrap around",
+            "aliases": [ "negative x wrap around" ],
+            "type": "Bool",
+            "default": "true",
+            "enable if": {
+                "negative_x_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative X Modifiers",
+            "comment": "Controls whether to repeat (true) or clamp (false) the texture"
+        },
+
+
+        "attrNYScale": {
+            "name": "negative_y_scale",
+            "label": "negative y scale",
+            "aliases": [ "negative y scale" ],
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "enable if": {
+                "negative_y_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Y Modifiers",
+            "comment": "2D scale"
+        },
+        "attrNYOffset": {
+            "name": "negative_y_offset",
+            "label": "negative y offset",
+            "aliases": [ "negative y offset" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "negative_y_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Y Modifiers",
+            "comment": "2D offset"
+        },
+        "attrNYInvS": {
+            "name": "negative_y_invert_s",
+            "label": "negative y invert s",
+            "aliases": [ "negative y invert s" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "negative_y_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Y Modifiers",
+            "comment": "Flip in the s direction (horizontal)"
+        },
+        "attrNYInvT": {
+            "name": "negative_y_invert_t",
+            "label": "negative y invert t",
+            "aliases": [ "negative y invert t" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "negative_y_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Y Modifiers",
+            "comment": "Flip in the t direction (vertical)"
+        },
+        "attrNYSwapST": {
+            "name": "negative_y_swap_st",
+            "label": "negative y swap st",
+            "aliases": [ "negative y swap st" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "negative_y_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Y Modifiers",
+            "comment": "Swap the s and t directions.   Same as a 90 degree rotation"
+        },
+        "attrNYRot": {
+            "name": "negative_y_rotation",
+            "label": "negative y rotation",
+            "aliases": [ "negative y rotation" ],
+            "type": "float",
+            "default": "0",
+            "enable if": {
+                "negative_y_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Y Modifiers",
+            "comment": "2D rotation amount"
+        },
+        "attrNYRotCntr": {
+            "name": "negative_y_rotation_center",
+            "label": "negative y rotation center",
+            "aliases": [ "negative y rotation center" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "negative_y_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Y Modifiers",
+            "comment": "2D rotation center"
+        },
+        "attrNYWrap": {
+            "name": "negative_y_wrap_around",
+            "label": "negative y wrap around",
+            "aliases": [ "negative y wrap around" ],
+            "type": "Bool",
+            "default": "true",
+            "enable if": {
+                "negative_y_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Y Modifiers",
+            "comment": "Controls whether to repeat (true) or clamp (false) the texture"
+        },
+
+
+        "attrNZScale": {
+            "name": "negative_z_scale",
+            "label": "negative z scale",
+            "aliases": [ "negative z scale" ],
+            "type": "Vec2f",
+            "default": "Vec2f(1.0f, 1.0f)",
+            "enable if": {
+                "negative_z_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Z Modifiers",
+            "comment": "2D scale"
+        },
+        "attrNZOffset": {
+            "name": "negative_z_offset",
+            "label": "negative z offset",
+            "aliases": [ "negative z offset" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "negative_z_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Z Modifiers",
+            "comment": "2D offset"
+        },
+        "attrNZInvS": {
+            "name": "negative_z_invert_s",
+            "label": "negative z invert s",
+            "aliases": [ "negative z invert s" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "negative_z_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Z Modifiers",
+            "comment": "Flip in the s direction (horizontal)"
+        },
+        "attrNZInvT": {
+            "name": "negative_z_invert_t",
+            "label": "negative z invert t",
+            "aliases": [ "negative z invert t" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "negative_z_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Z Modifiers",
+            "comment": "Flip in the t direction (vertical)"
+        },
+        "attrNZSwapST": {
+            "name": "negative_z_swap_st",
+            "label": "negative z swap st",
+            "aliases": [ "negative z swap st" ],
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "negative_z_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Z Modifiers",
+            "comment": "Swap the s and t directions.   Same as a 90 degree rotation"
+        },
+        "attrNZRot": {
+            "name": "negative_z_rotation",
+            "label": "negative z rotation",
+            "aliases": [ "negative z rotation" ],
+            "type": "float",
+            "default": "0",
+            "enable if": {
+                "negative_z_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Z Modifiers",
+            "comment": "2D rotation amount"
+        },
+        "attrNZRotCntr": {
+            "name": "negative_z_rotation_center",
+            "label": "negative z rotation center",
+            "aliases": [ "negative z rotation center" ],
+            "type": "Vec2f",
+            "default": "Vec2f(0.0f, 0.0f)",
+            "enable if": {
+                "negative_z_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Z Modifiers",
+            "comment": "2D rotation center"
+        },
+        "attrNZWrap": {
+            "name": "negative_z_wrap_around",
+            "label": "negative z wrap around",
+            "aliases": [ "negative z wrap around" ],
+            "type": "Bool",
+            "default": "true",
+            "enable if": {
+                "negative_z_active": "true",
+                "number_of_textures": "six"
+            },
+            "group": "Negative Z Modifiers",
+            "comment": "Controls whether to repeat (true) or clamp (false) the texture"
+        }
+    }
+}

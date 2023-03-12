@@ -1,0 +1,44 @@
+{
+    "name": "ColorCorrectTMIMap",
+    "type": "Map",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "comment": "bind the input here",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrOn": {
+            "name": "on",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables/disables all color correct operations"
+        },
+        "attrMix": {
+            "name": "mix",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "how much of the overall color correct to mix in",
+            "enable if": {
+                "on": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrTMI": {
+            "name": "TMI",
+            "type": "Rgb",
+            "display": "tmi",
+            "default": "Rgb(0.0f, 0.0f, 0.0f)",
+            "comment": "T = Temperature where positive values push towards blue and negative towards red.   M = Magenta where positive values push towards magenta and negative towards green.  I = Intensity where negative values remove and positive values add energy ",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true"
+            },
+            "min": "-2.0f",
+            "max": "2.0f"
+        }
+    }
+}

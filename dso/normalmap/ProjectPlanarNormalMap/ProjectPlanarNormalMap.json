@@ -1,0 +1,44 @@
+{
+    "name": "ProjectPlanarNormalMap",
+    "type": "NormalMap",
+    "directives": {
+        "include": ["lib/map/projection/json/projection.json"]
+    },
+    "attributes": {
+        "attrUseReferenceSpace": {
+            "name": "use_reference_space",
+            "label": "use reference space",
+            "aliases": [ "use reference space" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "use reference space"
+        },
+        "attrTexture": {
+            "name": "texture",
+            "type": "String",
+            "flags": "FLAGS_FILENAME",
+            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+        },
+        "attrWrapAround": {
+            "name": "wrap_around",
+            "label": "wrap around",
+            "aliases": [ "wrap around" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "Controls whether to repeat (true) or clamp (false) the texture"
+        },
+        "attrNormalEncoding": {
+            "name": "normal_encoding",
+            "label": "normal encoding",
+            "aliases": [ "normal encoding" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "[0,1]": "0",
+                "[-1,1]": "1"
+            },
+            "comment": "Most normal maps are encoded [0,1].   Only certain rare floating point normal maps are encoded [-1,1]"
+        }
+    }
+}

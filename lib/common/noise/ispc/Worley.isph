@@ -1,0 +1,168 @@
+// Copyright 2023 DreamWorks Animation LLC
+// SPDX-License-Identifier: Apache-2.0
+
+
+#pragma once
+
+#include <moonray/rendering/shading/ispc/Shading.isph>
+#include <scene_rdl2/common/platform/IspcUtil.isph>
+
+#include "Noise.isph"
+
+enum NOISE_WorleyVersion
+{
+    NOISE_WORLEY_V1 = 0,
+    NOISE_WORLEY_V2 = 1
+};
+
+enum NOISE_WorleyConstants {
+    NOISE_WORLEY_MIN_PROB_POINTS = 1,
+    NOISE_WORLEY_MAX_PROB_POINTS = 9,
+    NOISE_WORLEY_LAMBDA = 3,
+    NOISE_WORLEY_MAX_SEARCH_POINTS = 1500
+};
+
+enum NOISE_WorleyDistanceMethod {
+    NOISE_WORLEY_DIST_LINEAR = 0,
+    NOISE_WORLEY_DIST_LINEAR_SQUARED = 1,
+    NOISE_WORLEY_DIST_MANHATTAN = 2,
+    NOISE_WORLEY_DIST_CHEBYSHEV = 3,
+    NOISE_WORLEY_DIST_QUADRATIC = 4,
+    NOISE_WORLEY_DIST_MINKOWSKI = 5
+};
+
+enum NOISE_GlitterConstants {
+    NOISE_WORLEY_GLITTER_TABLE_SIZE = 10000,
+    NOISE_WORLEY_GLITTER_FLAKES_SIZE = 16384,
+    NOISE_WORLEY_GLITTER_NUM_TEXTURES = 2,
+    NOISE_WORLEY_GLITTER_NUM_STYLES = 2
+};
+
+struct NOISE_WorleyPoint {
+    Vec3f position;
+    Vec3f normal;
+    Vec3f diff;
+    Vec3f gradient;
+    float weight;
+    int id;
+    unsigned int styleIndex;
+    float dist;
+    Vec2f uv;
+};
+
+struct NOISE_WorleySample
+{
+    Vec3f position;
+    Vec3f normal;
+    bool compensateDeformation;
+    // Stretch/Compression Factors
+    float compensationS;
+    float compensationT;
+    // Shear Along S
+    float shearRefP_X;
+    // Stretch Compress Axes
+    Vec3f refX;
+    Vec3f refY;
+    Vec3f refZ;
+
+    Vec3f dNdx;
+    Vec3f dNdy;
+    float footprintLength;
+    float footprintArea;
+    float radius;
+    float searchRadius;
+    float microfacetBlend;
+    unsigned int estimatedFeatures;
+};
+
+struct NOISE_Worley
+{
+    uniform NOISE_WorleyVersion mVersion;
+
+    // Pointer to SHADER_NoiseBase base class which holds the 
+    // permuatation table used to get the number of points
+    // in a cell and the assign a cell id.
+    uniform NOISE_Noise* uniform mNoise;
+
+    // Probabilities used to determine the number of points
+    // in a cell
+    uniform float mPointProbLow[NOISE_WORLEY_MAX_SEARCH_POINTS + 1];
+    uniform float mPointProbHigh[NOISE_WORLEY_MAX_SEARCH_POINTS + 1];
+
+    // Random float arrays used to offset/jitter the points from the grid
+    uniform float * uniform mPointsX;
+    uniform float * uniform mPointsY;
+    uniform float * uniform mPointsZ;
+
+    // Optional random normals for the points used with glitter flakes
+    uniform bool mHasNormals;
+    uniform float * uniform mRandsForNormalsX;
+    uniform float * uniform mRandsForNormalsY;
+    uniform float * uniform mNormalsX;
+    uniform float * uniform mNormalsY;
+    uniform float * uniform mNormalsZ;
+
+    // Controls the method used to modulate the distance from the 
+    // points to the sample location.  Used to create patterns with 
+    // the worley noise map.
+    uniform int mDistanceMethod;
+
+    // If set, a single static table of noise is used and the seed acts
+    // as an offset.   Otherwise each instance gets it's own noise table
+    // constructed using the seed.
+    uniform bool mUseStaticTables;
+
+    // If set, uses the sorting style from the worley noise map
+    // which keeps the first 4 points sorted by distance.   Otherwise
+    // all of the points are sorted using std::sort for c++ and 
+    // quicksort for ispc.
+    uniform bool mUseMapSort;
+};
+
+// Returns maxLevel octaves/levels of accumulated worley noise data 
+// into an array of points.  The first four points are sorted by distance
+// and returned with accumulated data from the levels.  The distance 
+// and gradient data are summed for each level with a scale factor which 
+// halves for every level.  The position and id data are not accumulated 
+// and only the first level is returned. 
+void
+NOISE_worleySearchPointsFractal(const uniform NOISE_Worley * uniform n,
+                                uniform ShadingTLState* uniform tls,
+                                const varying float jitter,
+                                const varying float minkowskiNumber,
+                                const varying float maxLevel, 
+                                varying NOISE_WorleySample& noiseSample,
+                                varying NOISE_WorleyPoint *uniform worleyPoints);
+
+// Fills an array with worley points found within the search
+// radius relative to the noiseSample's position.  If checkOverlap
+// is true, then the noiseSample's normal is used to calculate
+// the amount that the point overlaps the surface and which is set
+// as the worley point's weight.  The maxRadiusLimit, if not set
+// to -1, is used to set a maximum number of border cells to search
+// regardless of the searchRadius.  The jitter sets how far of the
+// grid that the points are randomly offset.
+varying int
+NOISE_worleySearchPoints(const uniform NOISE_Worley * uniform n,
+                         uniform ShadingTLState* uniform tls,
+                         const varying float (*searchRadius)[NOISE_WORLEY_GLITTER_NUM_STYLES],
+                         const uniform float (*randomTable)[NOISE_WORLEY_GLITTER_TABLE_SIZE],
+                         const varying float (*flakeStyleCDF)[NOISE_WORLEY_GLITTER_NUM_STYLES],
+                         const varying NOISE_WorleySample& noiseSample,
+                         varying NOISE_WorleyPoint *uniform worleyPoints,
+                         const uniform int maxRadiusLimit,
+                         const varying float jitter);
+
+// Get a random color based on cell id
+varying Color
+NOISE_worleyGetCellColor(const uniform NOISE_Worley * uniform n, 
+                         const int cellId);
+
+// Uses the quicksort algorithm to recursively sorts points 
+// in the index range low to high based on the compar function.
+void
+NOISE_worleySortPoints(varying NOISE_WorleyPoint *uniform flakeArray,
+                       const varying int low, 
+                       const varying int high,
+                       bool (*compar)(const varying NOISE_WorleyPoint * varying, const varying NOISE_WorleyPoint * varying));
+

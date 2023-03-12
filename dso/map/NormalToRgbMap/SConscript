@@ -1,0 +1,20 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+target = 'NormalToRgbMap.so'
+cc_source = ['NormalToRgbMap.cc']
+ispc_source = ['NormalToRgbMap.ispc']
+json_source = ['NormalToRgbMap.json']
+components = [
+    'shading_ispc',
+    'rendering_shading',
+    'scene_rdl2',
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

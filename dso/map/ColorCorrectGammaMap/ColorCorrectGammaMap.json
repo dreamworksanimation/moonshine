@@ -1,0 +1,96 @@
+{
+    "name": "ColorCorrectGammaMap",
+    "type": "Map",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "comment": "bind the input here",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrOn": {
+            "name": "on",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables/disables all color correct operations"
+        },
+        "attrMix": {
+            "name": "mix",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "how much of the overall color correct to mix in",
+            "enable if": {
+                "on": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrGamma": {
+            "name": "gamma",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "raises the input to the specified exponents",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gamma": "false"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrGammaPerChannel": {
+            "name": "use_per_channel_gamma",
+            "label": "use per channel gamma",
+            "type": "Bool",
+            "default": "false",
+            "comment": "enables separate RGB controls for gamma",
+            "enable if": {
+                "on": "true"
+            }
+        },
+        "attrGammaR": {
+            "name": "gamma_r",
+            "label": "gamma r",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "raises the red channel to the specified exponents",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gamma": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrGammaG": {
+            "name": "gamma_g",
+            "label": "gamma g",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "raises the green channel to the specified exponents",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gamma": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrGammaB": {
+            "name": "gamma_b",
+            "label": "gamma b",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "raises the blue channel to the specified exponents",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "use_per_channel_gamma": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        }
+    }
+}

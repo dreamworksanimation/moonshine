@@ -1,0 +1,189 @@
+{
+    "attributes": {
+        "attrShowDiffuse" : {
+            "name": "show_diffuse",
+            "label": "show diffuse",
+            "aliases": [ "show diffuse" ],
+            "comment": "enables/disables diffuse reflectance",
+            "type": "Bool",
+            "default": "true",
+            "group": "Diffuse"
+        },
+        "attrToonDiffuseModel": {
+            "name": "diffuse_model",
+            "label": "diffuse model",
+            "type": "Int",
+            "default": "0",
+            "group": "Diffuse",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "oren-nayar": "0",
+                "ramp": "1"
+            },
+            "enable if": {
+                "show_diffuse": "true"
+            },
+            "comment": "The method used to render the diffuse response."
+        },
+        "attrAlbedo" : {
+            "name": "albedo",
+            "comment": "the overall surface color as seen from a distance (ie. diffuse color)",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse",
+            "metadata": {
+                "recolorable": "true",
+                "recolorSample": "true"
+            },
+            "enable if": {
+                "show_diffuse": "true"
+            }
+        },
+        "attrDiffuseRoughness": {
+            "name": "diffuse_roughness",
+            "label": "diffuse roughness",
+            "comment": "Roughness of the diffuse shading.  If the value is zero a Lambertian model is used.  If it's above zero the Oren Nayar model is used.   Not compatible with subsurface scattering.",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true",
+                "diffuse_model": "0"
+            },
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrToonTerminatorShift": {
+            "name": "terminator_shift",
+            "label": "terminator shift",
+            "comment": "Controls how the diffuse ligthing falls off.  Values greater than 0.0 shift the falloff point closer to the light source and values less than 0.0 shift the falloff point further away",
+            "type": "Float",
+            "default": "0.05f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true",
+                "diffuse_model": "0"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"            
+        },
+        "attrToonDiffuseFlatness" : {
+            "name": "diffuse_flatness",
+            "label": "diffuse flatness",
+            "comment": "Flattens out the diffuse response by bending the normal towards the light direction",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "show_diffuse": "true",
+                "diffuse_model": "0"
+            },
+            "group": "Diffuse",
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrToonDiffuseFlatnessFalloff" : {
+            "name": "diffuse_flatness_falloff",
+            "label": "diffuse flatness falloff",
+            "comment": "Fades out flatness with respect to light direction",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "show_diffuse": "true",
+                "diffuse_model": "0"
+            },
+            "group": "Diffuse",
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrToonExtendRamp" : {
+            "name": "extend_ramp",
+            "label": "extend ramp",
+            "comment": "Extends the last ramp color to unlit portions. IMPORTANT: Only works in conjuction with prevent_light_culling ON and visible_shadows OFF",
+            "type": "Bool",
+            "default": "false",
+            "enable if": {
+                "diffuse_model": "1",
+                "show_diffuse": "true",
+                "prevent_light_culling": "true"
+            },
+            "group": "Diffuse"
+        },
+        "attrToonDRampPositions": {
+            "name": "positions",
+            "type": "FloatVector",
+            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "comment": "ramp positions, maximum 10 allowed",
+            "structure_type": "ramp_color",
+            "structure_name": "ramp",
+            "structure_path": "positions",
+            "enable if": {
+                "diffuse_model": "1",
+                "show_diffuse": "true"
+            },
+            "group": "Diffuse"
+        },
+        "attrToonDRampColors": {
+            "name": "colors",
+            "type": "RgbVector",
+            "default": "{Rgb(1.0), Rgb(0.75), Rgb(0.25), Rgb(0.0)}",
+            "comment": "List of colors on the ramp",
+            "structure_type": "ramp_color",
+            "structure_name": "ramp",
+            "structure_path": "values",
+            "enable if": {
+                "diffuse_model": "1",
+                "show_diffuse": "true"
+            },
+            "group": "Diffuse"
+        },
+        "attrToonDRampInterpolators": {
+            "name": "interpolations",
+            "type": "IntVector",
+            "default": "{0, 0, 0, 0}",
+            "comment": "None: 0 | Linear: 1 | Exponential Up: 2 | Exponential Down: 3 |\\n\\t\\t\\tSmooth: 4 | Catmull Rom: 5 | Monotone Cubic: 6",
+            "structure_type": "ramp_color",
+            "structure_name": "ramp",
+            "structure_path": "interpolation_types",
+            "enable if": {
+                "diffuse_model": "1",
+                "show_diffuse": "true"
+            },
+            "group": "Diffuse"
+        },
+        "attrToonDRampColorMultiplier": {
+            "name": "ramp_color_multiplier",
+            "label": "ramp color multiplier",
+            "type": "Rgb",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Bindable multiplier on the ramp color",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "multi": "10",
+            "enable if": {
+                "diffuse_model": "1",
+                "show_diffuse": "true"
+            },
+            "group": "Diffuse",
+            "subgroup": "Ramp Color Multipliers"
+        },
+        "attrToonDRampPositionOffset": {
+            "name": "ramp_position_offset",
+            "label": "ramp position offset",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "Bindable offset to the ramp-position, add a small variation using noise etc for art-directable ramp thresholds",
+            "flags": "FLAGS_BINDABLE",
+            "multi": "10",
+            "enable if": {
+                "diffuse_model": "1",
+                "show_diffuse": "true"
+            },
+            "group": "Diffuse",
+            "subgroup": "Ramp Position Offsets"
+        }
+    }
+ }

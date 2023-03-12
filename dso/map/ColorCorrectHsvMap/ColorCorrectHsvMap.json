@@ -1,0 +1,84 @@
+{
+    "name": "ColorCorrectHsvMap",
+    "type": "Map",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "input color"
+        },
+        "attrOn": {
+            "name": "on",
+            "type": "Bool",
+            "default": "true",
+            "comment": "all attributes on/off"
+        },
+        "attrHueShift": {
+            "name": "hue_shift",
+            "label": "hue shift",
+            "aliases": [ "hue shift" ],
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "shifts the hue of the input (360 rolls over back to 0)"
+        },
+        "attrSaturationFactor": {
+            "name": "saturation_factor",
+            "label": "saturation factor",
+            "aliases": [ "saturation factor" ],
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "multiplies the saturation of the input"
+        },
+        "attrSaturationContrast": {
+            "name": "saturation_contrast",
+            "label": "saturation contrast",
+            "aliases": [ "saturation contrast" ],
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "modifies the contrast of the input's saturation (-1, 1)"
+        },
+        "attrSaturationShift": {
+            "name": "saturation_shift",
+            "label": "saturation shift",
+            "aliases": [ "saturation shift" ],
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "shifts the saturation of the input (-1, 1)"
+        },
+        "attrValueFactor": {
+            "name": "value_factor",
+            "label": "value factor",
+            "aliases": [ "value factor" ],
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "multiplies the value of the input"
+        },
+        "attrValueContrast": {
+            "name": "value_contrast",
+            "label": "value contrast",
+            "aliases": [ "value contrast" ],
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "modifies the contrast of the input's value (-1, 1)"
+        },
+        "attrValueShift": {
+            "name": "value_shift",
+            "label": "value shift",
+            "aliases": [ "value shift" ],
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "shifts the value of the input (-1, 1)"
+        },
+        "attrClamp": {
+            "name": "clamp",
+            "type": "Bool",
+            "default": "false",
+            "comment": "clamps output to [0,1] range"
+        }
+    }
+}

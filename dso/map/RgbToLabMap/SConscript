@@ -1,0 +1,20 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+target = 'RgbToLabMap.so'
+cc_source = ['RgbToLabMap.cc']
+ispc_source = ['RgbToLabMap.ispc']
+json_source = ['RgbToLabMap.json']
+components = [
+    'rendering_shading',
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

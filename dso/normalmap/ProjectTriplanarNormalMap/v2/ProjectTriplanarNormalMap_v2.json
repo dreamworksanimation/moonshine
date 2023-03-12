@@ -1,0 +1,25 @@
+{
+    "name": "ProjectTriplanarNormalMap_v2",
+    "type": "NormalMap",
+    "directives": {
+        "include": ["lib/map/projection/json/projection_triplanar.json",
+                    "lib/map/projection/json/projection.json",
+                    "lib/map/primvar/json/input_source.json"]
+    },
+    "attributes": {
+        "attrNormalEncoding": {
+            "name": "normal_encoding",
+            "label": "normal encoding",
+            "aliases": [ "normal encoding" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "[0,1]": "0",
+                "[-1,1]": "1"
+            },
+            "comment": "Most normal maps are encoded [0,1].   Only certain rare floating point normal maps are encoded [-1,1]"
+        }
+    }
+}
+

@@ -1,0 +1,37 @@
+{
+    "name": "CurvatureMap",
+    "type": "Map",
+    "attributes": {
+        "attrInvert": {
+            "name": "invert",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Flips the value of the curvature."
+        },
+        "attrPower": {
+            "name": "power",
+            "type": "Float",
+            "default": "0.5f",
+            "comment": "Raises the value of the curvature to the given power."
+        },
+        "attrScale": {
+            "name": "scale",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "Multiplies the value of the curvature. Results are still clamped between 0 and 1."
+        },
+        "attrMode": {
+            "name": "mode",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+             "enum": {
+                "convex": "0",
+                "concave": "1",
+                "composite": "2",
+                "all": "3"
+            },
+            "default": "3",
+            "comment": "The composite mode outputs the composite of convex curvature and concave curvature as grayscale ((concave - convex) * 0.5) + 0.5. The all mode outputs the convex curvature in the red channel, concave curvature in the green channel, and composite of both curvatures in the blue channel."
+        }
+    }
+}

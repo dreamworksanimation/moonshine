@@ -1,0 +1,32 @@
+{
+    "name": "DwaFabricMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASELAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/fuzz.json",
+            "lib/material/dwabase/json/glitter.json",
+            "lib/material/dwabase/json/fabric_velvet_common.json",
+            "lib/material/dwabase/json/fabric.json",
+            "lib/material/dwabase/json/diffuse.json",
+            "lib/material/dwabase/json/diffuse_transmission.json",
+            "lib/material/dwabase/json/normal.json",
+            "lib/material/dwabase/json/misc.json",
+            "lib/material/dwabase/json/emission.json",
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "groups": {
+        "order": [
+            "Fuzz",
+            "Glitter",
+            "Fabric",
+            "Diffuse",
+            "Threads",
+            "Emission",
+            "Normal",
+            "Common"
+        ]
+    }
+}
+

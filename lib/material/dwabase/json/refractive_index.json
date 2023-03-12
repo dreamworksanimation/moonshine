@@ -1,0 +1,16 @@
+{
+    "attributes": {
+        "attrRefractiveIndex" : {
+            "name": "refractive_index",
+            "label": "refractive index",
+            "aliases": [ "refractive index" ],
+            "comment": "defines the Fresnel behavior, (affects reflection and refraction)",
+            "type": "Float",
+            "default": "1.5f",
+            "group": "Specular",
+            "enable if": {
+                "show_specular": "true"
+            }            
+        }
+    }
+}

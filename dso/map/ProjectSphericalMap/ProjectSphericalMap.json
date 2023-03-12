@@ -1,0 +1,17 @@
+{
+    "name": "ProjectSphericalMap",
+    "type": "Map",
+    "directives": {
+        "include": ["lib/map/projection/json/projection.json"]
+    },
+    "attributes": {
+        "attrUseReferenceSpace": {
+            "name": "use_reference_space",
+            "label": "use reference space",
+            "aliases": [ "use reference space" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "use reference space"
+        }
+    }
+}

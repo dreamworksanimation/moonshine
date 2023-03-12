@@ -1,0 +1,28 @@
+{
+    "attributes": {
+        "attrShowFabricSpecular" : {
+            "name": "show_specular",
+            "label": "show specular",
+            "aliases": [ "show specular" ],
+            "comment": "Enables/disables specular fabric lobes",
+            "type": "Bool",
+            "default": "true",
+            "group": "Fabric"
+        },
+        "attrFabricDiffuseScattering": {
+            "name": "fabric_diffuse_scattering",
+            "label": "fabric diffuse scattering",
+            "aliases": [ "fabric diffuse scattering" ],
+            "comment": "Amount of diffuse to mix in fabric. A value of 1 means fully diffuse fabric.",
+            "type": "Float",
+            "default": "0.2f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"            
+        }
+    }
+}

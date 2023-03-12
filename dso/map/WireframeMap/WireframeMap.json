@@ -1,0 +1,32 @@
+{
+    "name": "WireframeMap",
+    "type": "Map",
+    "attributes": {
+        "attrLineColor": {
+            "name": "line_color",
+            "label": "line color",
+            "aliases": [ "line color" ],
+            "type": "Rgb",
+            "default": "Rgb(0.0f, 0.0f, 0.0f)"
+        },
+        "attrFillColor": {
+            "name": "fill_color",
+            "label": "fill color",
+            "aliases": [ "fill color" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)"
+        },        
+        "attrRaster": {
+            "name": "raster",
+            "type": "Bool",
+            "default": "true"
+        },
+        "attrLineWidth": {
+            "name": "line_width",
+            "label": "line width",
+            "aliases": [ "line width" ],
+            "type": "Float",
+            "default": "1.0f"
+        }
+    }
+}

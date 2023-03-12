@@ -1,0 +1,44 @@
+// Copyright 2023 DreamWorks Animation LLC
+// SPDX-License-Identifier: Apache-2.0
+
+/// @file Projection.isph
+
+#pragma once
+
+#include <moonray/rendering/shading/ispc/Shading.isph>
+#include <scene_rdl2/common/platform/IspcUtil.isph>
+
+struct PROJECTION_StaticData {
+    // shade time error events - these can be static as long as we
+    // ensure they have the same value across all instances.
+    // no conditional registration of log events is allowed.
+    uniform Color sFatalColor;
+    uniform int sErrorMissingProjector;
+    uniform int sErrorMissingRefP;
+    uniform int sErrorMissingRefN;
+};
+
+enum PROJECTION_Mode {
+    PROJECTION_MODE_PROJECTOR,
+    PROJECTION_MODE_MATRIX,
+    PROJECTION_MODE_TRS
+};
+
+enum PROJECTION_TransformOrder {
+    TRANSFORM_ORDER_SCALE_ROT_TRANS,
+    TRANSFORM_ORDER_SCALE_TRANS_ROT,
+    TRANSFORM_ORDER_ROT_SCALE_TRANS,
+    TRANSFORM_ORDER_ROT_TRANS_SCALE,
+    TRANSFORM_ORDER_TRANS_SCALE_ROT,
+    TRANSFORM_ORDER_TRANS_ROT_SCALE
+};
+
+enum PROJECTION_RotationOrder {
+    ROTATION_ORDER_XYZ,
+    ROTATION_ORDER_XZY,
+    ROTATION_ORDER_YXZ,
+    ROTATION_ORDER_YZX,
+    ROTATION_ORDER_ZXY,
+    ROTATION_ORDER_ZYX
+};
+

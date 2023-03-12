@@ -1,0 +1,89 @@
+{
+    "name": "ToonDisplayFilter",
+    "type": "DisplayFilter",
+    "attributes": {
+        "attrInputDiffuse": {
+            "name": "input_diffuse",
+            "label": "input diffuse",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput that represents diffuse reflection LPE"
+        },
+        "attrInputGlossy": {
+            "name": "input_glossy",
+            "label": "input glossy",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput that represents glossy reflection LPE"
+        },
+        "attrInputAlbedo": {
+            "name": "input_albedo",
+            "label": "input albedo",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput that represents diffuse albedo material aov"
+        },
+        "attrInputDepth": {
+            "name": "input_depth",
+            "label": "input depth",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput with 'depth' result"
+        },
+        "attrInputNormal": {
+            "name": "input_normal",
+            "label": "input normal",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput with 'normal' result"
+        },
+        "attrNumCels": {
+            "name": "num_cels",
+            "label": "num cels",
+            "type": "Int",
+            "default": "2",
+            "comment": "Sets number of toon cels in diffuse shading"
+        },
+        "attrAmbient": {
+            "name": "ambient",
+            "type": "Rgb",
+            "default": "Rgb(0.0, 0.0, 0.0)",
+            "comment": "Adds an ambient light to the cel shading"
+        },
+        "attrInkDepthThreshold": {
+            "name": "ink_depth_threshold",
+            "label": "ink depth threshold",
+            "type": "Float",
+            "default": "0.01",
+            "comment": "The threshold for the depth-based ink outline"
+        },
+        "attrInkNormalThreshold": {
+            "name": "ink_normal_threshold",
+            "label": "ink normal threshold",
+            "type": "Float",
+            "default": "0.01",
+            "comment": "The threshold for the normal-based ink outline"
+        },
+        "attrInkNormalScale": {
+            "name": "ink_normal_scale",
+            "label": "ink normal scale",
+            "type": "Float",
+            "default": "0.01",
+            "comment": "Increase for a more pronounced normal-based ink outline"
+        },
+        "attrEdgeDetector": {
+            "name": "edge_detector",
+            "label": "edge detector",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "None": "0",
+                "Sobel": "1",
+                "Laplacian": "2",
+                "Laplacian of Gaussian": "3"
+            },
+            "default": "0",
+            "comment": "Type of edge detector to use"
+        }
+    }
+}

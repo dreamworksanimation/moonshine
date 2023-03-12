@@ -1,0 +1,96 @@
+{
+    "name": "DistortNormalMap",
+    "type": "NormalMap",
+    "attributes": {
+        "attrNoiseSpace": {
+            "name": "noise_space",
+            "type": "Int",
+            "default": "4",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "world": "2",
+                "object": "4",
+                "reference": "5",
+                "texture": "6",
+                "input texture coordinates": "7",
+                "hair_surface_uv": "8",
+                "hair_closest_surface_uv": "9"
+            },
+            "group": "Space",
+            "comment": "The space to calculate the noise in"
+        },
+        "attrInputTextureCoordinate": {
+            "name": "input_texture_coordinates",
+            "label": "input texture coordinates",
+            "aliases": [ "input texture coordinates" ],
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "disable when": "{ noise_space != 7 }",
+            "group": "Space"
+        },
+        "attrUseInputVectors": {
+            "name": "use_input_vectors",
+            "type": "Bool",
+            "default": "false",
+            "comment": "when checked, use input_U and V. otherwise use geometry dPds/t"
+        },
+        "attrInputU": {
+            "name": "input_U",
+            "type": "Rgb",
+            "default": "Rgb(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "disable when": "{ use_input_vectors 0 }",
+            "comment": "input U / tangent for distortion"
+        },
+        "attrInputV": {
+            "name": "input_V",
+            "type": "Rgb",
+            "default": "Rgb(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "disable when": "{ use_input_vectors 0 }",
+            "comment": "input V / bitangent for distortion"
+        },
+        "attrSeed": {
+            "name": "seed",
+            "type": "Int",
+            "default": "0",
+            "comment": "the seed for the noise generation"
+        },
+        "attrFrequencyU": {
+            "name": "frequency_U",
+            "type": "Vec3f",
+            "default": "Vec3f(1.0f, 1.0f, 1.0f)",
+            "comment": "controls noise frequency for U distortion"
+        },
+        "attrFrequencyV": {
+            "name": "frequency_V",
+            "type": "Vec3f",
+            "default": "Vec3f(1.0f, 1.0f, 1.0f)",
+            "comment": "controls noise frequency for V distortion"
+        },
+        "attrAmplitudeU": {
+            "name": "amplitude_U",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "controls amplitude of U distortion",
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrAmplitudeV": {
+            "name": "amplitude_V",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "controls amplitude of V distortion",
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrInputNormals": {
+            "name": "input_normals",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_NORMALMAP",
+            "comment": "optional input to distort. if not connected, use geom normals"
+        }
+    }
+}

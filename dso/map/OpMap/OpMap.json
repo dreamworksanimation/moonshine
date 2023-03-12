@@ -1,0 +1,91 @@
+{
+    "name": "OpMap",
+    "type": "Map",
+    "attributes": {
+         "attrOperation": {
+            "name": "operation",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "add":                   "0",
+                "subtract":              "1",
+                "multiply":              "2",
+                "divide":                "3",
+                "maximum":               "4",
+                "minimum":               "5",
+                "power":                 "6",
+                "cross":                 "7",
+                "dot":                   "8",
+                "invert op1":            "9",
+                "normalize op1":         "10",
+                "op1":                   "11",
+                "op2":                   "12",
+                "overlay":               "13",
+                "screen":                "14",
+                "abs":                   "15",
+                "ceil":                  "16",
+                "floor":                 "17",
+                "modulo":                "18",
+                "fraction":              "19",
+                "length":                "20",
+                "sine":                  "21",
+                "cosine":                "22",
+                "round":                 "23",
+                "acos":                  "24",
+                "less_than":             "25",
+                "less_than_or_equal":    "26",
+                "greater_than":          "27",
+                "greater_than_or_equal": "28",
+                "equal":                 "29",
+                "not equal":             "30",
+                "and":                   "31",
+                "or":                    "32",
+                "not":                   "33",
+                "xor":                   "34",
+                "bit_shift_left":        "35",
+                "bit_shift_right":       "36",
+                "bitwise_and":           "37",
+                "bitwise_or":            "38"
+            },
+            "comment": "Operation"
+        },
+        "attrOp1": {
+            "name": "op1",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "First operand"
+        },
+        "attrOp2": {
+            "name": "op2",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Second operand"
+        },
+        "attrOp1Factor": {
+            "name": "op1_factor",
+            "label": "op1 factor",
+            "aliases": [ "op1 factor" ],
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Scalar multiplier on op1"
+        },
+        "attrOp2Factor": {
+            "name": "op2_factor",
+            "label": "op2 factor",
+            "aliases": [ "op2 factor" ],
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Scalar multiplier on op2"
+        },
+        "attrClamp": {
+            "name": "clamp",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Whether to clamp result to 0 - 1"
+        }
+    }
+}

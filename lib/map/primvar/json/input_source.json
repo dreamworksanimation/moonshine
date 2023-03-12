@@ -1,0 +1,38 @@
+{
+    "attributes": {
+        "attrInputSource": {
+            "name": "input_position_source",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "P/N": "0",
+                "ref_P/ref_N": "1",
+                "input_position/input_normal": "2"
+            },
+            "comment": "Input position to use"
+        },
+        "attrInputPosition": {
+            "name": "input_position",
+            "label": "input position",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "input_position_source": "2"
+            },
+            "comment": "Bind position data here"
+        },
+        "attrInputNormal": {
+            "name": "input_normal",
+            "label": "input normal",
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "input_position_source": "2"
+            },
+            "comment": "Bind normal data here"
+        }
+    }
+}

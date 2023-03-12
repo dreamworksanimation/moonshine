@@ -1,0 +1,53 @@
+{
+    "name": "ColorCorrectDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput to color correct"
+        },
+        "attrExposure": {
+            "name": "exposure",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "Adjusts the exposure, in fstops"
+        },
+        "attrSaturation": {
+            "name": "saturation",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "Desaturates input below 1.0 and adds saturation above 1.0"
+        },
+        "attrContrast": {
+            "name": "contrast",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "Negative values decrease contrast, while positive values increase it"
+        },
+        "attrGamma": {
+            "name": "gamma",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "Adjusts gamma of input"
+        },
+        "attrOffset": {
+            "name": "offset",
+            "type": "Rgb",
+            "default": "Rgb(0.f,0.f,0.f)",
+            "comment": "Adds offset color to input"
+        },
+        "attrMultiply": {
+            "name": "multiply",
+            "type": "Rgb",
+            "default": "Rgb(1.f,1.f,1.f)",
+            "comment": "Multiplies input using specified color"
+        }
+    }
+}

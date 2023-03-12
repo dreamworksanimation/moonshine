@@ -1,0 +1,125 @@
+{
+    "attributes": {
+        "attrWarpColor": {
+            "name": "warp_color",
+            "label": "warp color",
+            "aliases": [ "warp color" ],
+            "comment": "Color of the fabric specular highlights. Or if 'use independent weft attributes' is 'true,' just the color of the fabric specular highlights of the warp threads.",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Fabric",
+            "enable if": {
+                "show_specular": "true"
+            }
+        },
+        "attrWarpRoughness": {
+            "name": "warp_roughness",
+            "label": "warp roughness",
+            "aliases": [ "warp roughness" ],
+            "comment": "Roughness of the fabric specular highlights. Or if 'use independent weft attributes' is 'true,' just the roughness of the fabric specular highlights of the warp threads.",
+            "type": "Float",
+            "default": "0.75f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Fabric",
+            "enable if": {
+                "show_specular": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrUseIndependentWeftAttributes": {
+            "name": "use_independent_weft_attributes",
+            "label": "use independent weft attributes",
+            "aliases": [ "use independent weft attributes" ],
+            "comment": "Use a separate set of attributes for the 'weft' thread specular response.",
+            "type": "Bool",
+            "default": "false",
+            "group": "Fabric",
+            "enable if": {
+                "show_specular": "true"
+            }
+        },
+        "attrWeftColor": {
+            "name": "weft_color",
+            "label": "weft color",
+            "aliases": [ "weft color" ],
+            "comment": "Color of the fabric specular highlights from the weft threads.",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Fabric",
+            "enable if": {
+                "show_specular": "true",
+                "use_independent_weft_attributes": "true"
+            }
+        },
+        "attrWeftRoughness": {
+            "name": "weft_roughness",
+            "label": "weft roughness",
+            "aliases": [ "weft roughness" ],
+            "comment": "Roughness of the fabric specular highlights from the weft threads.",
+            "type": "Float",
+            "default": "0.75f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Fabric",
+            "enable if": {
+                "show_specular": "true",
+                "use_independent_weft_attributes": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrUseUVsForThreadDirection": {
+            "name": "use_UVs_for_thread_direction",
+            "label": "use UVs for thread direction",
+            "comment": "Use UV texture coordinates to compute thread direction (along dPds). Switch OFF for seamless camera aligned thread direction.  The warp_thread_direction parameter rotates this direction in tangent space.",
+            "type": "Bool",
+            "default": "true",
+            "group": "Fabric",
+            "enable if": {
+                "show_specular": "true"
+            }
+        },
+        "attrWarpThreadDirection": {
+            "name": "warp_thread_direction",
+            "label": "warp thread direction",
+            "aliases": [ "warp thread direction" ],
+            "comment": "Direction of the major/warp thread for the fabric. The fabric highlights will be relative to this direction.",
+            "type": "Vec3f",
+            "default": "Vec3f(1.0f, 1.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Threads",
+            "enable if": {
+                "show_specular": "true"
+            }
+        },
+        "attrWarpThreadCoverage": {
+            "name": "warp_thread_coverage",
+            "label": "warp thread coverage",
+            "aliases": [ "warp thread coverage" ],
+            "comment": "When set to 1, creates specular highlights only relative to the warp thread direction. When less than one, starts acting like a 'woven' fabric with specular contributions added in by a corresponding 'weft' thread direction, perpendicular to the 'warp' thread direction.",
+            "type": "Float",
+            "default": "0.75",
+            "group": "Threads",
+            "enable if": {
+                "show_specular": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrWarpThreadElevation": {
+            "name": "warp_thread_elevation",
+            "label": "warp thread elevation",
+            "aliases": [ "warp thread elevation" ],
+            "comment": "This attribute can be used to 'elevate/rotate' the threads from their default direction. When laying flat on the surface (thread_direction.z=0), a value around 45 works well for 'silky' looks. Range - -90, +90. When threads are upright (thread_direction.z=1), this attribute can be used to 'dishevel' the threads and create a 'velvety' look (see wiki).",
+            "type": "Float",
+            "default": "0.0",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Threads",
+            "enable if": {
+                "show_specular": "true"
+            }
+        }
+    }
+}

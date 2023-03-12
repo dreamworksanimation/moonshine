@@ -1,0 +1,22 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_directional_map'
+target = 'DirectionalMap.so'
+cc_source = ['DirectionalMap.cc']
+ispc_source = ['DirectionalMap.ispc']
+json_source = ['DirectionalMap.json']
+components = [
+    'rendering_shading',
+    'shading_ispc',
+    'scene_rdl2',
+    'common_interpolation'
+]
+
+# ---------------------------------------------------------------
+
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)
+env.DWAComponent(name, COMPONENTS=components)

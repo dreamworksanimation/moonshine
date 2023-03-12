@@ -1,0 +1,20 @@
+import os
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_colorcorrectdisplayfilter'
+target = 'ColorCorrectDisplayFilter.so'
+cc_source = ['ColorCorrectDisplayFilter.cc']
+ispc_source = ['ColorCorrectDisplayFilter.ispc']
+json_source = ['ColorCorrectDisplayFilter.json']
+components = [
+    'rendering_displayfilter',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

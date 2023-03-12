@@ -1,0 +1,75 @@
+{
+    "name": "ProjectCameraMap",
+    "type": "Map",
+    "attributes": {
+        "attrProjector": {
+            "name": "projector",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_CAMERA"
+        },
+        "attrProjectOnBackFaces": {
+            "name": "project_on_back_faces",
+            "label": "project on back faces",
+            "aliases": [ "project on back faces" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "Toggles whether camera projections appear on back faces."
+        },
+        "attrBlackOutsideProjection": {
+            "name": "black_outside_projection",
+            "label": "black outside projection",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Toggles whether projections appear outside the 0-1 uv range of the projector"
+        },
+        "attrUseReferenceSpace": {
+            "name": "use_reference_space",
+            "label": "use reference space",
+            "aliases": [ "use reference space" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "use reference space"
+        },
+        "attrUseCustomWindowCoordinates": {
+            "name": "use_custom_window_coordinates",
+            "label": "use custom window coordinates",
+            "aliases": [ "use custom window coordinates" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "used to apply non-uniform scaling to projection"
+        },
+        "attrWindowXMin": {
+            "name": "window_x_min",
+            "label": "window x min",
+            "aliases": [ "window x min" ],
+            "type": "Float",
+            "default": "-1.0f",
+            "comment": "minimum projected x coordinate"
+        },
+        "attrWindowXMax": {
+            "name": "window_x_max",
+            "label": "window x max",
+            "aliases": [ "window x max" ],
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "maximum projected x coordinate"
+        },
+        "attrWindowYMin": {
+            "name": "window_y_min",
+            "label": "window y min",
+            "aliases": [ "window y min" ],
+            "type": "Float",
+            "default": "-1.0f",
+            "comment": "minimum projected y coordinate"
+        },
+        "attrWindowYMax": {
+            "name": "window_y_max",
+            "label": "window y max",
+            "aliases": [ "window y max" ],
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "maximum projected y coordinate"
+        }
+    }
+}

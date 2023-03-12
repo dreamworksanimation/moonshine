@@ -1,0 +1,39 @@
+{
+    "name": "ClampMap",
+    "type": "Map",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "the input values to be remapped"
+        },
+        "attrClamp": {
+            "name": "clamp",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables/disables clamping of the output values.  This useful prevent out-of-range values when expanding the input values."
+        },
+        "attrClampMin": {
+            "name": "clamp_min",
+            "label": "clamp min",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "the minimum value output by this map when 'clamp' is enabled",
+            "enable if": {
+                "clamp": "true"
+            }
+        },
+        "attrClampMax": {
+            "name": "clamp_max",
+            "label": "clamp max",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "the maximum value output by this map when 'clamp' is enabled",
+            "enable if": {
+                "clamp": "true"
+            }
+        }
+    }
+}

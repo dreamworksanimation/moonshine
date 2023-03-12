@@ -1,0 +1,80 @@
+// Copyright 2023 DreamWorks Animation LLC
+// SPDX-License-Identifier: Apache-2.0
+
+/// @file Blending.isph
+
+#pragma once
+
+#include <moonray/rendering/shading/ispc/Shading.isph>
+#include <scene_rdl2/common/platform/IspcUtil.isph>
+#include <scene_rdl2/common/math/ispc/ColorSpace.isph>
+#include <moonshine/material/dwabase/ispc/DwaBaseLayerable.isph>
+#include <moonshine/material/glitter/ispc/Glitter.isph>
+
+enum BlendColorSpace {
+    COLOR_BLEND_RGB,
+    COLOR_BLEND_HSV,
+    COLOR_BLEND_HSL
+};
+
+struct SubMtlData {
+    uniform bool     mHasGlitter;
+    uniform intptr_t mDwaBaseLayerable;
+    uniform intptr_t mGetCastsCausticsFunc;
+    uniform intptr_t mResolveParametersFunc;
+    uniform intptr_t mResolvePresenceFunc;
+    uniform intptr_t mResolvePreventLightCullingFunc;
+    uniform intptr_t mResolveSubsurfaceTypeFunc;
+    uniform intptr_t mResolveSubsurfaceNormalFunc;
+};
+
+void
+DWABASE_setUniformParameters(const uniform DwaBaseUniformParameters* uniform uParams,
+                             varying DwaBaseParameters* uniform params);
+
+bool
+DWABASE_blendParameters(const uniform Material* uniform me,
+                        uniform ShadingTLState *uniform tls,
+                        const varying State& state,
+                        const uniform bool castsCaustics,
+                        varying DwaBaseParameters* uniform params,
+                        const uniform DwaBaseUniformParameters* uniform uParams,
+                        const uniform int colorSpace,
+                        const uniform GLITTER_Glitter * uniform glitterPtr,
+                        const uniform GLITTER_UniformParameters * uniform glitterUniformParams,
+                        uniform intptr_t evalSubsurfaceNormalFn,
+                        const uniform SubMtlData& subMtl0,
+                        const uniform SubMtlData& subMtl1,
+                        const varying float mask);
+
+bool
+DWABASE_blendHairParameters(const uniform Material* uniform me,
+                            uniform ShadingTLState *uniform tls,
+                            const varying State& state,
+                            const uniform bool castsCaustics,
+                            varying DwaBaseParameters* uniform params,
+                            const uniform DwaBaseUniformParameters* uniform uParams,
+                            const uniform int colorSpace,
+                            uniform intptr_t evalSubsurfaceNormalFn,
+                            const uniform SubMtlData& subMtl0,
+                            const uniform SubMtlData& subMtl1,
+                            uniform int errorMismatchedFresnelType,
+                            const varying float mask);
+
+float
+DWABASE_blendPresence(uniform ShadingTLState *uniform tls,
+                      const varying State& state,
+                      const uniform SubMtlData& subMtl0,
+                      const uniform SubMtlData& subMtl1,
+                      varying float mask);
+
+// TODO: This function is not tested and not completed because subsurface
+// scattering currently goes through the scalar integrator. In particular, this
+// might not properly handle the "enable sss input normal" toggle.
+Vec3f
+DWABASE_blendSubsurfaceNormal(uniform ShadingTLState *uniform tls,
+                              const varying State& state,
+                              const uniform SubMtlData& subMtl0,
+                              const uniform SubMtlData& subMtl1,
+                              varying float mask);
+

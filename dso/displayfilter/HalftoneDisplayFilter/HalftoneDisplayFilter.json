@@ -1,0 +1,42 @@
+{
+    "name": "HalftoneDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput to be represented in halftone"
+        },
+        "attrSize": {
+            "name": "size",
+            "type": "Int",
+            "default": "5",
+            "comment": "The size in pixels of the halftone dots"
+        },
+       "attrFilterWidth": {
+            "name": "filter_width",
+            "label": "filter width",
+            "type": "Float",
+            "default": "1.0",
+            "comment": "The width in pixels of the antialiasing"
+        },
+        "attrInvert": {
+            "name": "invert",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Whether the dots should be black (normal) or white/color (inverted)"
+        },
+        "attrGrayscale": {
+            "name": "grayscale",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Ignore color information, render as grayscale"
+        }
+    }
+}

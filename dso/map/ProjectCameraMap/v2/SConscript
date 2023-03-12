@@ -1,0 +1,22 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+target = 'ProjectCameraMap_v2.so'
+cc_source = ['ProjectCameraMap_v2.cc']
+ispc_source = ['ProjectCameraMap_v2.ispc']
+json_source = ['ProjectCameraMap_v2.json']
+components = [
+    'map_primvar',
+    'map_projection',
+    'rendering_shading',
+    'scene_rdl2',
+    'shading_ispc'
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

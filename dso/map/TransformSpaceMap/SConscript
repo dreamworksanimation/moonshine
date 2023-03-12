@@ -1,0 +1,20 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+target = 'TransformSpaceMap.so'
+cc_source = ['TransformSpaceMap.cc']
+ispc_source = ['TransformSpaceMap.ispc']
+json_source = ['TransformSpaceMap.json']
+components = [
+    'shading_ispc',
+    'rendering_shading',
+    'scene_rdl2',
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

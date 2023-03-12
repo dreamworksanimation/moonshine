@@ -1,0 +1,46 @@
+{
+    "attributes": {
+        "attrDiffuseTransmission" : {
+            "name": "diffuse_transmission",
+            "label": "diffuse transmission",
+            "comment": "multiplier on the amount of light that is transmitted through the surface.",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true"
+            }            
+        },
+        "attrDiffuseTransmissionColor" : {
+            "name": "diffuse_transmission_color",
+            "label": "diffuse transmission color",
+            "aliases": [ "translucent_diffuse", "translucent diffuse" ],
+            "comment": "the color/amount of light that is transmitted through the surface.",
+            "type": "Rgb",
+            "default": "Rgb(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true"
+            }            
+        },
+        "attrDiffuseTransmissionBlendingBehavior" : {
+            "name": "diffuse_transmission_blending_behavior",
+            "label": "diffuse transmission blending behavior",
+            "aliases": [ "translucent_diffuse_blending_behavior" ],
+            "comment": "Controls how diffuse transmission color attenuates diffuse reflection",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "RGB": "0",
+                "Monochromatic": "1"
+            },
+            "default": "1",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true"
+            }            
+        }
+    }
+}

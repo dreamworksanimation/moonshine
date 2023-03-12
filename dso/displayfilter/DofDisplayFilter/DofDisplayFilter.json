@@ -1,0 +1,51 @@
+{
+    "name": "DofDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput to which to apply depth of field"
+        },
+        "attrDepth": {
+            "name": "depth",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "The 'depth' RenderOutput to sample z-depth values from"
+        },
+        "attrUseCameraAttributes": {
+            "name": "use_camera_attributes",
+            "label": "use camera attributes",
+            "type": "Bool",
+            "default": "true",
+            "comment": "Read dof attributes from the active scene camera"
+        },
+        "attrAperture": {
+            "name": "aperture",
+            "type": "Float",
+            "default": "8.0f",
+            "comment": "Aperture in millimeters"
+        },
+        "attrFocalLength": {
+            "name": "focal_length",
+            "label": "focal length",
+            "type": "Float",
+            "default": "30.0f",
+            "comment": "Focal length in millimeters"
+        },
+        "attrFocusDistance": {
+            "name": "focus_distance",
+            "label": "focus distance",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "Focus distance"
+        }
+    }
+}
+

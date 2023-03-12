@@ -1,0 +1,23 @@
+{
+    "name": "DiscretizeDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput to discretize"
+        },
+        "attrNumBins": {
+            "name": "num_bins",
+            "type": "Int",
+            "default": "8",
+            "comment": "Number of discrete color bins"
+        }
+    }
+}

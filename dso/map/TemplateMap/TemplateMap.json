@@ -1,0 +1,12 @@
+{
+    "name": "TemplateMap",
+    "type": "Map",
+    "attributes": {
+        "attrColor": {
+            "name": "color",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE"
+        }
+    }
+}

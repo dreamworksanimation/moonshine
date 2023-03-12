@@ -1,0 +1,13 @@
+{
+    "name": "ConstantScalarMap",
+    "type": "Map",
+    "attributes": {
+        "attrScalarValue": {
+            "name": "scalar_value",
+            "label": "scalar value",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "constant scalar value"
+        }
+    }
+}

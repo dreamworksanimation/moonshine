@@ -1,0 +1,21 @@
+Import('env')
+
+# ---------------------------------------------------------------
+
+name = 'dso_floattorgbmap'
+target = 'FloatToRgbMap.so'
+cc_source = ['FloatToRgbMap.cc']
+ispc_source = ['FloatToRgbMap.ispc']
+json_source = ['FloatToRgbMap.json']
+components = [
+    'rendering_shading',
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)
+env.DWAComponent(name, COMPONENTS=components)

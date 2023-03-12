@@ -1,0 +1,47 @@
+{
+    "name": "HairMap",
+    "type": "Map",
+    "attributes": {
+        "attrBaseHairColor": {
+            "name": "base_color",
+            "label": "base color",
+            "aliases": [ "base color" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Color at each hair's base"
+        },
+        "attrTipHairColor": {
+            "name": "tip_color",
+            "label": "tip color",
+            "aliases": [ "tip color" ],
+            "type": "Rgb",
+			"default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Color at each hair's tip"
+        },
+        "attrLengthWiseBias": {
+            "name": "bias",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Modulates the shape of blending between base and tip color. < 0.5 pushes the center of the blend towards the base, and > 0.5 towards the tip."
+        },
+        "attrLengthWiseGain": {
+            "name": "gain",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Modulates the shape of blending between base and tip color. < 0.5 is higher contrast in the middle of the blend. > 0.5 is higher contrast at the start and end, and lower contrast in the middle."
+        },
+        "attrHairColumnUvColor": {
+            "name": "column_uv_color",
+            "label": "column uv color",
+            "aliases": [ "column uv color" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Bound image map must have a HairColumnUvMap bound to its input texture coordinates."
+        }
+    }
+}

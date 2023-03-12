@@ -1,0 +1,32 @@
+{
+    "name": "ProjectPlanarMap",
+    "type": "Map",
+    "directives": {
+        "include": ["lib/map/projection/json/projection.json"]
+    },
+    "attributes": {
+        "attrProjectOnBackFaces": {
+            "name": "project_on_back_faces",
+            "label": "project on back faces",
+            "aliases": [ "project on back faces" ],
+            "type": "Bool",
+            "default": "true",
+            "comment": "Toggles whether projections appear on back faces relative to projector"
+        },
+        "attrBlackOutsideProjection": {
+            "name": "black_outside_projection",
+            "label": "black outside projection",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Toggles whether projections appear outside the 0-1 uv range of the projector"
+        },
+        "attrUseReferenceSpace": {
+            "name": "use_reference_space",
+            "label": "use reference space",
+            "aliases": [ "use reference space" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "Use reference space"
+        }
+    }
+}

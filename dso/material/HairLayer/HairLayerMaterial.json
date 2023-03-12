@@ -1,0 +1,66 @@
+{
+    "name": "HairLayerMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASEHAIRLAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/labels.json"
+        ]
+    },
+    "attributes": {
+        "attrHairMaterialA": {
+            "name": "hair_material_A",
+            "label": "hair material A",
+            "aliases": [ "hair material A" ],
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_DWABASEHAIRLAYERABLE",
+            "comment": "foreground hair material"
+        },
+        "attrHairMaterialB": {
+            "name": "hair_material_B",
+            "label": "hair material B",
+            "aliases": [ "hair material B" ],
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_DWABASEHAIRLAYERABLE",
+            "comment": "background hair material"
+        },
+        "attrMask": {
+            "name": "mask",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "foreground hair material weight",
+            "min": 0.0,
+            "max": 1.0
+        },
+        "attrColorSpace": {
+            "name": "blend_color_space",
+            "label": "blend color space",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "RGB": "0",
+                "HSV": "1",
+                "HSL": "2"
+            },
+            "default": "0",
+            "comment": "Color space used when blending the two material's color parameters",
+            "group": "Advanced"
+        },
+        "attrFallbackBSSRDF": {
+            "name": "fallback_bssrdf",
+            "label": "fallback bssrdf",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "normalized diffusion": "0",
+                "dipole": "1"
+            },
+            "default": "0",
+            "comment": "If child materials disagree on the type of bssrdf, this type will be used instead.",
+            "group": "Advanced"
+        }
+    }
+}

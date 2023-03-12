@@ -1,0 +1,102 @@
+{
+    "attributes": {
+        "attrShowTransmission" : {
+            "name": "show_transmission",
+            "label": "show transmission",
+            "aliases": [ "show transmission" ],
+            "comment": "enables/disables refractive solid model",
+            "type": "Bool",
+            "default": "true",
+            "group": "Transmission"
+        },
+        "attrTransmissionColor" : {
+            "name": "transmission_color",
+            "label": "transmission color",
+            "aliases": [ "transmission color" ],
+            "comment": "the desired color of transmitted light",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true"
+            }
+        },
+        "attrUseIndependentTransmissionRefractiveIndex": {
+            "name": "use_independent_transmission_refractive_index",
+            "label": "use independent transmission refractive index",
+            "aliases": [ "use independent transmission refractive index" ],
+            "comment": "use a separate IOR for transmission",
+            "type": "Bool",
+            "default": "false",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true"
+            }
+        },
+        "attrIndependentTransmissionRefractiveIndex" : {
+            "name": "independent_transmission_refractive_index",
+            "label": "independent transmission refractive index",
+            "aliases": [ "independent transmission refractive index" ],
+            "comment": "defines a separate IOR for the bending of light with transmission",
+            "type": "Float",
+            "default": "1.5f",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true",
+                "use_independent_transmission_refractive_index": "true"
+            }
+        },
+        "attrUseIndependentTransmissionRoughness": {
+            "name": "use_independent_transmission_roughness",
+            "label": "use independent transmission roughness",
+            "comment": "use a separate roughness for transmission",
+            "type": "Bool",
+            "default": "false",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true"
+            }
+        },
+        "attrIndependentTransmissionRoughness" : {
+            "name": "independent_transmission_roughness",
+            "label": "independent transmission roughness",
+            "comment": "separate roughness for transmission",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true",
+                "use_independent_transmission_roughness": "true"
+            },
+            "min" : "0.0f",
+            "max" : "1.0f"
+        },
+        "attrUseDispersion" : {
+            "name": "use_dispersion",
+            "label": "use dispersion",
+            "comment": "use dispersion effects in transmission",
+            "type": "Bool",
+            "default": "false",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true"
+            }
+        },
+        "attrDispersionAbbeNumber" : {
+            "name": "dispersion_abbe_number",
+            "label": "dispersion abbe number",
+            "comment": "The amount of dispersion/chromatic-aberration via refractions. Lower this number to increase the effect. A value of 0 turns off dispersion. Around [25-80] makes sense for realistic glass. Lower values may look better on gemstones.",
+            "type": "Float",
+            "default": "34",
+            "group": "Transmission",
+            "enable if": {
+                "show_transmission": "true",
+                "use_dispersion": "true"
+            },
+            "min": "0.0f",
+            "max": "100.0f"
+        }
+    }
+}

@@ -1,0 +1,198 @@
+{
+    "name": "RemapMap",
+    "type": "Map",
+    "attributes": {
+        "attrRemapMethod": {
+            "name": "remap_method",
+            "label": "remap method",
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "uniform": "0",
+                "RGB": "1"
+            },
+            "comment": "Choose whether you are remapping using single values (uniform) or with separate RGB channels"
+	    },
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "the input values to be remapped"
+        },
+        "attrInMin": {
+            "name": "input_min",
+            "label": "input min",
+            "aliases": [ "input min" ],
+            "type": "Float",
+            "default": "0.0f",
+            "enable if": {
+                "remap_method": "uniform"
+            },
+            "comment": "the input value that will be remapped to the 'output min' value"
+        },
+        "attrInMax": {
+            "name": "input_max",
+            "label": "input max",
+            "aliases": [ "input max" ],
+            "type": "Float",
+            "default": "1.0f",
+            "enable if": {
+                "remap_method": "uniform"
+            },
+            "comment": "the input value that will be remapped to the 'output max' value"
+        },
+        "attrOutMin": {
+            "name": "output_min",
+            "label": "output min",
+            "aliases": [ "output min" ],
+            "type": "Float",
+            "default": "0.0f",
+            "enable if": {
+                "remap_method": "uniform"
+            },
+            "comment": "the value that 'input min' is remapped to"
+        },
+        "attrOutMax": {
+            "name": "output_max",
+            "label": "output max",
+            "aliases": [ "output max" ],
+            "type": "Float",
+            "default": "1.0f",
+            "enable if": {
+                "remap_method": "uniform"
+            },
+            "comment": "the value that 'input max' is remapped to"
+        },
+        "attrBias": {
+            "name": "midpoint_bias",
+            "label": "midpoint bias",
+            "aliases": [ "midpoint bias" ],
+            "type": "Float",
+            "default": "0.5f",
+            "enable if": {
+                "remap_method": "uniform"
+            },
+            "comment": "biases the in-between values toward 'output min' or 'output max'. Default = 0.5"
+        },
+        "attrClamp": {
+            "name": "clamp",
+            "type": "Bool",
+            "default": "true",
+            "enable if": {
+                "remap_method": "uniform"
+            },
+            "comment": "enables/disables clamping of the output values.  This useful prevent out-of-range values when expanding the input values."
+        },
+        "attrClampMin": {
+            "name": "clamp_min",
+            "label": "clamp min",
+            "aliases": [ "clamp min" ],
+            "type": "Float",
+            "default": "0.0f",
+            "enable if": {
+                "remap_method": "uniform"
+            },
+            "comment": "the minimum value output by this map when 'clamp' is enabled"
+        },
+        "attrClampMax": {
+            "name": "clamp_max",
+            "label": "clamp max",
+            "aliases": [ "clamp max" ],
+            "type": "Float",
+            "default": "1.0f",
+            "enable if": {
+                "remap_method": "uniform"
+            },
+            "comment": "the maximum value output by this map when 'clamp' is enabled"
+        },
+        "attrInMinRGB": {
+            "name": "input_min_RGB",
+            "label": "input min RGB",
+            "type": "Rgb",
+            "group": "Channel",
+            "default": "Rgb(0.f, 0.f, 0.f)",
+            "enable if": {
+                "remap_method": "RGB"
+            },
+            "comment": "the input value that will be remapped to the 'output min' value"
+        },
+        "attrInMaxRGB": {
+            "name": "input_max_RGB",
+            "label": "input max RGB",
+            "type": "Rgb",
+            "group": "Channel",
+            "default": "Rgb(1.f, 1.f, 1.f)",
+            "enable if": {
+                "remap_method": "RGB"
+            },
+            "comment": "the input value that will be remapped to the 'output max' value"
+        },
+        "attrOutMinRGB": {
+            "name": "output_min_RGB",
+            "label": "output min RGB",
+            "type": "Rgb",
+            "group": "Channel",
+            "default": "Rgb(0.f, 0.f, 0.f)",
+            "enable if": {
+                "remap_method": "RGB"
+            },
+            "comment": "the value that 'input min' is remapped to"
+        },
+        "attrOutMaxRGB": {
+            "name": "output_max_RGB",
+            "label": "output max RGB",
+            "type": "Rgb",
+            "group": "Channel",
+            "default": "Rgb(1.f, 1.f, 1.f)",
+            "enable if": {
+                "remap_method": "RGB"
+            },
+            "comment": "the value that 'input max' is remapped to"
+        },
+        "attrBiasRGB": {
+            "name": "midpoint_bias_RGB",
+            "label": "midpoint bias RGB",
+            "type": "Rgb",
+            "group": "Channel",
+            "default": "Rgb(0.5f, 0.5f, 0.5f)",
+            "enable if": {
+                "remap_method": "RGB"
+            },
+            "comment": "biases the in-between values toward 'output min' or 'output max'. Default = 0.5"
+        },
+        "attrClampRGB": {
+            "name": "clamp_RGB",
+            "label": "clamp RGB",
+            "type": "Bool",
+            "default": "true",
+            "enable if": {
+                "remap_method": "RGB"
+            },
+            "comment": "enables/disables clamping of the output values.  This useful prevent out-of-range values when expanding the input values."
+        },
+        "attrClampMinRGB": {
+            "name": "clamp_min_RGB",
+            "label": "clamp min RGB",
+            "type": "Rgb",
+            "group": "Channel",
+            "default": "Rgb(0.f, 0.f, 0.f)",
+            "enable if": {
+                "remap_method": "RGB"
+            },
+            "comment": "the minimum value output by this map when 'clamp' is enabled"
+        },
+        "attrClampMaxRGB": {
+            "name": "clamp_max_RGB",
+            "label": "clamp max RGB",
+            "type": "Rgb",
+            "group": "Channel",
+            "default": "Rgb(1.f, 1.f, 1.f)",
+            "enable if": {
+                "remap_method": "RGB"
+            },
+            "comment": "the maximum value output by this map when 'clamp' is enabled"
+        }
+    }
+}

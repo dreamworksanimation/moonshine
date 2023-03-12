@@ -1,0 +1,501 @@
+{
+    "name": "ColorCorrectMap",
+    "type": "Map",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "comment": "bind the input here",
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrOn": {
+            "name": "on",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables/disables all color correct operations"
+        },
+        "attrMix": {
+            "name": "mix",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "how much of the overall color correct to mix in",
+            "enable if": {
+                "on": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrClamp": {
+            "name": "clamp",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables/disables clamping of the output values."
+        },
+        "attrClampMin": {
+            "name": "clamp_min",
+            "label": "clamp min",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "the minimum value output by this map when 'clamp' is enabled",
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrClampMax": {
+            "name": "clamp_max",
+            "label": "clamp max",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "the maximum value output by this map when 'clamp' is enabled",
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrHueShiftEnabled": {
+            "name": "hue_shift_enabled",
+            "label": "hue shift enabled",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables the hue_shift parameter",
+            "enable if": {
+                "on": "true"
+            }
+        },
+        "attrHueShift": {
+            "name": "hue_shift",
+            "label": "hue shift",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "shifts the hue of the input (spectrum range is 0-1)",
+            "enable if": {
+                "on": "true",
+                "hue_shift_enabled": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrSaturationEnabled": {
+            "name": "saturation_enabled",
+            "label": "saturation enabled",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables the saturation parameter",
+            "enable if": {
+                "on": "true"
+            }
+        },
+        "attrSaturation": {
+            "name": "saturation",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "desaturates the input below 1.0 and adds saturation above 1.0",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "saturation_enabled": "true",
+                "use_per_channel_saturation": "false"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrContrastEnabled": {
+            "name": "contrast_enabled",
+            "label": "contrast enabled",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables the contrast parameter",
+            "enable if": {
+                "on": "true"
+            }
+        },
+        "attrContrast": {
+            "name": "contrast",
+            "type": "Float",
+            "default": "0.0",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "negative values reduce the difference in luminance towards grey and positive values increase the difference in luminance",
+            "enable if": {
+                "on": "true",
+                "contrast_enabled": "true",
+                "use_per_channel_contrast": "false"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        },
+        "attrGammaEnabled": {
+            "name": "gamma_enabled",
+            "label": "gamma enabled",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables the gamma parameter",
+            "enable if": {
+                "on": "true"
+            }
+        },
+        "attrGamma": {
+            "name": "gamma",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "raises the input to the specified exponents",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gamma_enabled": "true",
+                "use_per_channel_gamma": "false"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrGainOffsetEnabled": {
+            "name": "gain_offset_enabled",
+            "label": "gain offset enabled",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables the gain and offset parameters",
+            "enable if": {
+                "on": "true"
+            }
+        },
+        "attrGain": {
+            "name": "gain",
+            "type": "Float",
+            "default": "1.0f",
+            "comment": "multiplies the input channels by the specified values",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gain_offset_enabled": "true",
+                "use_per_channel_gain_offset": "false"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrOffset": {
+            "name": "offset",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "adds the specified values to the input",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gain_offset_enabled": "true",
+                "use_per_channel_gain_offset": "false"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        },
+        "attrTMIControlEnabled": {
+            "name": "TMI_enabled",
+            "label": "TMI enabled",
+            "type": "Bool",
+            "default": "true",
+            "comment": "enables the TMI parameters",
+            "enable if": {
+                "on": "true"
+            }
+        },
+        "attrTMI": {
+            "name": "TMI",
+            "type": "Rgb",
+            "display": "tmi",
+            "default": "Rgb(0.0f, 0.0f, 0.0f)",
+            "comment": "T = Temperature where positive values push towards blue and negative towards red.   M = Magenta where positive values push towards magenta and negative towards green.  I = Intensity where negative values remove and positive values add energy ",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "TMI_enabled": "true"
+            },
+            "min": "-2.0f",
+            "max": "2.0f"
+        },
+        "attrSaturationPerChannel": {
+            "name": "use_per_channel_saturation",
+            "label": "use per channel saturation",
+            "type": "Bool",
+            "default": "false",
+            "group": "Advanced",
+            "comment": "enables separate RGB controls for saturation",
+            "enable if": {
+                "on": "true",
+                "saturation_enabled": "true"
+            }
+        },
+        "attrSaturationR": {
+            "name": "saturation_r",
+            "label": "saturation r",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "desaturates the red channel input below 1.0 and adds saturation above 1.0",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "saturation_enabled": "true",
+                "use_per_channel_saturation": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrSaturationG": {
+            "name": "saturation_g",
+            "label": "saturation g",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "desaturates the green channel input below 1.0 and adds saturation above 1.0",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "saturation_enabled": "true",
+                "use_per_channel_saturation": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrSaturationB": {
+            "name": "saturation_b",
+            "label": "saturation b",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "desaturates the blue channel input below 1.0 and adds saturation above 1.0",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "saturation_enabled": "true",
+                "use_per_channel_saturation": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrContrastPerChannel": {
+            "name": "use_per_channel_contrast",
+            "label": "use per channel contrast",
+            "type": "Bool",
+            "default": "false",
+            "group": "Advanced",
+            "comment": "enables separate RGB controls for contrast",
+            "enable if": {
+                "on": "true",
+                "contrast_enabled": "true"
+            }
+        },
+        "attrContrastR": {
+            "name": "contrast_r",
+            "label": "contrast r",
+            "type": "Float",
+            "default": "0.0",
+            "group": "Advanced",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "negative values reduce the difference in luminance towards grey and positive values increase the difference in luminance for the red channel",
+            "enable if": {
+                "on": "true",
+                "contrast_enabled": "true",
+                "use_per_channel_contrast": "true"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        },
+        "attrContrastG": {
+            "name": "contrast_g",
+            "label": "contrast g",
+            "type": "Float",
+            "default": "0.0",
+            "group": "Advanced",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "negative values reduce the difference in luminance towards grey and positive values increase the difference in luminance for the green channel",
+            "enable if": {
+                "on": "true",
+                "contrast_enabled": "true",
+                "use_per_channel_contrast": "true"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        },
+        "attrContrastB": {
+            "name": "contrast_b",
+            "label": "contrast b",
+            "type": "Float",
+            "default": "0.0",
+            "group": "Advanced",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "negative values reduce the difference in luminance towards grey and positive values increase the difference in luminance for the blue channel",
+            "enable if": {
+                "on": "true",
+                "contrast_enabled": "true",
+                "use_per_channel_contrast": "true"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        },
+        "attrGammaPerChannel": {
+            "name": "use_per_channel_gamma",
+            "label": "use per channel gamma",
+            "type": "Bool",
+            "default": "false",
+            "group": "Advanced",
+            "comment": "enables separate RGB controls for gamma",
+            "enable if": {
+                "on": "true",
+                "gamma_enabled": "true"
+            }
+        },
+        "attrGammaR": {
+            "name": "gamma_r",
+            "label": "gamma r",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "raises the red channel to the specified exponents",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gamma_enabled": "true",
+                "use_per_channel_gamma": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrGammaG": {
+            "name": "gamma_g",
+            "label": "gamma g",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "raises the green channel to the specified exponents",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gamma_enabled": "true",
+                "use_per_channel_gamma": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrGammaB": {
+            "name": "gamma_b",
+            "label": "gamma b",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "raises the blue channel to the specified exponents",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gamma_enabled": "true",
+                "use_per_channel_gamma": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrGainOffsetPerChannel": {
+            "name": "use_per_channel_gain_offset",
+            "label": "use per channel gain offset",
+            "type": "Bool",
+            "default": "false",
+            "group": "Advanced",
+            "comment": "enables separate RGB controls for gain and offset",
+            "enable if": {
+                "on": "true",
+                "gain_offset_enabled": "true"
+            }
+        },
+        "attrGainR": {
+            "name": "gain_r",
+            "label": "gain r",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "multiplies the red channel by the specified values",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gain_offset_enabled": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrGainG": {
+            "name": "gain_g",
+            "label": "gain g",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "multiplies the green channel by the specified values",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gain_offset_enabled": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrGainB": {
+            "name": "gain_b",
+            "label": "gain b",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "multiplies the blue channel by the specified values",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gain_offset_enabled": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "0.0f",
+            "max": "4.0f"
+        },
+        "attrOffsetR": {
+            "name": "offset_r",
+            "label": "offset r",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "adds the specified values to the red channel",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gain_offset_enabled": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        },
+        "attrOffsetG": {
+            "name": "offset_g",
+            "label": "offset g",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "adds the specified values to the green channel",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gain_offset_enabled": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        },
+        "attrOffsetB": {
+            "name": "offset_b",
+            "label": "offset b",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Advanced",
+            "comment": "adds the specified values to the blue channel",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "on": "true",
+                "gain_offset_enabled": "true",
+                "use_per_channel_gain_offset": "true"
+            },
+            "min": "-1.0f",
+            "max": "1.0f"
+        }
+    }
+}

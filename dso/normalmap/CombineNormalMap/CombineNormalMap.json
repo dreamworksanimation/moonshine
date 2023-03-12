@@ -1,0 +1,42 @@
+{
+    "name": "CombineNormalMap",
+    "type": "NormalMap",
+    "attributes": {
+        "attrInput1": {
+            "name": "input_1",
+            "label": "input 1",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_NORMALMAP",
+            "comment": "First normal map to combine; usually a base map",
+            "group": "Normal"
+        },
+        "attrNormalMap1Dial": {
+            "name": "normal_map_1_dial",
+            "label": "normal map 1 dial",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Amount of normal map 1 to blend in",
+            "group": "Normal"
+        },
+        "attrInput2": {
+            "name": "input_2",
+            "label": "input 2",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_NORMALMAP",
+            "comment": "Second normal map to combine; usually a base map",
+            "group": "Normal"
+        },
+        "attrNormalMap2Dial": {
+            "name": "normal_map_2_dial",
+            "label": "normal map 2 dial",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Amount of normal map 2 to blend in",
+            "group": "Normal"
+        }
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "name": "SwitchFloatMap",
+    "type": "Map",
+    "attributes": {
+         "attrChoice": {
+            "name": "choice",
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "which of the 64 inputs (0 to 63) to use"
+        },
+        "attrInput": {
+            "name": "input",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "multi": "64"
+        }
+    }
+}

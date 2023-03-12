@@ -1,0 +1,90 @@
+{
+    "attributes": {
+        "attrShowFuzz" : {
+            "name": "show_fuzz",
+            "label": "show fuzz",
+            "comment": "Enables/disables fuzz lobe",
+            "type": "Bool",
+            "default": "false",
+            "group": "Fuzz"
+        },
+        "attrFuzz": {
+            "name": "fuzz",
+            "label": "fuzz",
+            "comment": "fuzz mask",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Fuzz",
+            "enable if": {
+                "show_fuzz": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrFuzzRoughness": {
+            "name": "fuzz_roughness",
+            "aliases": ["fuzz_coverage"],
+            "label": "fuzz roughness",
+            "comment": "Lower values result in glancing angle highlights while higher values result in a broad, uniform coverage",
+            "type": "Float",
+            "default": "0.25f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Fuzz",
+            "enable if": {
+                "show_fuzz": "true"
+            },
+            "min": "0.0f",
+            "max": "1.0f"            
+        },
+        "attrFuzzAlbedo": {
+            "name": "fuzz_albedo",
+            "label": "fuzz albedo",
+            "comment": "Color of the fuzz highlights.",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Fuzz",
+            "enable if": {
+                "show_fuzz": "true"
+            }
+        },
+        "attrFuzzUseAbsorbingFibers": {
+            "name": "use_absorbing_fuzz_fibers",
+            "label": "use absorbing fuzz fibers",
+            "comment": "Specify whether dark fuzz fibers absorb energy or transmit it to the layers below.",
+            "type": "Bool",
+            "default": "false",
+            "group": "Fuzz",
+            "enable if": {
+                "show_fuzz": "true"
+            }
+        },
+        "attrFuzzNormal": {
+            "name": "fuzz_normal",
+            "label": "fuzz normal",
+            "aliases": [ "fuzz normal" ],
+            "comment": "specifies an independent shading normal (normal map) for the fuzz lobe",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_NORMALMAP",
+            "group": "Fuzz",
+            "enable if": {
+                "show_fuzz": "true"
+            }
+        },
+        "attrFuzzNormalDial": {
+            "name": "fuzz_normal_dial",
+            "label": "fuzz normal dial",
+            "comment": "controls the amount of infuence of the alternate fuzz normal",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Fuzz",
+            "min": "0.0f",
+            "max": "1.0f",
+            "enable if": {
+                "show_fuzz": "true"
+            }
+        }
+    }
+}

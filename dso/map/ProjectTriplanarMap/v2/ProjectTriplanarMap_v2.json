@@ -1,0 +1,24 @@
+{
+    "name": "ProjectTriplanarMap_v2",
+    "type": "Map",
+    "directives": {
+        "include": ["lib/map/projection/json/projection_triplanar.json",
+                    "lib/map/projection/json/projection.json",
+                    "lib/map/primvar/json/input_source.json"]
+    },
+    "attributes": {
+        "attrGamma": {
+            "name": "gamma",
+            "type": "Int",
+            "default": "2",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "off": "0",
+                "on": "1",
+                "auto": "2"
+            },
+            "comment": "Controls application of gamma to images (off -0, on - 1, auto - 2).   Auto will apply gamma decoding to 8-bit images"
+        }
+    }
+}
+

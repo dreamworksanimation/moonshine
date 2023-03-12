@@ -1,0 +1,20 @@
+Import('env')
+
+
+# ---------------------------------------------------------------
+
+target = 'ColorCorrectGainOffsetMap.so'
+cc_source = ['ColorCorrectGainOffsetMap.cc']
+ispc_source = ['ColorCorrectGainOffsetMap.ispc']
+json_source = ['ColorCorrectGainOffsetMap.json']
+components = [
+    'shading_ispc',
+    'scene_rdl2'
+]
+
+# ---------------------------------------------------------------
+
+()
+env.DWAUseComponents(components)
+dso = env.DWAIspcDso(env.File(target), cc_source, ispc_source, json_source)
+env.DWAInstallIspcDso(dso)

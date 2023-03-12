@@ -1,0 +1,50 @@
+{
+    "name": "DwaMixMaterial",
+    "type": "Material",
+    "interface_flags": "INTERFACE_DWABASELAYERABLE",
+    "directives": {
+        "include": [
+            "lib/material/dwabase/json/labels.json",
+            "lib/material/dwabase/json/blend.json"
+        ]
+    },
+    "attributes": {
+        "attrMaterial": {
+            "name": "material",
+            "label": "material",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_DWABASELAYERABLE",
+            "multi": "64"
+        },
+         "attrMix": {
+            "name": "mix",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "min": "0.0f",
+            "max": "63.0f",
+            "comment": "Which of the 64 inputs (0 to 63) to use. Fractional values will mix the two materials the value lies between"
+        },
+        "attrRemapMixToInputs": {
+            "name": "remap_mix_to_inputs",
+            "label": "remap mix to inputs",
+            "type": "Bool",
+            "default": "true",
+            "comment": "When enabled, multiplies mix value by number of inputs used. Inputs should start at 0 with no gaps"
+        },
+        "attrMixInterpolation": {
+            "name": "mix_interpolation",
+            "label": "mix interpolation",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "linear": "0",
+                "hold": "1",
+                "nearest": "2",
+                "smooth": "3"
+            },
+            "default": "0",
+            "comment": "Adjusts rate of transition from one material to the next based on mix value"
+        }
+    }
+}

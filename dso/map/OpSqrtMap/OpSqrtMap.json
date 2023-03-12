@@ -1,0 +1,12 @@
+{
+    "name": "OpSqrtMap",
+    "type": "Map",
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE"
+        }
+    }
+}

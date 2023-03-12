@@ -1,0 +1,723 @@
+// Copyright 2023 DreamWorks Animation LLC
+// SPDX-License-Identifier: Apache-2.0
+
+/// @file DwaBaseLayerable.isph
+
+#pragma once
+
+#include <moonray/rendering/shading/ispc/Shading.isph>
+#include <scene_rdl2/common/platform/IspcUtil.isph>
+#include <moonray/rendering/shading/ispc/Ior.isph>
+#include <moonshine/material/glitter/ispc/Glitter.isph>
+
+// Corresponding enum must be updated in BsdfToon.h and BsdfToon.isph
+// and number of ToonDRampColorMultiplier attributes
+enum DWABASE_ToonDiffuseConstants {
+    DWABASE_MAX_TOOND_RAMP_POINTS = 10
+};
+
+// Corresponding enum must be updated in Iridescence.h and BsdfIridescence.isph
+enum DWABASE_IridescenceConstants {
+    DWABASE_MAX_IRIDESCENCE_RAMP_POINTS = 10
+};
+
+// These structures hold the labels that will be assigned
+// to the various lobes for aovs and LPE's.
+struct HairLabels
+{
+    int mHair;
+    int mHairR;
+    int mHairTT;
+    int mHairTRT;
+    int mHairTRRT;
+};
+
+struct DwaBaseEventMessages {
+    // shade time error events - these can be static as long as we
+    // ensure they have the same value across all instances.
+    // no conditional registration of log events is allowed.
+    uniform int sErrorNoRefN;
+    uniform int sWarnNoRefPpartials;
+    uniform int sErrorScatterTagMissing;
+};
+
+struct DwaBaseLayerable
+{
+    DwaBaseEventMessages * uniform mEventMessagesPtr;
+    uniform int mScatterTagKey;
+};
+
+struct DwaBaseLabels
+{
+    HairLabels mHairLabels;
+    int mFuzz;
+    int mOuterSpecular; //clearcoat/moisture etc
+    int mSpecular;
+    int mDiffuse;
+    int mSpecularTransmission;
+    int mDiffuseTransmission;
+    int mGlitter;
+};
+
+// Controls how diffuse transmission color attenuates diffuse reflection
+enum DiffuseTransmissionBlendingBehavior {
+    DIFFUSE_TRANSMISSION_BLENDING_RGB,
+    DIFFUSE_TRANSMISSION_BLENDING_MONOCHROMATIC,
+};
+
+// Controls how diffuse is rendered when toon diffuse is active
+enum ToonDiffuseModel {
+    TOON_DIFFUSE_OREN_NAYAR,
+    TOON_DIFFUSE_RAMP
+};
+
+// Controls how specular is rendered when toon specular is active
+enum ToonSpecularModel {
+    ToonSpecularBeckman,
+    ToonSpecularGGX,
+    ToonSpecularSurface,
+    ToonSpecularHair
+};
+
+struct ToonDiffuseParameters
+{
+    float mToonDiffuse;
+    int   mModel;
+    float mTerminatorShift;
+    float mFlatness;
+    float mFlatnessFalloff;
+    int   mRampNumPoints;
+    float mRampPositions[DWABASE_MAX_TOOND_RAMP_POINTS];
+    Color mRampColors[DWABASE_MAX_TOOND_RAMP_POINTS];
+    RampInterpolatorMode mRampInterpolators[DWABASE_MAX_TOOND_RAMP_POINTS];
+    Vec3f mNormal;
+    bool mExtendRamp;
+};
+
+struct ToonSpecularParameters
+{
+    float mToonSpecular;
+    float mIntensity;
+    float mRoughness;
+    Color mTint;
+    int   mRampNumPoints;
+    float mRampPositions[DWABASE_MAX_TOOND_RAMP_POINTS];
+    float mRampValues[DWABASE_MAX_TOOND_RAMP_POINTS];
+    RampInterpolatorMode mRampInterpolators[DWABASE_MAX_TOOND_RAMP_POINTS];
+    Vec3f mNormal;
+    float mStretchU;
+    float mStretchV;
+    Vec3f mdPds;
+    Vec3f mdPdt;
+    uniform bool mEnableIndirectReflections;
+    float mIndirectReflectionsIntensity;
+    float mIndirectReflectionsRoughness;
+
+    Vec3f mHairDir;
+    Vec2f mHairUV;
+    float mHairIOR;
+    HairFresnelType mHairFresnelType;
+    float mHairCuticleLayerThickness;
+    float mHairRShift;
+};
+
+enum IridescenceLobe {
+    IRIDESCENCE_PRIMARY_SPECULAR,
+    IRIDESCENCE_OUTER_SPECULAR
+};
+
+struct IridescenceParameters
+{
+    float mIridescence;
+    IridescenceLobe mIridescenceApplyTo;
+    SHADING_IridescenceColorMode mIridescenceColorControl;
+    Color mIridescencePrimaryColor;
+    Color mIridescenceSecondaryColor;
+    bool  mIridescenceFlipHueDirection;
+    float mIridescenceThickness;
+    float mIridescenceExponent;
+    float mIridescenceAt0;
+    float mIridescenceAt90;
+    ColorRampControlSpace mIridescenceRampInterpolationMode;
+    int   mIridescenceRampNumPoints;
+    float mIridescenceRampPositions[DWABASE_MAX_IRIDESCENCE_RAMP_POINTS];
+    Color mIridescenceRampColors[DWABASE_MAX_IRIDESCENCE_RAMP_POINTS];
+    RampInterpolatorMode mIridescenceRampInterpolators[DWABASE_MAX_IRIDESCENCE_RAMP_POINTS];
+};
+
+struct HairParameters
+{
+    // Hair params
+    Vec3f mHairDir;
+    Color mHairColor;
+
+    float mHair;
+    bool mHairCastsCaustics;
+    Vec2f mHairUV;
+    float mHairIOR;
+    bool mHairShowR;
+    float mHairRShift;
+    float mHairRLongRoughness;
+    Color mHairRTint;
+    bool mHairShowTT;
+    float mHairTTShift;
+    float mHairTTLongRoughness;
+    float mHairTTAzimRoughness;
+    float mHairTTSaturation;
+    Color mHairTTTint;
+    bool mHairShowTRT;
+    float mHairTRTShift;
+    float mHairTRTLongRoughness;
+    Color mHairTRTTint;
+    bool mHairShowGlint;
+    float mHairGlintRoughness;
+    float mHairGlintMinTwists;
+    float mHairGlintMaxTwists;
+    float mHairGlintEccentricity;
+    float mHairGlintSaturation;
+    bool mHairShowTRRT;
+    float mHairTRRTLongRoughness;
+    HairFresnelType mHairFresnelType;
+    float mHairCuticleLayerThickness;
+    bool mHairUseOptimizedSampling;
+
+    float mHairDiffuse;
+    Color mHairDiffuseFrontColor;
+    Color mHairDiffuseBackColor;
+    bool mHairDiffuseUseIndependentFrontAndBackColor;
+
+    float mHairSubsurfaceBlend;
+};
+
+// This structure holds the parameters needed to construct the lobes
+// for a DwaBase material.
+// NOTE: All fields must be initialized in DWABASELAYERABLE_initParameters()
+// and DwaBaseLayerable::initParameters()
+struct DwaBaseParameters
+{
+    const uniform GLITTER_Glitter * uniform mGlitterPointerVector;
+    uniform intptr_t mGlitterPointerScalar;
+    const uniform GLITTER_UniformParameters * uniform mGlitterUniformParameters;
+    GLITTER_VaryingParameters mGlitterVaryingParameters;
+
+    HairParameters mHairParameters;
+
+    // Fuzz params
+    float mFuzz;
+    Color mFuzzAlbedo;
+    float mFuzzRoughness;
+    bool  mFuzzUseAbsorbingFibers;
+    Vec3f mFuzzNormal;
+    float mFuzzNormalDial;
+
+    // OuterSpecular params
+    float mOuterSpecular;
+    float mOuterSpecularRefractiveIndex;
+    float mOuterSpecularRoughness;
+    float mOuterSpecularThickness;
+    Color mOuterSpecularAttenuationColor;
+    Vec3f mOuterSpecularNormal;
+    float mOuterSpecularNormalLength;
+    float mOuterSpecularNormalDial;
+
+    // metallic params
+    float mMetallic;
+    Color mMetallicColor;
+    Color mMetallicEdgeColor;
+
+    // specular params
+    float mSpecular;
+    float mRefractiveIndex;
+    float mRoughness;
+    float mAnisotropy;
+    Vec2f mShadingTangent;
+
+    // fabric params
+    float mFabricSpecular;
+    Color mWarpColor;
+    float mWarpRoughness;
+    bool mUseIndependentWeftAttributes;
+    float mWeftRoughness;
+    Color mWeftColor;
+    Vec3f mWarpThreadDirection;
+    float mWarpThreadCoverage;
+    float mWarpThreadElevation;
+    float mFabricAttenuation;
+    Vec3f mFabricTangent;
+
+    IridescenceParameters mIridescenceParameters;
+
+    // transmission params
+    float mTransmission;
+    Color mTransmissionColor;
+    bool mUseIndependentTransmissionRefractiveIndex;
+    float mIndependentTransmissionRefractiveIndex;
+    bool mUseIndependentTransmissionRoughness;
+    float mIndependentTransmissionRoughness;
+    // dispersion support via abbe number
+    float mDispersionAbbeNumber;
+
+    // toon params
+    ToonDiffuseParameters mToonDiffuseParams;
+    ToonSpecularParameters mToonSpecularParams;
+
+    // hair toon params
+    ToonSpecularParameters mHairToonS1Params;
+    ToonSpecularParameters mHairToonS2Params;
+    ToonSpecularParameters mHairToonS3Params;
+
+    // diffuse params
+    Color mAlbedo;
+    float mDiffuseRoughness;
+    Color mScatteringRadius;
+    uniform bool mSSSResolveSelfIntersections;
+    uniform TraceSet * uniform mSubsurfaceTraceSet;
+
+
+    // diffuse transmission
+    Color mDiffuseTransmission;
+    int mDiffuseTransmissionBlendingBehavior;
+
+    // other params
+    Vec3f mNormal;
+    float mNormalLength;
+    float mNormalDial;
+    int mNormalAAStrategy;  // NormalAAStrategyType
+    float mNormalAADial;
+    Color mEmission;
+    uniform intptr_t mEvalSubsurfaceNormalFn;
+};
+
+struct DwaBaseUniformParameters
+{
+    uniform bool  mThinGeometry;
+    uniform int   mOuterSpecularModel;
+    uniform int   mOuterSpecularUseBending;
+    uniform int   mSpecularModel;
+    uniform ToonSpecularModel mToonSpecularModel;
+    uniform ToonSpecularModel mHairToonS1Model;
+    uniform ToonSpecularModel mHairToonS2Model;
+    uniform ToonSpecularModel mHairToonS3Model;
+    uniform int   mSubsurface;
+    uniform bool  mPreventLightCulling;
+};
+
+void DWABASELAYERABLE_initParameters(varying DwaBaseParameters * uniform params);
+
+// Extract lane 0 or print all lanes ?
+#if 1
+#define DWABASE_EXTRACT(val) extract(val, 0)
+#else
+#define DWABASE_EXTRACT(val) val
+#endif
+
+inline void
+DWABASELAYERABLE_printGlitterUniformParameters(const uniform GLITTER_UniformParameters * uniform const params)
+{
+    print("mSpace: %\n", DWABASE_EXTRACT((uint32_t) params->mSpace));
+    print("mFlakeRandomness: %\n", DWABASE_EXTRACT(params->mFlakeRandomness));
+    print("mDenseGlitterLodQuality: %\n", DWABASE_EXTRACT(params->mDenseGlitterLodQuality));
+    print("mSearchRadiusFactor: %\n", DWABASE_EXTRACT(params->mSearchRadiusFactor));
+    print("mLayeringMode: %\n", DWABASE_EXTRACT((uint32_t) params->mLayeringMode));
+}
+
+inline void
+DWABASELAYERABLE_printGlitterVaryingParameters(const varying GLITTER_VaryingParameters * uniform const params)
+{
+    print("mFlakeStyleFrequency[0]: %\n", DWABASE_EXTRACT(params->mFlakeStyleFrequency[0]));
+    print("mFlakeColor[0]: % % %\n",
+        DWABASE_EXTRACT(params->mFlakeColor[0].r),
+        DWABASE_EXTRACT(params->mFlakeColor[0].g),
+        DWABASE_EXTRACT(params->mFlakeColor[0].b));
+    print("mFlakeSize[0]: %\n", DWABASE_EXTRACT(params->mFlakeSize[0]));
+    print("mFlakeRoughness[0]: %\n", DWABASE_EXTRACT(params->mFlakeRoughness[0]));
+    print("mFlakeStyleFrequency[1]: %\n", DWABASE_EXTRACT(params->mFlakeStyleFrequency[1]));
+    print("mFlakeColor[1]: % % %\n",
+        DWABASE_EXTRACT(params->mFlakeColor[1].r),
+        DWABASE_EXTRACT(params->mFlakeColor[1].g),
+        DWABASE_EXTRACT(params->mFlakeColor[1].b));
+    print("mFlakeSize[1]: %\n", DWABASE_EXTRACT(params->mFlakeSize[1]));
+    print("mFlakeRoughness[1]: %\n", DWABASE_EXTRACT(params->mFlakeRoughness[1]));
+    print("mFlakeHSVColorVariation: % % %\n",
+        DWABASE_EXTRACT(params->mFlakeHSVColorVariation.x),
+        DWABASE_EXTRACT(params->mFlakeHSVColorVariation.y),
+        DWABASE_EXTRACT(params->mFlakeHSVColorVariation.z));
+    print("mFlakeDensity: %\n", DWABASE_EXTRACT(params->mFlakeDensity));
+    print("mFlakeJitter: %\n", DWABASE_EXTRACT(params->mFlakeJitter));
+    print("mFlakeOrientationRandomness: %\n", DWABASE_EXTRACT(params->mFlakeOrientationRandomness));
+    print("mCompensateDeformation: %\n", DWABASE_EXTRACT((uint32_t)params->mCompensateDeformation));
+    print("mApproximateForSecRays: %\n", DWABASE_EXTRACT((uint32_t)params->mApproximateForSecRays));
+    print("mGlitterMask: %\n", DWABASE_EXTRACT(params->mGlitterMask));
+}
+
+inline void
+DWABASELAYERABLE_printIridescenceParameters(const varying IridescenceParameters * uniform const params)
+{
+    print("mIridescence: %\n", DWABASE_EXTRACT(params->mIridescence));
+    print("mIridescenceApplyTo: %\n", DWABASE_EXTRACT((uint32_t) params->mIridescenceApplyTo));
+    print("mIridescenceColorControl: %\n", DWABASE_EXTRACT((uint32_t) params->mIridescenceColorControl));
+    print("mIridescencePrimaryColor: % % %\n",
+        DWABASE_EXTRACT(params->mIridescencePrimaryColor.r),
+        DWABASE_EXTRACT(params->mIridescencePrimaryColor.g),
+        DWABASE_EXTRACT(params->mIridescencePrimaryColor.b));
+    print("mIridescenceSecondaryColor: % % %\n",
+        DWABASE_EXTRACT(params->mIridescenceSecondaryColor.r),
+        DWABASE_EXTRACT(params->mIridescenceSecondaryColor.g),
+        DWABASE_EXTRACT(params->mIridescenceSecondaryColor.b));
+    print("mIridescenceFlipHueDirection: %\n", DWABASE_EXTRACT((uint32_t) params->mIridescenceFlipHueDirection));
+    print("mIridescenceThickness: %\n", DWABASE_EXTRACT(params->mIridescenceThickness));
+    print("mIridescenceExponent: %\n", DWABASE_EXTRACT(params->mIridescenceExponent));
+    print("mIridescenceAt0: %\n", DWABASE_EXTRACT(params->mIridescenceAt0));
+    print("mIridescenceAt90: %\n", DWABASE_EXTRACT(params->mIridescenceAt90));
+    print("mIridescenceRampInterpolationMode: %\n", DWABASE_EXTRACT((uint32_t) params->mIridescenceRampInterpolationMode));
+    print("mIridescenceRampPoints: %\n", DWABASE_EXTRACT(params->mIridescenceRampNumPoints));
+}
+
+inline void
+DWABASELAYERABLE_printHairParameters(const varying HairParameters * uniform const params)
+{
+    // Common Hair Params
+    print("mHairDir: % % %\n",
+        DWABASE_EXTRACT(params->mHairDir.x),
+        DWABASE_EXTRACT(params->mHairDir.y),
+        DWABASE_EXTRACT(params->mHairDir.z));
+    print("mHairColor: % % %\n",
+        DWABASE_EXTRACT(params->mHairColor.r),
+        DWABASE_EXTRACT(params->mHairColor.g),
+        DWABASE_EXTRACT(params->mHairColor.b));
+    print("mHair: %\n", DWABASE_EXTRACT(params->mHair));
+    print("mHairDiffuse: %\n", DWABASE_EXTRACT(params->mHairDiffuse));
+
+    // Hair params
+    print("mHairCastsCaustics: %\n", DWABASE_EXTRACT((uint32_t) params->mHairCastsCaustics));
+    print("mHairUV: % % %\n",
+        DWABASE_EXTRACT(params->mHairUV.x),
+        DWABASE_EXTRACT(params->mHairUV.y));
+    print("mHairIOR: %\n", DWABASE_EXTRACT(params->mHairIOR));
+    print("mHairShowR: %\n", DWABASE_EXTRACT((uint32_t) params->mHairShowR));
+    print("mHairRShift: %\n", DWABASE_EXTRACT(params->mHairRShift));
+    print("mHairRLongRoughness: %\n", DWABASE_EXTRACT(params->mHairRLongRoughness));
+    print("mHairRTint: % % %\n",
+        DWABASE_EXTRACT(params->mHairRTint.r),
+        DWABASE_EXTRACT(params->mHairRTint.g),
+        DWABASE_EXTRACT(params->mHairRTint.b));
+    print("mShowTT: %\n", DWABASE_EXTRACT((uint32_t) params->mHairShowTT));
+    print("mTTShift: %\n", DWABASE_EXTRACT(params->mHairTTShift));
+    print("mTTLongRoughness: %\n", DWABASE_EXTRACT(params->mHairTTLongRoughness));
+    print("mTTAzimRoughness: %\n", DWABASE_EXTRACT(params->mHairTTAzimRoughness));
+    print("mTTTint: % % %\n",
+        DWABASE_EXTRACT(params->mHairTTTint.r),
+        DWABASE_EXTRACT(params->mHairTTTint.g),
+        DWABASE_EXTRACT(params->mHairTTTint.b));
+    print("mTTSaturation: %\n", DWABASE_EXTRACT(params->mHairTTSaturation));
+    print("mHairShowTRT: %\n", DWABASE_EXTRACT((uint32_t) params->mHairShowTRT));
+    print("mHairTRTShift: %\n", DWABASE_EXTRACT(params->mHairTRTShift));
+    print("mHairTRTLongRoughness: %\n", DWABASE_EXTRACT(params->mHairTRTLongRoughness));
+    print("mHairTRTTint: % % %\n",
+        DWABASE_EXTRACT(params->mHairTRTTint.r),
+        DWABASE_EXTRACT(params->mHairTRTTint.g),
+        DWABASE_EXTRACT(params->mHairTRTTint.b));
+    print("mHairShowGlint: %\n", DWABASE_EXTRACT((uint32_t) params->mHairShowGlint));
+    print("mHairGlintRoughness: %\n", DWABASE_EXTRACT(params->mHairGlintRoughness));
+    print("mHairGlintMinTwists: %\n", DWABASE_EXTRACT(params->mHairGlintMinTwists));
+    print("mHairGlintMaxTwists: %\n", DWABASE_EXTRACT(params->mHairGlintMaxTwists));
+    print("mHairGlintEccentricity: %\n", DWABASE_EXTRACT(params->mHairGlintEccentricity));
+    print("mHairGlintSaturation: %\n", DWABASE_EXTRACT(params->mHairGlintSaturation));
+    print("mHairShowTRRT: %\n", DWABASE_EXTRACT((uint32_t) params->mHairShowTRRT));
+    print("mHairTRRTLongRoughness: %\n", DWABASE_EXTRACT(params->mHairTRRTLongRoughness));
+    print("mHairFresnelType: %\n", DWABASE_EXTRACT((uint32_t) params->mHairFresnelType));
+    print("mHairCuticleLayerThickness: %\n", DWABASE_EXTRACT(params->mHairCuticleLayerThickness));
+    print("mHairUseOptimizedSampling: %\n", DWABASE_EXTRACT((uint32_t) params->mHairUseOptimizedSampling));
+
+    // HairDiffuse params
+    print("mHairDiffuseFrontColor: % % %\n",
+        DWABASE_EXTRACT(params->mHairDiffuseFrontColor.r),
+        DWABASE_EXTRACT(params->mHairDiffuseFrontColor.g),
+        DWABASE_EXTRACT(params->mHairDiffuseFrontColor.b));
+    print("mHairDiffuseBackColor: % % %\n",
+        DWABASE_EXTRACT(params->mHairDiffuseBackColor.r),
+        DWABASE_EXTRACT(params->mHairDiffuseBackColor.g),
+        DWABASE_EXTRACT(params->mHairDiffuseBackColor.b));
+    print("mHairDiffuseUseIndependentFrontAndBackColor: %\n",
+        DWABASE_EXTRACT((uint32_t) params->mHairDiffuseUseIndependentFrontAndBackColor));
+
+}
+
+inline void
+DWABASELAYERABLE_printToonSpecularParameters(const varying ToonSpecularParameters * uniform const params)
+{
+    print("\tmToonSpecular: %\n", DWABASE_EXTRACT((uint32_t) params->mToonSpecular));
+    print("\tmIntensity: %\n", DWABASE_EXTRACT(params->mIntensity));
+    print("\tmRoughness: %\n", DWABASE_EXTRACT(params->mRoughness));
+    print("\tmTint: % % %\n",
+        DWABASE_EXTRACT(params->mTint.r),
+        DWABASE_EXTRACT(params->mTint.g),
+        DWABASE_EXTRACT(params->mTint.b));
+    print("\tmToonRampNumPoints: %\n", DWABASE_EXTRACT(params->mRampNumPoints));
+    print("\tmNormal: % % %\n",
+        DWABASE_EXTRACT(params->mNormal.x),
+        DWABASE_EXTRACT(params->mNormal.y),
+        DWABASE_EXTRACT(params->mNormal.z));
+    print("\tmStretchU: %\n", DWABASE_EXTRACT(params->mStretchU));
+    print("\tmStretchV: %\n", DWABASE_EXTRACT(params->mStretchV));
+    print("\tmdPds: % % %\n",
+        DWABASE_EXTRACT(params->mdPds.x),
+        DWABASE_EXTRACT(params->mdPds.y),
+        DWABASE_EXTRACT(params->mdPds.z));
+    print("\tmdPdt: % % %\n",
+        DWABASE_EXTRACT(params->mdPdt.x),
+        DWABASE_EXTRACT(params->mdPdt.y),
+        DWABASE_EXTRACT(params->mdPdt.z));
+    print("\tmEnableIndirectReflections: %\n", DWABASE_EXTRACT(params->mEnableIndirectReflections));
+    print("\tmIndirectReflectionsIntensity: %\n", DWABASE_EXTRACT(params->mIndirectReflectionsIntensity));
+    print("\tmIndirectReflectionsRoughness: %\n", DWABASE_EXTRACT(params->mIndirectReflectionsRoughness));
+}
+
+inline void
+DWABASELAYERABLE_printToonDiffuseParameters(const varying ToonDiffuseParameters * uniform const params)
+{
+    print("mToonDiffuse: %\n", DWABASE_EXTRACT(params->mToonDiffuse));
+    print("mModel: %\n", DWABASE_EXTRACT(params->mModel));
+    print("mExtendRamp: %n", DWABASE_EXTRACT(params->mExtendRamp));
+    print("mTerminatorShift: %\n", DWABASE_EXTRACT(params->mTerminatorShift));
+    print("mFlatness: %\n", DWABASE_EXTRACT(params->mFlatness));
+    print("mFlatnessFalloff: %\n", DWABASE_EXTRACT(params->mFlatnessFalloff));
+    print("mToonRampPoints: %\n", DWABASE_EXTRACT(params->mRampNumPoints));
+    print("mToonSpecularParams\n");
+}
+
+inline void
+DWABASELAYERABLE_printParameters(const varying DwaBaseParameters * uniform const params,
+                                 const uniform DwaBaseUniformParameters * uniform const uParams)
+{
+    // Glitter params
+    DWABASELAYERABLE_printGlitterUniformParameters(params->mGlitterUniformParameters);
+    DWABASELAYERABLE_printGlitterVaryingParameters(&params->mGlitterVaryingParameters);
+
+    // Hair params
+    DWABASELAYERABLE_printHairParameters(&params->mHairParameters);
+
+    // Hair Toon params
+    print("mHairToonS1\n");
+    DWABASELAYERABLE_printToonSpecularParameters(&params->mHairToonS1Params);
+    print("mHairToonS2\n");
+    DWABASELAYERABLE_printToonSpecularParameters(&params->mHairToonS2Params);
+    print("mHairToonS3\n");
+    DWABASELAYERABLE_printToonSpecularParameters(&params->mHairToonS3Params);
+
+    // Fuzz params
+    print("mFuzz: %\n", DWABASE_EXTRACT(params->mFuzz));
+    print("mFuzzRoughness: %\n", DWABASE_EXTRACT(params->mFuzzRoughness));
+    print("mFuzzAlbedo: % % %\n",
+        DWABASE_EXTRACT(params->mFuzzAlbedo.r),
+        DWABASE_EXTRACT(params->mFuzzAlbedo.g),
+        DWABASE_EXTRACT(params->mFuzzAlbedo.b));
+    print("mFuzzUseAbsorbingFibers: %\n", DWABASE_EXTRACT((uint32_t) params->mFuzzUseAbsorbingFibers));
+    print("mFuzzNormal: % % %\n",
+        DWABASE_EXTRACT(params->mFuzzNormal.x),
+        DWABASE_EXTRACT(params->mFuzzNormal.y),
+        DWABASE_EXTRACT(params->mFuzzNormal.z));
+
+    // OuterSpecular params
+    print("mOuterSpecular: %\n", DWABASE_EXTRACT(params->mOuterSpecular));
+    print("mOuterSpecularModel: %\n", DWABASE_EXTRACT(uParams->mOuterSpecularModel));
+    print("mOuterSpecularRefractiveIndex: %\n", DWABASE_EXTRACT(params->mOuterSpecularRefractiveIndex));
+    print("mOuterSpecularRoughness: %\n", DWABASE_EXTRACT(params->mOuterSpecularRoughness));
+    print("mOuterSpecularThickness: %\n", DWABASE_EXTRACT(params->mOuterSpecularThickness));
+    print("mOuterSpecularAttenuationColor: % % %\n",
+        DWABASE_EXTRACT(params->mOuterSpecularAttenuationColor.r),
+        DWABASE_EXTRACT(params->mOuterSpecularAttenuationColor.g),
+        DWABASE_EXTRACT(params->mOuterSpecularAttenuationColor.b));
+    print("mOuterSpecularBending: %\n", DWABASE_EXTRACT((uint32_t) uParams->mOuterSpecularUseBending));
+    print("mOuterSpecularNormal: % % %\n",
+        DWABASE_EXTRACT(params->mOuterSpecularNormal.x),
+        DWABASE_EXTRACT(params->mOuterSpecularNormal.y),
+        DWABASE_EXTRACT(params->mOuterSpecularNormal.z));
+    print("mOuterSpecularNormalDial: %\n", DWABASE_EXTRACT(params->mOuterSpecularNormalDial));
+
+    // metallic params
+    print("mMetallic: %\n", DWABASE_EXTRACT(params->mMetallic));
+    print("mMetallicColor: % % %\n",
+        DWABASE_EXTRACT(params->mMetallicColor.r),
+        DWABASE_EXTRACT(params->mMetallicColor.g),
+        DWABASE_EXTRACT(params->mMetallicColor.b));
+    print("mMetallicEdgeColor: % % %\n",
+        DWABASE_EXTRACT(params->mMetallicEdgeColor.r),
+        DWABASE_EXTRACT(params->mMetallicEdgeColor.g),
+        DWABASE_EXTRACT(params->mMetallicEdgeColor.b));
+
+    // specular params
+    print("mSpecular: %\n", DWABASE_EXTRACT(params->mSpecular));
+    print("mSpecularModel: %\n", DWABASE_EXTRACT(uParams->mSpecularModel));
+    print("mRefractiveIndex: %\n", DWABASE_EXTRACT(params->mRefractiveIndex));
+    print("mRoughness: %\n", DWABASE_EXTRACT(params->mRoughness));
+    print("mAnisotropy: %\n", DWABASE_EXTRACT(params->mAnisotropy));
+    print("mShadingTangent: % %\n",
+        DWABASE_EXTRACT(params->mShadingTangent.x),
+        DWABASE_EXTRACT(params->mShadingTangent.y));
+
+    // fabric params
+    print("mFabricSpecular: %\n", DWABASE_EXTRACT(params->mFabricSpecular));
+    print("mWarpColor: % % %\n",
+        DWABASE_EXTRACT(params->mWarpColor.r),
+        DWABASE_EXTRACT(params->mWarpColor.g),
+        DWABASE_EXTRACT(params->mWarpColor.b));
+    print("mWarpRoughness: %\n", DWABASE_EXTRACT(params->mWarpRoughness));
+    print("mUseIndependentWeftAttributes: %\n", DWABASE_EXTRACT((uint32_t) params->mUseIndependentWeftAttributes));
+    print("mWeftRoughness: %\n", DWABASE_EXTRACT(params->mWeftRoughness));
+    print("mWeftColor: % % %\n",
+        DWABASE_EXTRACT(params->mWeftColor.r),
+        DWABASE_EXTRACT(params->mWeftColor.g),
+        DWABASE_EXTRACT(params->mWeftColor.b));
+    print("mWarpThreadDirection: % % %\n",
+        DWABASE_EXTRACT(params->mWarpThreadDirection.x),
+        DWABASE_EXTRACT(params->mWarpThreadDirection.y),
+        DWABASE_EXTRACT(params->mWarpThreadDirection.z));
+    print("mWarpThreadCoverage: %\n", DWABASE_EXTRACT(params->mWarpThreadCoverage));
+    print("mWarpThreadElevation: %\n", DWABASE_EXTRACT(params->mWarpThreadElevation));
+    print("mFabricAttenuation: %\n", DWABASE_EXTRACT(params->mFabricAttenuation));
+    print("mFabricTangent: % % %\n",
+        DWABASE_EXTRACT(params->mFabricTangent.x),
+        DWABASE_EXTRACT(params->mFabricTangent.y),
+        DWABASE_EXTRACT(params->mFabricTangent.z));
+
+    // Iridescence params
+    DWABASELAYERABLE_printIridescenceParameters(&params->mIridescenceParameters);
+
+    // transmission params
+    print("mTransmission: %\n", DWABASE_EXTRACT(params->mTransmission));
+    print("mTransmissionColor: % % %\n",
+        DWABASE_EXTRACT(params->mTransmissionColor.r),
+        DWABASE_EXTRACT(params->mTransmissionColor.g),
+        DWABASE_EXTRACT(params->mTransmissionColor.b));
+    print("mUseIndependentTransmissionRefractiveIndex: %\n", DWABASE_EXTRACT((uint32_t) params->mUseIndependentTransmissionRefractiveIndex));
+    print("mIndependentTransmissionRefractiveIndex: %\n", DWABASE_EXTRACT(params->mIndependentTransmissionRefractiveIndex));
+    print("mUseIndependentTransmissionRoughness: %\n", DWABASE_EXTRACT((uint32_t) params->mUseIndependentTransmissionRoughness));
+    print("mIndependentTransmissionRoughness: %\n", DWABASE_EXTRACT(params->mIndependentTransmissionRoughness));
+    print("mDispersionAbbeNumber: %\n", DWABASE_EXTRACT(params->mDispersionAbbeNumber));
+
+    // Toon params
+    print("mToonDiffuse\n");
+    DWABASELAYERABLE_printToonDiffuseParameters(&params->mToonDiffuseParams);
+    print("mToonSpecular\n");
+    DWABASELAYERABLE_printToonSpecularParameters(&params->mToonSpecularParams);
+
+    // diffuse params
+    print("mAlbedo: % % %\n",
+        DWABASE_EXTRACT(params->mAlbedo.r),
+        DWABASE_EXTRACT(params->mAlbedo.g),
+        DWABASE_EXTRACT(params->mAlbedo.b));
+    print("mDiffuseRoughness: %\n", DWABASE_EXTRACT(params->mDiffuseRoughness));
+    print("mSubsurface: %\n", DWABASE_EXTRACT(uParams->mSubsurface));
+    print("mScatteringRadius: % % %\n",
+        DWABASE_EXTRACT(params->mScatteringRadius.r),
+        DWABASE_EXTRACT(params->mScatteringRadius.g),
+        DWABASE_EXTRACT(params->mScatteringRadius.b));
+    print("mDiffuseTransmission: % % %\n",
+        DWABASE_EXTRACT(params->mDiffuseTransmission.r),
+        DWABASE_EXTRACT(params->mDiffuseTransmission.g),
+        DWABASE_EXTRACT(params->mDiffuseTransmission.b));
+    print("mDiffuseTransmissionBlendingBehavior: %\n",
+        DWABASE_EXTRACT(params->mDiffuseTransmissionBlendingBehavior));
+    print("mSubsurfaceTraceSet: %\n", DWABASE_EXTRACT((uint64_t) params->mSubsurfaceTraceSet));
+    print("mSSSResolveSelfIntersections: %\n", DWABASE_EXTRACT((uint32_t) params->mSSSResolveSelfIntersections));
+
+    // other params
+    print("mNormal: % % %\n",
+        DWABASE_EXTRACT(params->mNormal.x),
+        DWABASE_EXTRACT(params->mNormal.y),
+        DWABASE_EXTRACT(params->mNormal.z));
+    print("mNormalDial: %\n", DWABASE_EXTRACT(params->mNormalDial));
+    print("mNormalAAStrategy: %\n", DWABASE_EXTRACT(params->mNormalAAStrategy));
+    print("mNormalAADial: %\n", DWABASE_EXTRACT(params->mNormalAADial));
+    print("mEmission: % % %\n",
+        DWABASE_EXTRACT(params->mEmission.r),
+        DWABASE_EXTRACT(params->mEmission.g),
+        DWABASE_EXTRACT(params->mEmission.b));
+    print("mThinGeometry: %\n", DWABASE_EXTRACT((uint32_t) uParams->mThinGeometry));
+    print("mPreventLightCulling: %\n", DWABASE_EXTRACT((uint32_t) uParams->mPreventLightCulling));
+    print("mEvalSubsurfaceNormalFn: %\n", DWABASE_EXTRACT(params->mEvalSubsurfaceNormalFn ));
+}
+
+// Arguments for the resolveParameters() function call for DwaBaseLayerable materials
+#define DWABASELAYERABLE_RESOLVE_SUBSURFACE_FUNC_ARGS const uniform Material* uniform me,   \
+                                                      const varying State& state
+
+// Function pointer type for resolveParameters function
+typedef uniform int (*DWABASELAYERABLE_ResolveSubsurfaceTypeFunc) (DWABASELAYERABLE_RESOLVE_SUBSURFACE_FUNC_ARGS);
+
+// Arguments for the resolveParameters() function call for DwaBaseLayerable materials
+#define DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS const uniform Material* uniform me, \
+                                           uniform ShadingTLState *uniform tls,\
+                                           const varying State& state,         \
+                                           const uniform bool castsCaustics,   \
+                                           varying DwaBaseParameters* uniform params
+
+// Function pointer type for resolveParameters function
+typedef bool (*DWABASELAYERABLE_ResolveParametersFunc) (DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS);
+
+// Function pointer type for castsCaustics function
+typedef uniform bool (*DWABASELAYERABLE_CastsCausticsFunc) (const uniform Material* uniform me);
+
+// Function pointer type for resolvePresence function
+typedef float (*DWABASELAYERABLE_ResolvePresenceFunc) (const uniform Material* uniform me,
+                                                       uniform ShadingTLState *uniform tls,
+                                                       const varying State& state);
+
+// Function pointer type for resolvePreventLightCulling function
+typedef bool (*DWABASELAYERABLE_ResolvePreventLightCullingFunc) (const uniform Material* uniform me,
+                                                                 const varying State& state);
+
+// Function pointer type for resolveSubsurfaceNormal function
+typedef Vec3f (*DWABASELAYERABLE_resolveSubsurfaceNormalFunc) (const uniform Material* uniform me,
+                                                               uniform ShadingTLState *uniform tls,
+                                                               const varying State& state);
+
+void DWABASE_addGlitterLobes(varying BsdfBuilder &builder,
+                             uniform ShadingTLState * uniform tls,
+                             const varying State &state,
+                             const varying DwaBaseParameters * uniform params,
+                             const uniform DwaBaseLabels * uniform labels,
+                             const uniform DwaBaseEventMessages& eventMessages);
+
+
+void DWABASE_addOuterSpecularLobes(varying BsdfBuilder &bsdfBuilder,
+                                   const varying DwaBaseParameters * uniform params,
+                                   const uniform DwaBaseUniformParameters * uniform uParams,
+                                   const uniform DwaBaseLabels * uniform labels,
+                                   varying float minRoughness,
+                                   varying Iridescence * uniform iridescence);
+
+void DWABASE_addIndependentReflectionLobe(varying BsdfBuilder &bsdfBuilder,
+                                          const varying Vec3f &N,
+                                          varying float reflIor,
+                                          varying float anisotropy,
+                                          varying float roughness,
+                                          varying float minRoughness,
+                                          const varying Vec3f &shadingTangent,
+                                          const uniform MicrofacetDistribution &specularModel,
+                                          varying Iridescence * uniform iridescence,
+                                          uniform int label);
+
+void DWABASE_addIndependentTransmissionLobe(varying BsdfBuilder &bsdfBuilder,
+                                            const varying Vec3f &N,
+                                            varying float refrIor,
+                                            varying float anisotropy,
+                                            varying float transRoughness,
+                                            varying float minRoughness,
+                                            const varying Vec3f &shadingTangent,
+                                            const uniform MicrofacetDistribution &specularModel,
+                                            const varying Color &transmissionColor,
+                                            varying float abbeNumber,
+                                            uniform int label);
+
+// Base Class to create all the closures in the DwaBase architecture using the DwaBaseParameters provided
+void DWABASE_createLobes(const uniform Material * uniform me,
+                         uniform ShadingTLState * uniform tls,
+                         const varying State             &state,
+                         varying BsdfBuilder             &bsdfBuilder,
+                         const varying DwaBaseParameters * uniform params,
+                         const uniform DwaBaseUniformParameters * uniform uParams);
+
+
+

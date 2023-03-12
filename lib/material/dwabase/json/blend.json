@@ -1,0 +1,201 @@
+ {
+    "attributes": {
+        "attrFallbackBSSRDF": {
+            "name": "fallback_bssrdf",
+            "label": "fallback bssrdf",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "normalized diffusion": "0",
+                "dipole": "1",
+                "random walk": "2"
+            },
+            "default": "0",
+            "comment": "If child materials disagree on the type of bssrdf, this type will be used instead.",
+            "group": "Advanced"
+        },
+	"attrFallbackSpecularModel": {
+            "name": "fallback_specular_model",
+            "label": "fallback specular model",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "Beckmann": "0",
+                "GGX": "1"
+            },
+            "default": "1",
+            "comment": "If child materials disagree on the type of specular model, this type will be used instead.",
+            "group": "Advanced"
+        },
+	"attrFallbackToonSpecularModel": {
+            "name": "fallback_toon_specular_model",
+            "label": "fallback toon specular model",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "Beckmann": "0",
+                "GGX": "1",
+                "Toon": "2"
+            },
+            "default": "1",
+            "comment": "If child materials disagree on the type of toon specular model, this type will be used instead.",
+            "group": "Advanced"
+        },
+	"attrFallbackOuterSpecularModel": {
+            "name": "fallback_outer_specular_model",
+            "label": "fallback outer specular model",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "Beckmann": "0",
+                "GGX": "1"
+            },
+            "default": "1",
+            "comment": "If child materials disagree on the type of outer specular model, this type will be used instead.",
+            "group": "Advanced"
+        },
+	"attrFallbackOuterSpecularUseBending": {
+            "name": "fallback_clearcoat_use_bending",
+            "label": "fallback clearcoat use bending",
+            "type": "Bool",
+            "default": "true",
+            "comment": "If child materials disagree on the type of clearcoat use bending, this type will be used instead.",
+            "group": "Advanced"
+        },
+	"attrFallbackThinGeometry": {
+            "name": "fallback_thin_geometry",
+            "label": "fallback thin geometry",
+            "type": "Bool",
+            "default": "true",
+            "comment": "If child materials disagree on the type of thin geometry, this type will be used instead.",
+            "group": "Advanced"
+        },
+        "attrColorSpace": {
+            "name": "blend_color_space",
+            "label": "blend color space",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "RGB": "0",
+                "HSV": "1",
+                "HSL": "2"
+            },
+            "default": "0",
+            "comment": "Color space used when blending the two material's color parameters",
+            "group": "Advanced"
+        },
+        "attrSubsurfaceTraceSet" : {
+            "name": "sss_trace_set",
+            "label": "sss trace set",
+            "aliases": [ "sss trace set" ],
+            "comment": "By default, only the geometry associated with this material contributes to subsurface. The DwaLayerMaterial ignores the sss trace sets of the submaterials. If you want adjacent geometry with different material to contribute as well, specify all those parts here.",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_TRACESET",
+            "group": "Advanced"
+        },
+        "attrFallbackGlitterSeed": {
+            "name": "fallback_glitter_seed",
+            "type": "Int",
+            "default": "0",
+            "group": "Glitter Fallback",
+            "comment": "The seed for the glitter random number generator.  This parameter will only be used when layering two distinct glitter materials."
+        },
+        "attrFallbackGlitterSpace": {
+            "name": "fallback_glitter_space",
+            "label": "fallback glitter space",
+            "type": "Int",
+            "default": "5",
+            "group": "Glitter Fallback",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "object": "4",
+                "reference": "5"
+            },
+            "comment": "The space to calculate the worley noise in, defaults to reference space.  This parameter will only be used when layering two distinct glitter materials."
+        },
+        "attrFallbackGlitterRandomness": {
+            "name": "fallback_glitter_randomness",
+            "label": "fallback glitter randomness",
+            "type": "Float",
+            "default": "0.5f",
+            "group": "Glitter Fallback",
+            "comment": "randomness of flake orientation.  This parameter will only be used when layering two distinct glitter materials."
+        },
+        "attrFallbackGlitterStyleAFrequency": {
+            "name": "fallback_glitter_style_A_frequency",
+            "label": "fallback glitter style A frequency",
+            "type": "Float",
+            "default": "1.0f",
+            "group": "Glitter Fallback",
+            "comment": "0 implies none of this style, 1 implies all the flakes will get this style.  This parameter will only be used when layering two distinct glitter materials.",
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrFallbackGlitterTextureA": {
+            "name": "fallback_glitter_texture_A",
+            "label": "fallback glitter texture A",
+            "type": "String",
+            "flags": "FLAGS_FILENAME",
+            "group": "Glitter Fallback",
+            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx).  This parameter will only be used when layering two distinct glitter materials."
+        },
+        "attrFallbackGlitterStyleBFrequency": {
+            "name": "fallback_glitter_style_B_frequency",
+            "label": "fallback glitter style B frequency",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Glitter Fallback",
+            "comment": "0 implies none of this style, 1 implies all the flakes will get this style.  This parameter will only be used when layering two distinct glitter materials.",
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrFallbackGlitterTextureB": {
+            "name": "fallback_glitter_texture_B",
+            "label": "fallback glitter texture B",
+            "type": "String",
+            "group": "Glitter Fallback",
+            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx).  This parameter will only be used when layering two distinct glitter materials."
+        },
+        "attrFallbackGlitterLodQuality": {
+            "name": "fallback_glitter_LOD_quality",
+            "label": "fallback glitter LOD quality",
+            "aliases": [ "dense glitter LOD quality" ],
+            "type": "Float",
+            "default": "0.5f",
+            "group": "Glitter Fallback",
+            "comment": "controls quality of glitter at distances where individual flakes cannot be perceived; at lower values, approximation kicks in earlier.  This parameter will only be used when layering two distinct glitter materials."
+        },
+        "attrFallbackGlitterLayeringMode": {
+            "name": "fallback_glitter_layering_mode",
+            "label": "fallback glitter layering mode",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "physical": "0",
+                "additive": "1"
+            },
+            "default": "0",
+            "group": "Glitter Fallback",
+            "comment": "layering mode for glitter on top of the under material. physical: conserves energy and glitter attenuates under material, additive: breaks energy conservation but glitter is never darker than the under material (eg. use case: snow).  This parameter will only be used when layering two distinct glitter materials."
+        },
+        "attrFallbackGlitterDebugMode": {
+            "name": "fallback_glitter_debug_mode",
+            "label": "fallback glitter debug mode",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "off": "0",
+                "blend": "1",
+                "color": "2",
+                "averageColor": "3",
+                "footprintArea": "4",
+                "radius": "5"
+            },
+            "default": "0",
+            "group": "Glitter Fallback",
+            "comment": "developer debug visualization modes.  This parameter will only be used when layering two distinct glitter materials."
+        }
+    }
+}

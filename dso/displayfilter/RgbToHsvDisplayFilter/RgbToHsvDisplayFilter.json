@@ -1,0 +1,28 @@
+{
+    "name": "RgbToHsvDisplayFilter",
+    "type": "DisplayFilter",
+    "directives": {
+        "include": [
+            "lib/displayfilter/json/common.json"
+        ]
+    },
+    "attributes": {
+        "attrInput": {
+            "name": "input",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_RENDEROUTPUT | INTERFACE_DISPLAYFILTER",
+            "comment": "RenderOutput to use in the RgbToHsv operation"
+        },
+        "attrMode" : {
+            "name" : "mode",
+            "type" : "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "default": "0",
+            "enum": {
+                "rgb_to_hsv" : "0",
+                "hsv_to_rgb" : "1"
+            },
+            "comment" : "Specifies whether you are converting rgb->hsv or hsv->rgb"
+        }
+    }
+}

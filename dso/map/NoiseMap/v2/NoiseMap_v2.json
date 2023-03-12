@@ -1,0 +1,314 @@
+{
+    "name": "NoiseMap_v2",
+    "type": "Map",
+    "attributes": {
+        "attrSeed": {
+            "name": "seed",
+            "type": "Int",
+            "default": "0",
+            "comment": "The seed for the random number generator"
+        },
+        "attrFrequencyMultiplier": {
+            "name": "frequency_multiplier",
+            "label": "frequency multiplier",
+            "aliases": [ "frequency multiplier" ],
+            "type": "Float",
+            "default": "1.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Scalar multiplier for the frequency vector"
+        },
+        "attrAmplitude": {
+            "name": "amplitude",
+            "type": "Float",
+            "default": "1.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Intensity of the noise"
+        },
+        "attrMaxLevel": {
+            "name": "max_level",
+            "label": "max level",
+            "aliases": [ "max level" ],
+            "type": "Float",
+            "default": "1.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Number of octaves of noise to add together for the final result"
+        },
+        "attrLacunarity": {
+            "name": "lacunarity",
+            "type": "Float",
+            "default": "2.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Multiplier on the noise frequency per level"
+        },
+        "attrPersistence": {
+            "name": "persistence",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Multiplier on the noise amplitude per level"
+        },
+        "attrDistortion": {
+            "name": "distortion",
+            "type": "Float",
+            "default": "0.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Warp input coordinate space with single noise level before looking up noise"
+        },
+        "attrDistortionNoiseType": {
+            "name": "distortion_noise_type",
+            "label": "distortion noise type",
+            "aliases": [ "distortion noise type" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "perlin classic": "0",
+                "perlin simplex": "1"
+            },
+            "comment": "Type of noise to use for distortion."
+        },
+        "attrColor": {
+            "name": "color",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Outputs RGB noise"
+        },
+        "attrColorA": {
+            "name": "color_A",
+            "label": "color A",
+            "aliases": [ "color A" ],
+            "type": "Rgb",
+            "default": "Rgb(0.f, 0.f, 0.f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "The color value at 0 noise",
+            "enable if": {
+                "color": "false"
+            }
+        },
+        "attrColorB": {
+            "name": "color_B",
+            "label": "color B",
+            "aliases": [ "color B" ],
+            "type": "Rgb",
+            "default": "Rgb(1.f, 1.f, 1.f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "The color value at 1 noise",
+            "enable if": {
+                "color": "false"
+            }
+        },
+        "attrNoiseType": {
+            "name": "noise_type",
+            "label": "noise type",
+            "aliases": [ "noise type" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "perlin classic": "0",
+                "perlin simplex": "1"
+            },
+            "comment": "Type of noise to use. Simplex grid activates Flow Noise Angle and Advection"
+        },
+        "attrFlowAngle": {
+            "name": "flow_angle",
+            "label": "flow angle",
+            "aliases": [ "flow angle" ],
+            "type": "Float",
+            "default": "0.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Angle of rotation for flow noise",
+            "group": "Flow Noise",
+            "enable if": {
+                "noise_type": "perlin simplex"
+            }
+        },
+        "attrAdvectionRate": {
+            "name": "flow_advection_rate",
+            "label": "flow advection rate",
+            "aliases": [ "flow advection rate" ],
+            "type": "Float",
+            "default": "0.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Rate of advection for flow noise",
+            "group": "Flow Noise",
+            "enable if": {
+                "noise_type": "perlin simplex"
+            }
+        },
+        "attrUse4D": {
+            "name": "use_4D_noise",
+            "label": "use 4D noise",
+            "aliases": [ "use 4D noise" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "If on, 4-dimensional noise is used instead of 3-dimensional",
+            "group": "4D"
+        },
+        "attrTime": {
+            "name": "time",
+            "type": "Float",
+            "default": "0.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "If use 4D noise is on, this is the value for the 4th dimension",
+            "enable if": {
+                "use_4D_noise": "true"
+            },
+            "group": "4D"
+        },
+        "attrBias": {
+            "name": "bias",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Bias the noise towards 0 or 1",
+            "group": "Adjustment"
+        },
+        "attrGain": {
+            "name": "gain",
+            "type": "Float",
+            "default": "0.5f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Apply gain to the noise",
+            "group": "Adjustment"
+        },
+        "attrInvert": {
+            "name": "invert",
+            "type": "Bool",
+            "default": "false",
+            "comment": "Invert the final pattern",
+            "group": "Adjustment"
+        },
+        "attrUseSmoothstep": {
+            "name": "use_smoothstep",
+            "label": "use smoothstep",
+            "aliases": [ "use smoothstep" ],
+            "type": "Bool",
+            "default": "false",
+            "comment": "Put the noise value through a smoothstep function defined by min/max",
+            "group": "Adjustment"
+        },
+        "attrSmoothstep": {
+            "name": "smoothstep",
+            "type": "Vec2f",
+            "default": "Vec2f(0.f, 1.f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "min/max values between which the smoothstep will interpolate",
+            "group": "Adjustment"
+        },
+        "attrSpace": {
+            "name": "space",
+            "type": "Int",
+            "default": "4",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "render": "0",
+                "camera": "1",
+                "world": "2",
+                "screen": "3",
+                "object": "4",
+                "reference": "5",
+                "texture": "6",
+                "input texture coordinates": "7",
+                "hair_surface_uv": "8",
+                "hair_closest_surface_uv": "9"
+            },
+            "comment": "The space to calculate the noise in",
+            "group": "Space"
+        },
+        "attrInputTextureCoordinate": {
+            "name": "input_texture_coordinates",
+            "label": "input texture coordinates",
+            "aliases": [ "input texture coordinates" ],
+            "type": "Vec3f",
+            "default": "Vec3f(0.0f, 0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "space": "input texture coordinates"
+            },
+            "group": "Space",
+            "comment": "User specified UVs"
+        },
+        "attrObject": {
+            "name": "object_space",
+            "label": "object space",
+            "aliases": [ "object space" ],
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_GEOMETRY",
+            "comment": "Directly connect object to use that object's space",
+            "enable if": {
+                "space": "object"
+            },
+            "group": "Space"
+        },
+        "attrCamera": {
+            "name": "camera",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_CAMERA",
+            "comment": "camera used to define camera and screen space",
+            "group": "Space"
+        },
+        "attrTranslation": {
+            "name": "translation",
+            "type": "Vec3f",
+            "default": "0.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Translation of the noise in space",
+            "group": "Transform"
+        },
+        "attrRotation": {
+            "name": "rotation",
+            "type": "Vec3f",
+            "default": "0.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Rotates the noise in space based on the specified rotation order",
+            "group": "Transform"
+        },
+        "attrScale": {
+            "name": "scale",
+            "type": "Vec3f",
+            "default": "1.f",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Vector to scale the noise non-proportionally",
+            "group": "Transform"
+        },
+        "attrRotationOrder": {
+            "name": "rotation_order",
+            "label": "rotation order",
+            "aliases": [ "rotation order" ],
+            "type": "Int",
+            "default": "0",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "xyz": "0",
+                "xzy": "1",
+                "yxz": "2",
+                "yzx": "3",
+                "zxy": "4",
+                "zyx": "5"
+            },
+            "comment": "Order in which to apply the euler rotations",
+            "group": "Transform"
+        },
+        "attrTransformationOrder": {
+            "name": "transformation_order",
+            "label": "transformation order",
+            "aliases": [ "transformation order" ],
+            "type": "Int",
+            "default": "4",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "srt": "0",
+                "str": "1",
+                "rst": "2",
+                "rts": "3",
+                "tsr": "4",
+                "trs": "5"
+            },
+            "comment": "Order in which to apply the translation, rotation, and frequency",
+            "group": "Transform"
+        }
+    }
+}

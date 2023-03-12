@@ -1,0 +1,139 @@
+{
+    "attributes": {
+        "attrHairColor": {
+            "name": "hair_color",
+            "label": "hair color",
+            "aliases": [ "hair color" ],
+            "type": "Rgb",
+            "default": "Rgb(1.0, 1.0f, 1.0f)",
+            "enable if": {
+                "use_independent_front_and_back_hair_color": "false"
+            },
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrUseIndependentFrontAndBackHairColor": {
+            "name": "use_independent_front_and_back_hair_color",
+            "label": "use independent front and back hair color",
+            "comment": "(advanced) use a separate hair color for front and back",
+            "type": "Bool",
+            "default": "false",
+            "group": "Advanced"
+        },
+        "attrFrontHairColor": {
+            "name": "front_hair_color",
+            "label": "front hair color",
+            "comment": "(advanced only) hair color used for front-lit hair (backward reflectance)",
+            "type": "Rgb",
+            "default": "Rgb(1.0, 1.0f, 1.0f)",
+            "group": "Advanced",
+            "enable if": {
+                "use_independent_front_and_back_hair_color": "true"
+            },
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrBackHairColor": {
+            "name": "back_hair_color",
+            "label": "back hair color",
+            "comment": "(advanced only) hair color used for back-lit hair (transmission/forward reflectance)",
+            "type": "Rgb",
+            "default": "Rgb(1.0, 1.0f, 1.0f)",
+            "group": "Advanced",
+            "enable if": {
+                "use_independent_front_and_back_hair_color": "true"
+            },
+            "flags": "FLAGS_BINDABLE"
+        },
+        "attrHairSubsurfaceBlend" : {
+            "name": "subsurface_blend",
+            "label": "subsurface blend",
+            "aliases": [ "subsurface blend" ],
+            "comment": "0 is fully hair diffuse, 1 is fully SSS. No effect if scattering radius is 0.",
+            "type": "Float",
+            "default": "1.0",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Subsurface",
+            "min": "0.0f",
+            "max": "1.0f"
+        },
+        "attrHairSubsurface": {
+            "name": "bssrdf",
+            "type": "Int",
+            "flags": "FLAGS_ENUMERABLE",
+            "enum": {
+                "normalized diffusion": "0",
+                "dipole": "1"
+            },
+            "default": "0",
+            "comment": "0 for NormalizedDiffuse, 1 for Dipole. Random walk unsupported for hair.",
+            "group": "Subsurface"
+        },
+        "attrHairScatteringColor" : {
+            "name": "scattering_color",
+            "label": "scattering color",
+            "aliases": [ "scattering color" ],
+            "comment": "the subsurface scattering 'falloff' color",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Subsurface"
+        },
+        "attrHairScatteringRadius" : {
+            "name": "scattering_radius",
+            "label": "scattering radius",
+            "aliases": [ "scattering radius" ],
+            "comment": "the distance the light scatters beneath the surface.  When 0 surface diffuse is used",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Subsurface",
+            "min": "0.0f"
+        },
+        "attrHairSubsurfaceTraceSet" : {
+            "name": "sss_trace_set",
+            "label": "sss trace set",
+            "aliases": [ "sss trace set" ],
+            "comment": "Set of geometries that contribute neighboring subsurface points. By default, only the geometry associated with this material contributes to subsurface. If you want adjacent geometry with different material to contribute as well, specify all those parts here.",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "interface": "INTERFACE_TRACESET",
+            "group": "Advanced"
+        },
+        "attrHairEnableSubsurfaceInputNormal" : {
+            "name": "enable_sss_input_normal",
+            "label": "enable sss input normal",
+            "aliases": [ "enable sss input normal" ],
+            "comment": "enables sampling the normal map for sss samples. More accurate but potentially expensive",
+            "type": "Bool",
+            "default": "false",
+            "group": "Subsurface"
+        },
+        "attrHairInputNormal": {
+            "name": "input_normal",
+            "label": "input normal",
+            "aliases": [ "input normal" ],
+            "comment": "specifies an alternate shading normal (only for SSS lobe)",
+            "type": "SceneObject*",
+            "flags": "FLAGS_NONE",
+            "enable if": {
+                "enable_sss_input_normal": "true"
+            },
+            "interface": "INTERFACE_NORMALMAP",
+            "group": "Subsurface"
+        },
+        "attrHairInputNormalDial": {
+            "name": "input_normal_dial",
+            "label": "input normal dial",
+            "aliases": [ "input normal dial" ],
+            "comment": "controls influence of input normal versus hair normal for SSS",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "enable_sss_input_normal": "true"
+            },
+            "group": "Subsurface",
+            "min": "0.0f",
+            "max": "1.0f"
+        }
+    }
+}
