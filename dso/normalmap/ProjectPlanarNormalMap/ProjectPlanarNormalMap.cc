@@ -334,7 +334,8 @@ ProjectPlanarNormalMap::sampleNormal(const NormalMap* self,
         Vec3f tNorm = refFrame.globalToLocal(pNormal);
 
         // Transform from world space to render space
-        ReferenceFrame curFrame(state.getN(), state.getdPds());
+        ReferenceFrame curFrame(state.getN(),
+                                normalize(state.getdPds()));
         rNormal = curFrame.localToGlobal(tNorm);
     } else {
         // Transform blended normal from the object space of the

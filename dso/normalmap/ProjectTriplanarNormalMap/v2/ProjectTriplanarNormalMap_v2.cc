@@ -228,7 +228,8 @@ ProjectTriplanarNormalMap_v2::sampleNormal(const NormalMap* self,
         Vec3f tNormal = refFrame.globalToLocal(pNormal);
 
         // Transform from world space to render space
-        ReferenceFrame curFrame(state.getN(), state.getdPds());
+        ReferenceFrame curFrame(state.getN(),
+                                normalize(state.getdPds()));
         rNormal = curFrame.localToGlobal(tNormal);
     } else {
         // Transform blended normal from the object space of the
