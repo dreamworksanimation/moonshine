@@ -37,6 +37,9 @@ initLogEvents(ispc::PROJECTION_StaticData& staticData,
     staticData.sErrorMissingRefN = logEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
         "ref_N primitive attribute is missing and cannot be computed from ref_P partials");
 
+    staticData.sErrorMissingdPds = logEventRegistry.createEvent(scene_rdl2::logging::WARN_LEVEL,
+        "dPds is not provided");
+
     const scene_rdl2::rdl2::SceneVariables &sceneVariables =
         shader->getSceneClass().getSceneContext()->getSceneVariables();
 

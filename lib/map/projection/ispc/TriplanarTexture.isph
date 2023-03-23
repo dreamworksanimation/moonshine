@@ -30,6 +30,7 @@ struct PROJECTION_TriplanarData
     const uniform Xform * uniform mObjXform;
     uniform int mRefPKey;
     uniform int mRefNKey;
+    uniform int mdPdsKey;
     uniform bool mHasValidProjector;
     uniform PROJECTION_TriplanarTexture mTriplanarTextures[6];
     uniform float mTransitionWidthPower;

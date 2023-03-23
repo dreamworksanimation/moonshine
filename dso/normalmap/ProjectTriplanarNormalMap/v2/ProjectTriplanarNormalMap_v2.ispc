@@ -108,11 +108,30 @@ sampleNormal(const uniform NormalMap* uniform map,
             SHADING_SPACE_OBJECT, SHADING_SPACE_WORLD,
             state, bNormal);
 
-        // Transform blended normal from world space to the
-        // space of the rendered object and then to render space
-        rNormal = transformNormal(data.mObjXform,
-            SHADING_SPACE_OBJECT, SHADING_SPACE_RENDER,
-            state, pNormal);
+        Vec3f refN;
+        if (!SHADER_DATA_getRefN(data.mRefPKey, data.mRefNKey, tls, state, &refN)) {
+            logEvent(map, tls, me->mStaticData->sErrorMissingRefN);
+        }
+        refN = normalize(refN);
+
+        Vec3f dPds;
+        if (isProvided(state, data.mdPdsKey)) {
+            dPds = normalize(getVec3fAttribute(tls, state, data.mdPdsKey));
+        } else if (isdsProvided(state, data.mRefPKey)) {
+            dPds = normalize(getdVec3fAttributeds(tls, state, data.mRefPKey));
+        } else {
+            logEvent(map, tls, me->mStaticData->sErrorMissingdPds);
+        }
+
+        // Transform from tangent space to world space 
+        ReferenceFrame refFrame;
+        ReferenceFrame_init(refFrame, refN, dPds);
+        Vec3f tNormal = globalToLocal(refFrame, pNormal);
+
+        // Transform from world space to render space
+        ReferenceFrame curFrame;
+        ReferenceFrame_init(curFrame, getN(state), normalize(getdPds(state)));
+        rNormal = localToGlobal(curFrame, tNormal);
     } else {
         // Transform blended normal from the object space of the
         // projector to world space

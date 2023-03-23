@@ -15,6 +15,7 @@ struct PROJECTION_StaticData {
     uniform Color sFatalColor;
     uniform int sErrorMissingProjector;
     uniform int sErrorMissingRefP;
+    uniform int sErrorMissingdPds;
     uniform int sErrorMissingRefN;
 };
 

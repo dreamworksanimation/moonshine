@@ -16,6 +16,7 @@ struct ProjectPlanarNormalMap
     const uniform Xform * uniform mObjXform;
     uniform int mRefPKey;
     uniform int mRefNKey;
+    uniform int mdPdsKey;
     uniform bool mHasValidProjector;
     uniform float mTransitionWidthPower;
     uniform Color mFatalColor;
@@ -190,11 +191,31 @@ sampleNormal(const uniform NormalMap* uniform map,
             SHADING_SPACE_OBJECT, SHADING_SPACE_WORLD,
             state, bNormal);
 
-        // Transform blended normal from world space to the
-        // space of the rendered object and then to render space
-        rNormal = transformNormal(me->mObjXform,
-            SHADING_SPACE_OBJECT, SHADING_SPACE_RENDER,
-            state, pNormal);
+        Vec3f refN;
+        if (!SHADER_DATA_getRefN(me->mRefPKey, me->mRefNKey, tls, state, &refN)) {
+            logEvent(map, tls, me->mStaticData->sErrorMissingRefN);
+        }
+        refN = normalize(refN);
+
+        Vec3f dPds;
+        if (isProvided(state, me->mdPdsKey)) {
+            // Explicitly authored "dPds" primitive attribute
+            dPds = normalize(getVec3fAttribute(tls, state, me->mdPdsKey));
+        } else if (isdsProvided(state, me->mRefPKey)) {
+            dPds = normalize(getdVec3fAttributeds(tls, state, me->mRefPKey));
+        } else {
+            logEvent(map, tls, me->mStaticData->sErrorMissingdPds);
+        }
+
+        // Transform from tangent space to world space 
+        ReferenceFrame refFrame;
+        ReferenceFrame_init(refFrame, refN, dPds);
+        Vec3f tNorm = globalToLocal(refFrame, pNormal);
+
+        // Transform from world space to render space
+        ReferenceFrame curFrame;
+        ReferenceFrame_init(curFrame, getN(state), normalize(getdPds(state)));
+        rNormal = localToGlobal(curFrame, tNorm);
     } else {
         // Transform blended normal from the object space of the
         // projector to world space

@@ -62,6 +62,7 @@ ProjectPlanarNormalMap::ProjectPlanarNormalMap(const SceneClass& sceneClass, con
     // Store keys to shader data
     mIspc.mRefPKey = moonray::shading::StandardAttributes::sRefP;
     mIspc.mRefNKey = moonray::shading::StandardAttributes::sRefN;
+    mIspc.mdPdsKey = moonray::shading::StandardAttributes::sdPds;
 
     mIspc.mStaticData = (ispc::PROJECTION_StaticData*)&sStaticProjectPlanarNormalMapData;
 
@@ -310,13 +311,31 @@ ProjectPlanarNormalMap::sampleNormal(const NormalMap* self,
                 state,
                 bNormal);
 
-        // Transform blended normal from world space to the
-        // space of the rendered object and then to render space
-        rNormal = me->mObjXform->transformNormal(
-            ispc::SHADING_SPACE_OBJECT,
-            ispc::SHADING_SPACE_RENDER,
-            state,
-            pNormal);
+        Vec3f dPds;
+        if (state.isProvided(moonray::shading::StandardAttributes::sdPds)) {
+            // Explicitly authored "dPds" primitive attribute
+            dPds = state.getAttribute(moonray::shading::StandardAttributes::sdPds);
+        } else if (state.isdsProvided(me->mIspc.mRefPKey)) {
+            state.getdVec3fAttrds(me->mIspc.mRefPKey, dPds);
+        } else {
+            moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingdPds);
+        }
+        dPds = normalize(dPds);
+
+        Vec3f refN;
+        if (state.getRefN(refN)) {
+            refN = normalize(refN);
+        } else {
+            moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefN);
+        }
+
+        // Transform from tangent space to world space 
+        ReferenceFrame refFrame(refN, dPds);
+        Vec3f tNorm = refFrame.globalToLocal(pNormal);
+
+        // Transform from world space to render space
+        ReferenceFrame curFrame(state.getN(), state.getdPds());
+        rNormal = curFrame.localToGlobal(tNorm);
     } else {
         // Transform blended normal from the object space of the
         // projector to render space
