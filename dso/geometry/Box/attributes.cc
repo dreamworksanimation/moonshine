@@ -15,12 +15,9 @@ RDL2_DSO_ATTR_DECLARE
 RDL2_DSO_ATTR_DEFINE(scene_rdl2::rdl2::Geometry)
     // define rdl2 attribute type, name and default value
     attrSize =
-            sceneClass.declareAttribute<scene_rdl2::rdl2::Vec3f>("size", scene_rdl2::rdl2::Vec3f(1,1,1));
-
-
-    // grouping the attributes for Torch - the order of 
-    // the attributes should be the same as how they are defined.
-    sceneClass.setGroup("Quadric", attrSize);
+        sceneClass.declareAttribute<scene_rdl2::rdl2::Vec3f>("size", scene_rdl2::rdl2::Vec3f(1,1,1));
+    sceneClass.setMetadata(attrSize, "comment", "The size of the box");
+    sceneClass.setGroup("Box", attrSize);
 
 RDL2_DSO_ATTR_END
 
