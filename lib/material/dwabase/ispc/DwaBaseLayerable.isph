@@ -314,11 +314,11 @@ void DWABASELAYERABLE_initParameters(varying DwaBaseParameters * uniform params)
 inline void
 DWABASELAYERABLE_printGlitterUniformParameters(const uniform GLITTER_UniformParameters * uniform const params)
 {
-    print("mSpace: %\n", DWABASE_EXTRACT((uint32_t) params->mSpace));
+    print("mSpace: %\n", DWABASE_EXTRACT((uniform uint32_t) params->mSpace));
     print("mFlakeRandomness: %\n", DWABASE_EXTRACT(params->mFlakeRandomness));
     print("mDenseGlitterLodQuality: %\n", DWABASE_EXTRACT(params->mDenseGlitterLodQuality));
     print("mSearchRadiusFactor: %\n", DWABASE_EXTRACT(params->mSearchRadiusFactor));
-    print("mLayeringMode: %\n", DWABASE_EXTRACT((uint32_t) params->mLayeringMode));
+    print("mLayeringMode: %\n", DWABASE_EXTRACT((uniform uint32_t) params->mLayeringMode));
 }
 
 inline void
@@ -390,7 +390,7 @@ DWABASELAYERABLE_printHairParameters(const varying HairParameters * uniform cons
 
     // Hair params
     print("mHairCastsCaustics: %\n", DWABASE_EXTRACT((uint32_t) params->mHairCastsCaustics));
-    print("mHairUV: % % %\n",
+    print("mHairUV: % %\n",
         DWABASE_EXTRACT(params->mHairUV.x),
         DWABASE_EXTRACT(params->mHairUV.y));
     print("mHairIOR: %\n", DWABASE_EXTRACT(params->mHairIOR));
@@ -528,7 +528,7 @@ DWABASELAYERABLE_printParameters(const varying DwaBaseParameters * uniform const
         DWABASE_EXTRACT(params->mOuterSpecularAttenuationColor.r),
         DWABASE_EXTRACT(params->mOuterSpecularAttenuationColor.g),
         DWABASE_EXTRACT(params->mOuterSpecularAttenuationColor.b));
-    print("mOuterSpecularBending: %\n", DWABASE_EXTRACT((uint32_t) uParams->mOuterSpecularUseBending));
+    print("mOuterSpecularBending: %\n", DWABASE_EXTRACT((uniform uint32_t) uParams->mOuterSpecularUseBending));
     print("mOuterSpecularNormal: % % %\n",
         DWABASE_EXTRACT(params->mOuterSpecularNormal.x),
         DWABASE_EXTRACT(params->mOuterSpecularNormal.y),
@@ -619,8 +619,8 @@ DWABASELAYERABLE_printParameters(const varying DwaBaseParameters * uniform const
         DWABASE_EXTRACT(params->mDiffuseTransmission.b));
     print("mDiffuseTransmissionBlendingBehavior: %\n",
         DWABASE_EXTRACT(params->mDiffuseTransmissionBlendingBehavior));
-    print("mSubsurfaceTraceSet: %\n", DWABASE_EXTRACT((uint64_t) params->mSubsurfaceTraceSet));
-    print("mSSSResolveSelfIntersections: %\n", DWABASE_EXTRACT((uint32_t) params->mSSSResolveSelfIntersections));
+    print("mSubsurfaceTraceSet: %\n", DWABASE_EXTRACT((uniform uint64_t) params->mSubsurfaceTraceSet));
+    print("mSSSResolveSelfIntersections: %\n", DWABASE_EXTRACT((uniform uint32_t) params->mSSSResolveSelfIntersections));
 
     // other params
     print("mNormal: % % %\n",
@@ -634,8 +634,8 @@ DWABASELAYERABLE_printParameters(const varying DwaBaseParameters * uniform const
         DWABASE_EXTRACT(params->mEmission.r),
         DWABASE_EXTRACT(params->mEmission.g),
         DWABASE_EXTRACT(params->mEmission.b));
-    print("mThinGeometry: %\n", DWABASE_EXTRACT((uint32_t) uParams->mThinGeometry));
-    print("mPreventLightCulling: %\n", DWABASE_EXTRACT((uint32_t) uParams->mPreventLightCulling));
+    print("mThinGeometry: %\n", DWABASE_EXTRACT((uniform uint32_t) uParams->mThinGeometry));
+    print("mPreventLightCulling: %\n", DWABASE_EXTRACT((uniform uint32_t) uParams->mPreventLightCulling));
     print("mEvalSubsurfaceNormalFn: %\n", DWABASE_EXTRACT(params->mEvalSubsurfaceNormalFn ));
 }
 

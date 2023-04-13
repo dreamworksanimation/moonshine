@@ -183,7 +183,7 @@ sample(const uniform Map* uniform map,
 
     // Natural falloff curve is reversed from others, so we don't flip it.
     if (falloffType != GRADIENT_FALLOFF_NATURAL) blend = 1.0f - blend;
-    blend = (1.0f - computeFalloff(blend, (GradientFalloffType)falloffType, falloffExponent));
+    blend = (1.0f - computeFalloff(blend, (uniform GradientFalloffType)falloffType, falloffExponent));
 
     // colorA blends into colorB and then back into colorA.
     // The blend from colorA to colorB and back to colorA
