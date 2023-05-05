@@ -689,8 +689,8 @@ createMicroFlake(const uniform GLITTER_Glitter * uniform me,
 
     foreach_active(lane) {
         uniform int c = extract(microFlakeCount, lane);
-        flakeNormalsPtr = insert(flakeNormalsPtr, lane, (intptr_t)Arena_allocArray(tls->mArena, c, sizeof(Vec3f)));
-        flakeColorsPtr = insert(flakeColorsPtr, lane, (intptr_t)Arena_allocArray(tls->mArena, c, sizeof(Color)));
+        flakeNormalsPtr = insert(flakeNormalsPtr, lane, (uniform intptr_t)Arena_allocArray(tls->mArena, c, sizeof(Vec3f)));
+        flakeColorsPtr = insert(flakeColorsPtr, lane, (uniform intptr_t)Arena_allocArray(tls->mArena, c, sizeof(Color)));
     }
 
     varying Vec3f * varying flakeNormals = (varying Vec3f * varying)flakeNormalsPtr;
