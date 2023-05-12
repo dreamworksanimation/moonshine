@@ -130,7 +130,7 @@
         "attrToonDRampColors": {
             "name": "colors",
             "type": "RgbVector",
-            "default": "{Rgb(1.0), Rgb(0.75), Rgb(0.25), Rgb(0.0)}",
+            "default": "{Rgb(0.0), Rgb(0.25), Rgb(0.75), Rgb(1.0)}",
             "comment": "List of colors on the ramp",
             "structure_type": "ramp_color",
             "structure_name": "ramp",
