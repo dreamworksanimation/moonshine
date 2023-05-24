@@ -35,6 +35,8 @@ TransformSpaceMap::TransformSpaceMap(const SceneClass& sceneClass, const std::st
     mSampleFuncv = (SampleFuncv) ispc::TransformSpaceMap_getSampleFunc();
     mIspc.mRefPKey = moonray::shading::StandardAttributes::sRefP;
     mIspc.mRefNKey = moonray::shading::StandardAttributes::sRefN;
+    mIspc.mdPdsKey = moonray::shading::StandardAttributes::sdPds;
+    mIspc.mRefdPdsKey = moonray::shading::StandardAttributes::sRefdPds;
     mIspc.mInstanceObjectTransformKey = moonray::shading::StandardAttributes::sInstanceObjectTransform;
     mIspc.mInstanceTransformKeys[0] = moonray::shading::StandardAttributes::sInstanceTransformLevel0;
     mIspc.mInstanceTransformKeys[1] = moonray::shading::StandardAttributes::sInstanceTransformLevel1;
@@ -75,6 +77,9 @@ TransformSpaceMap::update()
         if (get(attrToSpace) == ispc::TSM_TANGENT) {
             mRequiredAttributes.push_back(mIspc.mRefPKey);
             mOptionalAttributes.push_back(mIspc.mRefNKey);
+            mOptionalAttributes.push_back(mIspc.mRefdPdsKey);
+        } else if (get(attrFromSpace) == ispc::TSM_TANGENT) {
+            mOptionalAttributes.push_back(mIspc.mdPdsKey);
         } else if (get(attrFromSpace) == ispc::TSM_INSTANCE_OBJECT || get(attrToSpace) == ispc::TSM_INSTANCE_OBJECT) {
             mOptionalAttributes.push_back(mIspc.mInstanceObjectTransformKey);
         } else if (get(attrFromSpace) >= ispc::TSM_INSTANCE_OFFSET || get(attrToSpace) >= ispc::TSM_INSTANCE_OFFSET) {
@@ -229,13 +234,19 @@ transformType(const moonray::shading::Xform& mXform,
 Vec3f
 localToRender(const moonray::shading::State& state,
               const int refNKey,
+              const int dPdsKey,
               const Vec3f& inputVal)
 {
     const Vec3f curN = state.isProvided(refNKey) ?
-                             state.getN() :
-                             state.getNg();
+                       state.getN() :
+                       state.getNg();
 
-    const Vec3f dPds = normalize(state.getdPds());
+    Vec3f dPds;
+    if (state.isProvided(dPdsKey)) {
+        dPds = state.getAttribute(static_cast<moonray::shading::TypedAttributeKey<Vec3f>>(dPdsKey));
+    }  else {
+        dPds = normalize(state.getdPds());
+    }
 
     const ReferenceFrame frame(normalize(curN), dPds);
 
@@ -247,10 +258,15 @@ Vec3f
 worldToRefTangent(const moonray::shading::State& state,
                   const int refPKey,
                   const int refNKey,
+                  const int refdPdsKey,
                   const Vec3f& inputVal)
 {
     Vec3f dRefPds;
-    state.getdVec3fAttrds(refPKey, dRefPds);
+    if (state.isProvided(refdPdsKey)) {
+       dRefPds = state.getAttribute(static_cast<moonray::shading::TypedAttributeKey<Vec3f>>(refdPdsKey));
+    } else {
+        state.getdVec3fAttrds(refPKey, dRefPds);
+    }
     dRefPds = normalize(dRefPds);
 
     Vec3f refN;
@@ -315,6 +331,7 @@ TransformSpaceMap::sample(const Map* self,
 
         result = localToRender(state,
                                me->mIspc.mRefNKey,
+                               me->mIspc.mdPdsKey,
                                inputVal);
         *sample = Color(result[0],
                               result[1],
@@ -331,8 +348,9 @@ TransformSpaceMap::sample(const Map* self,
     Vec3f worldSpaceVal;
     if (fromSpace == ispc::TSM_TANGENT) {
         Vec3f renderSpaceVal = localToRender(state,
-                                                   me->mIspc.mRefNKey,
-                                                   inputVal);
+                                             me->mIspc.mRefNKey,
+                                             me->mIspc.mdPdsKey,
+                                             inputVal);
 
         // convert render space value to world space
         worldSpaceVal = transformType(*(me->mXform.get()),
@@ -371,6 +389,7 @@ TransformSpaceMap::sample(const Map* self,
         result = worldToRefTangent(state,
                                    me->mIspc.mRefPKey,
                                    me->mIspc.mRefNKey,
+                                   me->mIspc.mRefdPdsKey,
                                    worldSpaceVal);
     } else if (toSpace == ispc::TSM_INSTANCE_OBJECT) {
         result = transformByInstanceObject(true, // invert

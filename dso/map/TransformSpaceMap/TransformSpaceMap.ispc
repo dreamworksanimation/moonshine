@@ -11,6 +11,8 @@ struct TransformSpaceMap
     const uniform Xform * uniform mXform;
     uniform int mRefPKey;
     uniform int mRefNKey;
+    uniform int mdPdsKey;
+    uniform int mRefdPdsKey;
     uniform int mInstanceObjectTransformKey;
     uniform int mInstanceTransformKeys[5];
 };
@@ -187,7 +189,9 @@ transformType(const uniform Xform * uniform xform,
 
 Vec3f
 localToRender(const varying State &state,
+              uniform ShadingTLState* uniform tls,
               const uniform int refNKey,
+              const uniform int dPdsKey,
               const varying Vec3f& inputVal)
 {
     Vec3f curN;
@@ -197,8 +201,16 @@ localToRender(const varying State &state,
         curN = getNg(asAnIntersection(state));
     }
 
+    Vec3f dPds;
+    if (isProvided(state, dPdsKey)) {
+       dPds = getVec3fAttribute(tls, state, dPdsKey);
+    } else {
+       dPds = getdPds(state);
+    }
+    dPds = normalize(dPds);
+
     ReferenceFrame frame;
-    ReferenceFrame_init(frame, normalize(curN), normalize(getdPds(state)));
+    ReferenceFrame_init(frame, normalize(curN), dPds);
 
     // From local tangent space to render space
     Vec3f tmp = localToGlobal(frame, inputVal);
@@ -209,10 +221,17 @@ Vec3f
 worldToRefTangent(const varying State &state,
                   const uniform int refPKey,
                   const uniform int refNKey,
+                  const uniform int refdPdsKey,
                   uniform ShadingTLState * uniform tls,
                   const varying Vec3f& inputVal)
 {
-    Vec3f dRefPds = normalize(getdVec3fAttributeds(tls, state, refPKey));
+    Vec3f dRefPds;
+    if (isProvided(state, refdPdsKey)) {
+       dRefPds = getVec3fAttribute(tls, state, refdPdsKey);
+    } else {
+        dRefPds = getdVec3fAttributeds(tls, state, refPKey);
+    }
+    dRefPds = normalize(dRefPds);
 
     Vec3f refN;
     if (isProvided(state, refNKey)) {
@@ -267,7 +286,9 @@ sample(const uniform Map* uniform map,
         toSpace == SHADING_SPACE_RENDER) {
 
         result = localToRender(state,
+                               tls,
                                me->mRefNKey,
+                               me->mdPdsKey,
                                inputVal);
 
         // early exit, we're done
@@ -282,7 +303,9 @@ sample(const uniform Map* uniform map,
     varying Vec3f worldSpaceVal;
     if (fromSpace == TSM_TANGENT) {
         Vec3f renderSpaceVal = localToRender(state,
+                                             tls,
                                              me->mRefNKey,
+                                             me->mdPdsKey,
                                              inputVal);
 
         // convert render space value to world space
@@ -325,6 +348,7 @@ sample(const uniform Map* uniform map,
         result = worldToRefTangent(state,
                                    me->mRefPKey,
                                    me->mRefNKey,
+                                   me->mRefdPdsKey,
                                    tls,
                                    worldSpaceVal);
     } else if (toSpace == TSM_INSTANCE_OBJECT) {
