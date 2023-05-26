@@ -11,13 +11,13 @@
             "aliases": [ "use reference space" ],
             "type": "Bool",
             "default": "false",
-            "comment": "use reference space"
+            "comment": "Use reference space position (ref_P) and normals (ref_N)"
         },
         "attrTexture": {
             "name": "texture",
             "type": "String",
             "flags": "FLAGS_FILENAME",
-            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+            "comment": "Filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
         },
         "attrWrapAround": {
             "name": "wrap_around",

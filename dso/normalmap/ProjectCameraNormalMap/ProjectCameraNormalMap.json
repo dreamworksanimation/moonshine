@@ -7,27 +7,27 @@
             "type": "SceneObject*",
             "flags": "FLAGS_NONE",
             "interface": "INTERFACE_CAMERA",
-            "comment": "the camera to project from"
+            "comment": "The camera to project from"
         },
         "attrProjectOnBackFaces": {
             "name": "project_on_back_faces",
             "label": "project on back faces",
             "type": "Bool",
             "default": "false",
-            "comment": "Toggles whether camera projections appear on back faces."
+            "comment": "Toggles whether camera projections appear on back faces"
         },
         "attrUseReferenceSpace": {
             "name": "use_reference_space",
             "label": "use reference space",
             "type": "Bool",
             "default": "false",
-            "comment": "use reference space"
+            "comment": "Use reference space position (ref_P) and normals (ref_N)"
         },
         "attrTexture": {
             "name": "texture",
             "type": "String",
             "flags": "FLAGS_FILENAME",
-            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+            "comment": "Filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
         },
         "attrAspectRatioSource": {
             "name": "aspect_ratio_source",
@@ -46,7 +46,7 @@
             "label": "custom aspect ratio",
             "type": "Float",
             "default": "1.f",
-            "comment": "a custom aspect ratio for the projected texture",
+            "comment": "Custom aspect ratio for the projected texture to use when 'aspect_ratio_source' is set to 'custom'",
             "enable if": {
                 "aspect_ratio_source": "1"
             }

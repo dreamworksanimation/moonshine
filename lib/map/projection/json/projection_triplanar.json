@@ -36,7 +36,7 @@
             "aliases": [ "randomize rotation" ],
             "type": "Bool",
             "default": "false",
-            "comment": "Rnd 2d rotation of each active texture"
+            "comment": "Random 2d rotation of each active texture"
         },
         "attrRandomFlip": {
             "name": "randomize_flip",
@@ -44,7 +44,7 @@
             "aliases": [ "randomize flip" ],
             "type": "Bool",
             "default": "false",
-            "comment": "Rnd flipping in S or T for each active texture"
+            "comment": "Random flipping in S or T for each active texture"
         },
         "attrRandomOffset": {
             "name": "randomize_offset",
@@ -52,7 +52,7 @@
             "aliases": [ "randomize offset" ],
             "type": "Bool",
             "default": "false",
-            "comment": "Rnd offset in S or T for each active texture"
+            "comment": "Random offset in S or T for each active texture"
         },
 
 
@@ -73,7 +73,7 @@
             "enable if": {
                 "positive_x_active": "true"
             },
-            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+            "comment": "Filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
         },
         "attrPYActive": {
             "name": "positive_y_active",
@@ -92,7 +92,7 @@
             "enable if": {
                 "positive_y_active": "true"
             },
-            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+            "comment": "Filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
         },
         "attrPZActive": {
             "name": "positive_z_active",
@@ -111,7 +111,7 @@
                 "positive_z_active": "true"
             },
             "flags": "FLAGS_FILENAME",
-            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+            "comment": "Filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
         },
         "attrNXActive": {
             "name": "negative_x_active",
@@ -131,7 +131,7 @@
                 "number_of_textures": "six"
             },
             "flags": "FLAGS_FILENAME",
-            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+            "comment": "Filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
         },
         "attrNYActive": {
             "name": "negative_y_active",
@@ -151,7 +151,7 @@
                 "number_of_textures": "six"
             },
             "flags": "FLAGS_FILENAME",
-            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+            "comment": "Filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
         },
         "attrNZActive": {
             "name": "negative_z_active",
@@ -171,7 +171,7 @@
                 "number_of_textures": "six"
             },
             "flags": "FLAGS_FILENAME",
-            "comment": "filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
+            "comment": "Filename that points to a texture .exr or .tx file (must be mip-mapped and tiled with maketx)."
         },
 
 
