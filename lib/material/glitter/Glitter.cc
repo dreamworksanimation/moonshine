@@ -162,7 +162,7 @@ Glitter::Glitter(const scene_rdl2::rdl2::Material* shader,
 
 Glitter::Glitter(scene_rdl2::rdl2::Material* shader,
                  const std::vector<GlitterTexture>& glitterTextures,
-                 scene_rdl2::logging::LogEventRegistry<scene_rdl2::rdl2::Shader>& logEventRegistry,
+                 scene_rdl2::logging::LogEventRegistry& logEventRegistry,
                  const ispc::GLITTER_UniformParameters& params):
                          Glitter(shader, params)
 {

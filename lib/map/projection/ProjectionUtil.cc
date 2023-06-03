@@ -15,7 +15,7 @@ namespace projection {
 
 void
 initLogEvents(ispc::PROJECTION_StaticData& staticData,
-              scene_rdl2::logging::LogEventRegistry<scene_rdl2::rdl2::Shader>& logEventRegistry,
+              scene_rdl2::logging::LogEventRegistry& logEventRegistry,
               const scene_rdl2::rdl2::Shader * shader)
 {
     // register shade time event messages.  we require and expect

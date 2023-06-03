@@ -25,7 +25,7 @@ TriplanarTexture::TriplanarTexture(
         const Vec2f& scale,
         const Vec2f& rotationCenter,
         bool randomFlip, bool randomOffset, bool randomRotation,
-        scene_rdl2::logging::LogEventRegistry<scene_rdl2::rdl2::Shader>& logEventRegistry,
+        scene_rdl2::logging::LogEventRegistry& logEventRegistry,
         const Color& fatalColor) :
     mActive(active),
     mTexture(fauxstd::make_unique<moonray::shading::BasicTexture>(map, logEventRegistry)),
@@ -286,7 +286,7 @@ updateTriplanarMap(scene_rdl2::rdl2::Shader* map,
                    const Vec3f& scale,
                    const TriplanarFaceAttrs& faceAttrs,
                    const Color& fatalColor,
-                   scene_rdl2::logging::LogEventRegistry<scene_rdl2::rdl2::Shader>& logEventRegistry,
+                   scene_rdl2::logging::LogEventRegistry& logEventRegistry,
                    ispc::PROJECTION_TriplanarData& outputIspcData,
                    std::array<std::unique_ptr<projection::TriplanarTexture>, 6>& outputTriplanarTextures,
                    std::unique_ptr<moonray::shading::Xform>& outputProjectorXform)

@@ -60,7 +60,7 @@ public:
     // Textured Glitter Flakes
     Glitter(scene_rdl2::rdl2::Material* shader,
             const std::vector<GlitterTexture>& filenames,
-            scene_rdl2::logging::LogEventRegistry<scene_rdl2::rdl2::Shader>& logEventRegistry,
+            scene_rdl2::logging::LogEventRegistry& logEventRegistry,
             const ispc::GLITTER_UniformParameters& params);
 
     // Creates all the lobes for glitter and populates them in the bsdf container
