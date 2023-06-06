@@ -61,12 +61,12 @@
                 "screen": "3",
                 "object": "4",
                 "local reference tangent": "5",
-                "instance level 0": "6",
-                "instance level 1": "7",
-                "instance level 2": "8",
-                "instance level 3": "9",
-                "instance level 4": "10",
-                "instance object transform": "11"
+                "instance object transform": "6",
+                "instance level 0": "7",
+                "instance level 1": "8",
+                "instance level 2": "9",
+                "instance level 3": "10",
+                "instance level 4": "11"
             }
         },
         "attrConcatenateTransforms": {
