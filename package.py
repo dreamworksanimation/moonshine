@@ -80,6 +80,7 @@ tests = dict(testlist)
 
 if build_system is 'cmake':
     def commands():
+        prependenv('CMAKE_MODULE_PATH', '{root}/lib64/cmake')
         prependenv('CMAKE_PREFIX_PATH', '{root}')
         prependenv('SOFTMAP_PATH', '{root}')
         prependenv('MOONRAY_DSO_PATH', '{root}/rdl2dso')
