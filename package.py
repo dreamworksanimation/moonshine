@@ -36,18 +36,23 @@ else:
     build_system_pbr = 'cmake_modules'
 
 variants = [
-    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2020.3', 'icc-19.0.5.281.x.2'],
-    ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2020.3', 'icc-19.0.5.281.x.2'],
-    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2020.3', 'gcc-6.3.x.2'],
-    ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2020.3', 'gcc-6.3.x.2'],
     ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2021.0', 'gcc-9.3.x.1'],
     ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2021.0', 'gcc-9.3.x.1'],
     ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2021.0', 'clang-13', 'gcc-9.3.x.1'],
     ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2022.0', 'gcc-9.3.x.1'],
     ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2022.0', 'gcc-9.3.x.1'],
+    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2020.3', 'icc-19.0.5.281.x.2'],
+    ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2020.3', 'icc-19.0.5.281.x.2'],
+    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2020.3', 'gcc-6.3.x.2'],
+    ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2020.3', 'gcc-6.3.x.2'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2021.0', 'gcc-9.3.x.1'],
+    ['os-rocky-9', 'opt_level-debug', 'refplat-vfx2021.0', 'gcc-9.3.x.1'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2022.0', 'gcc-9.3.x.1'],
+    ['os-rocky-9', 'opt_level-debug', 'refplat-vfx2022.0', 'gcc-9.3.x.1'],
 ]
 
 conf_rats_variants = variants[0:2]
+conf_CI_variants = list(filter(lambda v: 'os-CentOS-7' in v, variants))
 
 scons_targets = ['@install_include', '@install'] + unittestflags
 proxy_targets = ['@rdl2proxy', '@install_SConscript']
@@ -60,7 +65,7 @@ sconsTargets = {
 
 requires = [
     'moonray-14.1',
-    'openimageio-2',
+    'openimageio-2.3.20.0.x',
     'scene_rdl2-12.1',
 ]
 
@@ -85,7 +90,7 @@ if build_system is 'cmake':
         prependenv('SOFTMAP_PATH', '{root}')
         prependenv('MOONRAY_DSO_PATH', '{root}/rdl2dso')
         prependenv('RDL2_DSO_PATH', '{root}/rdl2dso')
-        prependenv('LD_LIBRARY_PATH', '{root}/lib')
+        prependenv('LD_LIBRARY_PATH', '{root}/lib64')
         prependenv('PATH', '{root}/bin')
         prependenv('MOONRAY_CLASS_PATH', '{root}/coredata')
 else:
