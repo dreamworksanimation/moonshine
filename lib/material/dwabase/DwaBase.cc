@@ -811,6 +811,13 @@ DwaBase::update()
                         &mIspc.mFuzzNormalMap,
                         mIspc.mFuzzSampleNormalFunc);
 
+    if (mIspc.mModel == ispc::Model::Toon) {
+        initializeNormalMap(this,
+                            mAttrKeys.mToonSpecularKeys.mInputNormal,
+                            &mIspc.mToonSpecularData.mNormalMap,
+                            mIspc.mToonSpecularData.mSampleNormalFunc);
+    }
+
     if (mIspc.mModel == ispc::Model::HairToon) {
         initializeNormalMap(this,
                             mAttrKeys.mHairToonS1Keys.mInputNormal,
