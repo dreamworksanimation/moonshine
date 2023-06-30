@@ -67,8 +67,8 @@ NoiseMap_v2::NoiseMap_v2(SceneClass const &sceneClass,
     // to allow for the possibility that we may someday create image maps
     // on multiple threads, we'll protect the writes of the class statics
     // with a mutex.
-    static tbb::mutex errorMutex;
-    tbb::mutex::scoped_lock lock(errorMutex);
+    static std::mutex errorMutex;
+    std::scoped_lock lock(errorMutex);
     MOONRAY_START_THREADSAFE_STATIC_WRITE
     sStaticNoiseMapData.sErrorMissingReferenceData =
         mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,

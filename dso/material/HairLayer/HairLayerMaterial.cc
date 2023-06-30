@@ -140,8 +140,8 @@ HairLayerMaterial::HairLayerMaterial(const scene_rdl2::rdl2::SceneClass& sceneCl
     // with a mutex.
     mIspc.mStaticData = (ispc::HairLayerMaterialStaticData*)&sStaticHairLayerMaterialData;
 
-    static tbb::mutex errorMutex;
-    tbb::mutex::scoped_lock lock(errorMutex);
+    static std::mutex errorMutex;
+    std::scoped_lock lock(errorMutex);
     MOONRAY_START_THREADSAFE_STATIC_WRITE
 
     mIspc.mStaticData->sErrorMismatchedFresnelType =
