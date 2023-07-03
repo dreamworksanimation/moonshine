@@ -13,7 +13,7 @@ using namespace scene_rdl2::math;
 
 bool Noise::sNoiseIsDataInitialized = false;
 scene_rdl2::util::Random Noise::sNoiseRandom = scene_rdl2::util::Random(0xbeadceef);
-tbb::mutex Noise::sNoiseInitDataMutex;
+std::mutex Noise::sNoiseInitDataMutex;
 std::vector<int> Noise::sNoisePermutationTable;
 
 Noise::Noise(const int seed,
@@ -25,7 +25,7 @@ Noise::Noise(const int seed,
     mIspc.mTableSize = tableSize;
 
     if (useStaticTables) {
-        tbb::mutex::scoped_lock dataLock(sNoiseInitDataMutex); // Lock this part that initializes static data
+        std::scoped_lock dataLock(sNoiseInitDataMutex); // Lock this part that initializes static data
         // Only construct the static data once to share across all instances
         if (!sNoiseIsDataInitialized) {
             buildStaticTables(tableSize);

@@ -8,9 +8,9 @@
 #pragma warning disable 1711 // Warnings about assignemnt to statically allocated data
 
 #include "Noise_ispc_stubs.h"
-#include <tbb/mutex.h>
 #include <scene_rdl2/common/math/Vec3.h>
 #include <scene_rdl2/common/math/Xform.h>
+#include <mutex>
 
 // Forward declaration
 namespace scene_rdl2 {
@@ -71,7 +71,7 @@ protected:
     // Static data
     static bool sNoiseIsDataInitialized;
     static scene_rdl2::util::Random sNoiseRandom;
-    static tbb::mutex sNoiseInitDataMutex;
+    static std::mutex sNoiseInitDataMutex;
     static std::vector<int> sNoisePermutationTable;
 
 private:

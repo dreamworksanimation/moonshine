@@ -227,7 +227,7 @@ collectPoints(const Worley_PointArray::iterator tmpWorleyPointsBeg,
 
 // Static data
 bool Worley::sIsWorleyDataInitialized = false;
-tbb::mutex Worley::sWorleyInitDataMutex;
+std::mutex Worley::sWorleyInitDataMutex;
 std::vector<float> Worley::sWorleyPointsX;
 std::vector<float> Worley::sWorleyPointsY;
 std::vector<float> Worley::sWorleyPointsZ;
@@ -255,7 +255,7 @@ Worley::Worley(const int seed,
     initPointProbabilities();
 
     if (useStaticTables) {
-        tbb::mutex::scoped_lock dataLock(sWorleyInitDataMutex); // Lock this part that initializes static data
+        std::scoped_lock dataLock(sWorleyInitDataMutex); // Lock this part that initializes static data
         // Only construct the static data once to share across all instances
         if (!sIsWorleyDataInitialized) {
             buildStaticPointTables(addNormals, tableSize);
