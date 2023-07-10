@@ -72,7 +72,7 @@ requires = [
 private_build_requires = [
     build_system_pbr,
     'cppunit',
-    'ispc-1.14.1.x',
+    'ispc-1.20.0.x',
     'python-2.7|3.7|3.9'
 ]
 
