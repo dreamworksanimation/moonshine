@@ -19,7 +19,8 @@
             "label": "material",
             "type": "SceneObject*",
             "interface": "INTERFACE_DWABASELAYERABLE",
-            "multi": "64"
+            "multi": "64",
+            "comment": "material input option"
         },
         "attrFallbackBSSRDF": {
             "name": "fallback_bssrdf",

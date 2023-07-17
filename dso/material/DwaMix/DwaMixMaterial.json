@@ -14,7 +14,8 @@
             "label": "material",
             "type": "SceneObject*",
             "interface": "INTERFACE_DWABASELAYERABLE",
-            "multi": "64"
+            "multi": "64",
+            "comment": "material input"
         },
          "attrMix": {
             "name": "mix",

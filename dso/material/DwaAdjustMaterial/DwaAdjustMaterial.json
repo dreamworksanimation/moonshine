@@ -12,7 +12,8 @@
             "name": "input_material",
             "label": "input material",
             "type": "SceneObject*",
-            "interface": "INTERFACE_DWABASELAYERABLE"
+            "interface": "INTERFACE_DWABASELAYERABLE",
+            "comment": "Material to modify"
         },
         "attrOn": {
             "name": "on",
