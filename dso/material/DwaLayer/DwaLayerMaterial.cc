@@ -165,6 +165,7 @@ DwaLayerMaterial::resolveUniformParameters(ispc::DwaBaseUniformParameters &uPara
         ispc::DwaBaseUniformParameters uParamsA, uParamsB;
         mLayerableA->resolveUniformParameters(uParamsA);
         mLayerableB->resolveUniformParameters(uParamsB);
+        uParams = uParamsA;
         blendUniformParameters(uParamsA,
                                uParamsB,
                                uParams,
