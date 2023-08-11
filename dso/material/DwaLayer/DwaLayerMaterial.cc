@@ -161,19 +161,22 @@ DwaLayerMaterial::DwaLayerMaterial(const SceneClass& sceneClass, const std::stri
 void
 DwaLayerMaterial::resolveUniformParameters(ispc::DwaBaseUniformParameters &uParams) const
 {
-    ispc::DwaBaseUniformParameters uParamsA, uParamsB;
-    mLayerableA->resolveUniformParameters(uParamsA);
-    mLayerableB->resolveUniformParameters(uParamsB);
-    uParams = uParamsA;
-    blendUniformParameters(uParamsA,
-                           uParamsB,
-                           uParams,
-                           get(attrFallbackSpecularModel),
-                           get(attrFallbackToonSpecularModel),
-                           get(attrFallbackOuterSpecularModel),
-                           get(attrFallbackOuterSpecularUseBending),
-                           get(attrFallbackBSSRDF),
-                           get(attrFallbackThinGeometry));
+    if (mLayerableA && mLayerableB) {
+        ispc::DwaBaseUniformParameters uParamsA, uParamsB;
+        mLayerableA->resolveUniformParameters(uParamsA);
+        mLayerableB->resolveUniformParameters(uParamsB);
+        blendUniformParameters(uParamsA,
+                               uParamsB,
+                               uParams,
+                               get(attrFallbackSpecularModel),
+                               get(attrFallbackToonSpecularModel),
+                               get(attrFallbackOuterSpecularModel),
+                               get(attrFallbackOuterSpecularUseBending),
+                               get(attrFallbackBSSRDF),
+                               get(attrFallbackThinGeometry));
+    } else if (!mLayerableA && mLayerableB) {
+        mLayerableB->resolveUniformParameters(uParams);
+    }
 }
 
 void
@@ -181,8 +184,25 @@ DwaLayerMaterial::update()
 {
     if (hasChanged(attrMaterialA) || hasChanged(attrMaterialB)) {
         mIspc.mColorSpace = static_cast<ispc::BlendColorSpace>(get(attrColorSpace));
+
+        if (get(attrMaterialB) == nullptr) {
+            fatal("No material_B specified");
+            return;
+        }
+
         mLayerableA = registerLayerable(get(attrMaterialA), mIspc.mSubMtlA);
         mLayerableB = registerLayerable(get(attrMaterialB), mIspc.mSubMtlB);
+
+        // Verify that any submaterials that are connected are
+        // DwaBaseLayerable, otherwise exit early
+        if (get(attrMaterialA) && !mLayerableA) {
+            fatal("material_A is not layerable");
+            return;
+        }
+        if (get(attrMaterialB) && !mLayerableB) {
+            fatal("material_B is not layerable");
+            return;
+        }
 
         resolveUniformParameters(mIspc.mUParams);
 
@@ -295,11 +315,6 @@ DwaLayerMaterial::shade(const Material* self,
 {
     const DwaLayerMaterial* me = static_cast<const DwaLayerMaterial*>(self);
     const ispc::DwaLayerMaterial* ispc = me->getISPCLayerMaterialStruct();
-
-    // First verify that any submaterials that are connected are
-    // DwaBaseLayerable, otherwise exit early
-    if (me->get(attrMaterialA) && !me->mLayerableA) { return; }
-    if (me->get(attrMaterialB) && !me->mLayerableB) { return; }
 
     const bool castsCaustics = me->getCastsCaustics();
 
