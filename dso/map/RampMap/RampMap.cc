@@ -8,7 +8,8 @@
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
 #include <moonray/rendering/shading/MapApi.h>
 #include <moonray/rendering/shading/RampControl.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 using namespace scene_rdl2::math;
 
@@ -177,7 +178,7 @@ RampMap::update()
             get(attrCamera)->asA<Camera>() : nullptr;
 
     // Construct Xform with custom camera
-    mXform = fauxstd::make_unique<moonray::shading::Xform>(this, geom, cam, nullptr);
+    mXform = std::make_unique<moonray::shading::Xform>(this, geom, cam, nullptr);
     mIspc.mXform = mXform->getIspcXform();
 
     mIspc.mRampControl = mRampControl.asIspc();

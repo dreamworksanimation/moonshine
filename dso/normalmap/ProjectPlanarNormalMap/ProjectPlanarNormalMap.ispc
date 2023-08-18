@@ -44,7 +44,7 @@ sampleNormal(const uniform NormalMap* uniform map,
     const uniform ProjectPlanarNormalMap* uniform me = NORMALMAP_GET_ISPC_PTR(ProjectPlanarNormalMap, map);
 
     if (!me->mHasValidProjector) {
-        logEvent(map, tls, me->mStaticData->sErrorMissingProjector);
+        logEvent(map, me->mStaticData->sErrorMissingProjector);
         return state.mN;
     }
 
@@ -66,7 +66,7 @@ sampleNormal(const uniform NormalMap* uniform map,
                              me->mRefPKey,
                              U, dUdx, dUdy, dUdz)) {
         // Log missing ref_P data message
-        logEvent(map, tls, me->mStaticData->sErrorMissingRefP);
+        logEvent(map, me->mStaticData->sErrorMissingRefP);
         return state.mN;
     }
 
@@ -80,7 +80,7 @@ sampleNormal(const uniform NormalMap* uniform map,
                            me->mRefNKey,
                            normal)) {
         // Log missing ref_N data message
-        logEvent(map, tls, me->mStaticData->sErrorMissingRefN);
+        logEvent(map, me->mStaticData->sErrorMissingRefN);
         return state.mN;
     }
 
@@ -193,7 +193,7 @@ sampleNormal(const uniform NormalMap* uniform map,
 
         Vec3f refN;
         if (!SHADER_DATA_getRefN(me->mRefPKey, me->mRefNKey, tls, state, &refN)) {
-            logEvent(map, tls, me->mStaticData->sErrorMissingRefN);
+            logEvent(map, me->mStaticData->sErrorMissingRefN);
         }
         refN = normalize(refN);
 
@@ -204,7 +204,7 @@ sampleNormal(const uniform NormalMap* uniform map,
         } else if (isdsProvided(state, me->mRefPKey)) {
             dPds = normalize(getdVec3fAttributeds(tls, state, me->mRefPKey));
         } else {
-            logEvent(map, tls, me->mStaticData->sErrorMissingdPds);
+            logEvent(map, me->mStaticData->sErrorMissingdPds);
         }
 
         // Transform from tangent space to world space 

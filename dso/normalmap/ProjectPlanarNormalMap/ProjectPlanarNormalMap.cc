@@ -11,7 +11,8 @@
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 using namespace scene_rdl2::math;
 using namespace moonshine;
@@ -69,13 +70,11 @@ ProjectPlanarNormalMap::ProjectPlanarNormalMap(const SceneClass& sceneClass, con
     const SceneVariables &sv = getSceneClass().getSceneContext()->getSceneVariables();
     asCpp(mIspc.mFatalColor) = sv.get(SceneVariables::sFatalColor);
 
-    mTexture = fauxstd::make_unique<moonray::shading::BasicTexture>(this, mLogEventRegistry);
+    mTexture = std::make_unique<moonray::shading::BasicTexture>(this, sLogEventRegistry);
     mIspc.mTexture = &mTexture->getBasicTextureData();
 
     // Set projection error messages and fatal color
-    projection::initLogEvents(*mIspc.mStaticData,
-                              mLogEventRegistry,
-                              this);
+    projection::initLogEvents(*mIspc.mStaticData, sLogEventRegistry, this);
 }
 
 ProjectPlanarNormalMap::~ProjectPlanarNormalMap()
@@ -136,7 +135,7 @@ ProjectPlanarNormalMap::update()
     }
 
     // Construct Xform for space of object being rendered to transform texture normals into
-    mObjXform = fauxstd::make_unique<moonray::shading::Xform>(this, nullptr, nullptr, nullptr);
+    mObjXform = std::make_unique<moonray::shading::Xform>(this, nullptr, nullptr, nullptr);
     mIspc.mObjXform = mObjXform->getIspcXform();
 
     // Note below we use a hard coded 0.5 value for the transition width.
@@ -164,7 +163,7 @@ ProjectPlanarNormalMap::sampleNormal(const NormalMap* self,
 
     if (!me->mIspc.mHasValidProjector) {
         // Log missing projector data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingProjector);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingProjector);
         return;
     }
 
@@ -186,7 +185,7 @@ ProjectPlanarNormalMap::sampleNormal(const NormalMap* self,
                               me->mIspc.mRefPKey,
                               U, dUdx, dUdy, dUdz)) {
         // Log missing ref_P data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefP);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefP);
         return;
     }
 
@@ -200,7 +199,7 @@ ProjectPlanarNormalMap::sampleNormal(const NormalMap* self,
                             me->mIspc.mRefNKey,
                             normal)) {
         // Log missing ref_N data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefN);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefN);
         return;
     }
 
@@ -318,7 +317,7 @@ ProjectPlanarNormalMap::sampleNormal(const NormalMap* self,
         } else if (state.isdsProvided(me->mIspc.mRefPKey)) {
             state.getdVec3fAttrds(me->mIspc.mRefPKey, dPds);
         } else {
-            moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingdPds);
+            moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingdPds);
         }
         dPds = normalize(dPds);
 
@@ -326,7 +325,7 @@ ProjectPlanarNormalMap::sampleNormal(const NormalMap* self,
         if (state.getRefN(refN)) {
             refN = normalize(refN);
         } else {
-            moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefN);
+            moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefN);
         }
 
         // Transform from tangent space to world space 

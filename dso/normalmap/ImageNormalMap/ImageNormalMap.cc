@@ -9,7 +9,8 @@
 #include <moonray/rendering/shading/BasicTexture.h>
 #include <moonray/rendering/shading/UdimTexture.h>
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 using namespace scene_rdl2::math;
 
@@ -79,7 +80,7 @@ ImageNormalMap::ImageNormalMap(const scene_rdl2::rdl2::SceneClass& sceneClass, c
     const scene_rdl2::rdl2::SceneVariables &sv = getSceneClass().getSceneContext()->getSceneVariables();
     asCpp(mIspc.mFatalColor) = sv.get(scene_rdl2::rdl2::SceneVariables::sFatalColor);
 
-    mTexture = fauxstd::make_unique<moonray::shading::BasicTexture>(this, mLogEventRegistry);
+    mTexture = std::make_unique<moonray::shading::BasicTexture>(this, sLogEventRegistry);
     mIspc.mTexture = &mTexture->getBasicTextureData();
 }
 
@@ -95,7 +96,7 @@ ImageNormalMap::updateUdimTexture()
     bool needsUpdate = false;
     if (!mUdimTexture) {
         needsUpdate = true;
-        mUdimTexture = fauxstd::make_unique<moonray::shading::UdimTexture>(this);
+        mUdimTexture = std::make_unique<moonray::shading::UdimTexture>(this);
         mIspc.mUdimTexture = &mUdimTexture->getUdimTextureData();
     }
     if (needsUpdate ||
@@ -117,7 +118,7 @@ ImageNormalMap::updateUdimTexture()
         }
 
         if (!mUdimTexture->update(this,
-                                  mLogEventRegistry,
+                                  sLogEventRegistry,
                                   get(attrTexture),
                                   ispc::TEXTURE_GAMMA_OFF,
                                   wrapS,
@@ -143,7 +144,7 @@ ImageNormalMap::updateBasicTexture()
     bool needsUpdate = false;
     if (!mTexture) {
         needsUpdate = true;
-        mTexture = fauxstd::make_unique<moonray::shading::BasicTexture>(this, mLogEventRegistry);
+        mTexture = std::make_unique<moonray::shading::BasicTexture>(this, sLogEventRegistry);
         mIspc.mTexture = &mTexture->getBasicTextureData();
     }
     if (needsUpdate ||

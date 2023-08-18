@@ -35,7 +35,7 @@ sample(const uniform Map *            uniform map,
                              -1.0f);
 
     if (!me->mHasValidProjector) {
-        logEvent(map, tls, me->mStaticData->sErrorMissingProjector);
+        logEvent(map, me->mStaticData->sErrorMissingProjector);
         return result;
     }
 
@@ -56,7 +56,7 @@ sample(const uniform Map *            uniform map,
                              me->mRefPKey,
                              P_s, pos_ddx, pos_ddy, pos_ddz)) {
         // Log missing ref_P data message
-        logEvent(map, tls, me->mStaticData->sErrorMissingRefP);
+        logEvent(map, me->mStaticData->sErrorMissingRefP);
         return result;
     }
 
@@ -73,7 +73,7 @@ sample(const uniform Map *            uniform map,
                                me->mRefNKey,
                                N_c)) {
             // Log missing ref_N data message
-            logEvent(map, tls, me->mStaticData->sErrorMissingRefN);
+            logEvent(map, me->mStaticData->sErrorMissingRefN);
             return result;
         }
     }

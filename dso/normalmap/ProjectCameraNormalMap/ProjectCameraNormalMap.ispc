@@ -40,7 +40,7 @@ sampleNormal(const uniform NormalMap * uniform map,
 
     if (!me->mHasValidProjector) {
         // Log missing projector data message
-        logEvent(map, tls, me->mStaticData->sErrorMissingProjector);
+        logEvent(map, me->mStaticData->sErrorMissingProjector);
         return state.mN;
     }
 
@@ -61,7 +61,7 @@ sampleNormal(const uniform NormalMap * uniform map,
                              me->mRefPKey,
                              P_s, dPdx_s, dPdy_s, dPdz_s)) {
         // Log missing ref_P data message
-        logEvent(map, tls, me->mStaticData->sErrorMissingRefP);
+        logEvent(map, me->mStaticData->sErrorMissingRefP);
         return state.mN;
     }
 
@@ -85,7 +85,7 @@ sampleNormal(const uniform NormalMap * uniform map,
                                me->mRefNKey,
                                Ncam)) {
             // Log missing ref_N data message
-            logEvent(map, tls, me->mStaticData->sErrorMissingRefN);
+            logEvent(map, me->mStaticData->sErrorMissingRefN);
             return state.mN;
         }
     }

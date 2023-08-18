@@ -95,7 +95,7 @@ sample(const uniform Map * uniform map,
                                  me->mRefPKey,
                                  pos, pos_ddx, pos_ddy, pos_ddz)) {
             // Log missing ref_P data message
-            logEvent(map, tls, me->mNoiseMapDataPtr->sErrorMissingReferenceData);
+            logEvent(map, me->mNoiseMapDataPtr->sErrorMissingReferenceData);
             return me->mNoiseMapDataPtr->sFatalColor;
         }
     }

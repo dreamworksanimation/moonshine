@@ -7,6 +7,7 @@
 #include "HairColumnMap_ispc_stubs.h"
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
+#include <moonray/common/mcrt_util/Atomic.h>
 #include <moonray/rendering/shading/MapApi.h>
 
 using namespace moonray::shading;
@@ -43,18 +44,12 @@ HairColumnMap::HairColumnMap(const SceneClass &sceneClass, const std::string &na
     mSampleFunc = HairColumnMap::sample;
     mSampleFuncv = (SampleFuncv) ispc::HairColumnMap_getSampleFunc();
 
-    // register shade time event messages.  we require and expect
-    // these events to have the same value across all instances of the shader.
-    // no conditional registration of events is allowed.
-    // to allow for the possibility that we may someday create image maps
-    // on multiple threads, we'll protect the writes of the class statics
-    // with a mutex.
-    static tbb::mutex errorMutex;
-    tbb::mutex::scoped_lock lock(errorMutex);
+    const auto errorScatterTagMissing = sLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                        "scatter tag not found in geometry.");
+
+    using namespace moonray::util;
     MOONRAY_START_THREADSAFE_STATIC_WRITE
-    sErrorScatterTagMissing =
-        mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-                                      "scatter tag not found in geometry.");
+    atomicStore(&sErrorScatterTagMissing, errorScatterTagMissing);
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 
@@ -81,7 +76,7 @@ HairColumnMap::sample(const Map *self, moonray::shading::TLState *tls,
     float scatterTag = state.getAttribute(
             TypedAttributeKey<float>(me->mData.mScatterTagKey));
     if (isEqual(scatterTag, -1.f)) {
-        moonray::shading::logEvent(me, tls, sErrorScatterTagMissing);
+        moonray::shading::logEvent(me, sErrorScatterTagMissing);
         *sample = sBlack;
     } else {
         Vec2f st = state.getSt();

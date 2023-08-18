@@ -170,9 +170,7 @@ ProjectTriplanarUdimMap::ProjectTriplanarUdimMap(const SceneClass& sceneClass, c
     mIspc.mStaticData = (ispc::PROJECTION_StaticData*)&sStaticProjectTriplanarUdimMapData;
 
     // Set projection error messages and fatal color
-    projection::initLogEvents(*mIspc.mStaticData,
-                              mLogEventRegistry,
-                              this);
+    projection::initLogEvents(*mIspc.mStaticData, sLogEventRegistry, this);
 }
 
 ProjectTriplanarUdimMap::~ProjectTriplanarUdimMap()
@@ -244,7 +242,7 @@ ProjectTriplanarUdimMap::sample(const Map* self, moonray::shading::TLState* tls,
 
     if (!me->mIspc.mHasValidProjector) {
         // Log missing projector data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingProjector);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingProjector);
         return;
     }
 
@@ -266,7 +264,7 @@ ProjectTriplanarUdimMap::sample(const Map* self, moonray::shading::TLState* tls,
                               me->mIspc.mRefPKey,
                               pos, pos_ddx, pos_ddy, pos_ddz)) {
         // Log missing ref_P data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefP);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefP);
         return;
     }
  
@@ -280,7 +278,7 @@ ProjectTriplanarUdimMap::sample(const Map* self, moonray::shading::TLState* tls,
                             me->mIspc.mRefNKey,
                             normal)) {
         // Log missing ref_N data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefN);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefN);
         return;
     }
 

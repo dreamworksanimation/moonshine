@@ -9,7 +9,8 @@
 #include <moonray/map/primvar/Primvar.h>
 
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 using namespace moonray::shading;
 using namespace scene_rdl2::math;
@@ -75,13 +76,10 @@ UsdPrimvarReader_normal::update()
             mIspc.mPrimitiveAttributeIndex = attributeKey;
             mOptionalAttributes.push_back(attributeKey);
         }
-        ::moonshine::primvar::createLogEvent("normal",
-                                             varname,
-                                             mIspc.mMissingAttributeEvent,
-                                             mLogEventRegistry);
+        ::moonshine::primvar::createLogEvent("normal", varname, mIspc.mMissingAttributeEvent, sLogEventRegistry);
     }
 
-    mXform = fauxstd::make_unique<moonray::shading::Xform>(this, nullptr, nullptr, nullptr);
+    mXform = std::make_unique<moonray::shading::Xform>(this, nullptr, nullptr, nullptr);
     mIspc.mXform = mXform->getIspcXform();
 }
 
@@ -112,7 +110,7 @@ UsdPrimvarReader_normal::sampleNormal(const NormalMap *self,
             const ReferenceFrame frame(state.getN(), normalize(state.getdPds()));
             *sample = frame.localToGlobal(fallback);
             if (me->get(attrWarnWhenUnavailable)) {
-                moonray::shading::logEvent(me, tls, me->mIspc.mMissingAttributeEvent);
+                moonray::shading::logEvent(me, me->mIspc.mMissingAttributeEvent);
             }
         }
     }

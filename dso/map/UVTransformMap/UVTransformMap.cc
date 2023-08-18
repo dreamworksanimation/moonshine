@@ -9,8 +9,10 @@
 #include "UVTransformMap_ispc_stubs.h"
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
+#include <moonray/common/mcrt_util/Atomic.h>
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 using namespace moonray::shading;
 using namespace scene_rdl2::math;
@@ -90,18 +92,12 @@ UVTransformMap::UVTransformMap(const SceneClass& sceneClass,
 
     mIspc.mUVTransformMapDataPtr = (ispc::StaticUVTransformMapData*)&sStaticUVTransformMapData;
 
-     // register shade time event messages.  we require and expect
-    // these events to have the same value across all instances of the shader.
-    // no conditional registration of events is allowed.
-    // to allow for the possibility that we may someday create image maps
-    // on multiple threads, we'll protect the writes of the class statics
-    // with a mutex.
-    static tbb::mutex errorMutex;
-    tbb::mutex::scoped_lock lock(errorMutex);
+    const auto errorMissingReferenceData = sLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                           "missing reference data");
+
+    using namespace moonray::util;
     MOONRAY_START_THREADSAFE_STATIC_WRITE
-    sStaticUVTransformMapData.sErrorMissingReferenceData =
-        mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-                                      "missing reference data");
+    atomicStore(&sStaticUVTransformMapData.sErrorMissingReferenceData, errorMissingReferenceData);
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 
@@ -125,7 +121,7 @@ UVTransformMap::update()
     }
 
     // Construct Xform with default transforms for camera and screen and geometry.
-    mXform = fauxstd::make_unique<moonray::shading::Xform>(this);
+    mXform = std::make_unique<moonray::shading::Xform>(this);
     mIspc.mXform = mXform->getIspcXform();
 
     float theta = deg2rad(get(attrRotationAngle));

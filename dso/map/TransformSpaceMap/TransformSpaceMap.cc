@@ -5,7 +5,6 @@
 #include "attributes.cc"
 #include "TransformSpaceMap_ispc_stubs.h"
 
-#include <scene_rdl2/render/util/stdmemory.h>
 #include <moonray/rendering/shading/MapApi.h>
 
 using namespace scene_rdl2::math;
@@ -67,7 +66,7 @@ TransformSpaceMap::update()
     SceneObject const * cam = get(attrCamera);
     Camera const *rdlCamera = cam ? cam->asA<Camera>() : nullptr;
 
-    mXform = fauxstd::make_unique<moonray::shading::Xform>(this, rdlGeometry, rdlCamera, &window);
+    mXform = std::make_unique<moonray::shading::Xform>(this, rdlGeometry, rdlCamera, &window);
     mIspc.mXform = mXform->getIspcXform();
 
     // Use reference space

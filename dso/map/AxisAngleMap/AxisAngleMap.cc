@@ -5,8 +5,9 @@
 #include "attributes.cc"
 #include "AxisAngleMap_ispc_stubs.h"
 
-#include <scene_rdl2/render/util/stdmemory.h>
 #include <moonray/rendering/shading/MapApi.h>
+
+#include <memory>
 
 using namespace scene_rdl2::math;
 
@@ -42,7 +43,7 @@ AxisAngleMap::~AxisAngleMap()
 void
 AxisAngleMap::update()
 {
-    mXform = fauxstd::make_unique<moonray::shading::Xform>(this);
+    mXform = std::make_unique<moonray::shading::Xform>(this);
     mIspc.mXform = mXform->getIspcXform();
 }
 

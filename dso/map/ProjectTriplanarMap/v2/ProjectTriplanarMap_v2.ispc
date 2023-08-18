@@ -24,7 +24,7 @@ sample(const uniform Map* uniform map, uniform ShadingTLState* uniform tls, cons
     const uniform PROJECTION_TriplanarData data = me->mTriplanarData;
 
     if (!data.mHasValidProjector) {
-        logEvent(map, tls, me->mStaticData->sErrorMissingProjector);
+        logEvent(map, me->mStaticData->sErrorMissingProjector);
         return me->mStaticData->sFatalColor;
     }
 
@@ -44,7 +44,7 @@ sample(const uniform Map* uniform map, uniform ShadingTLState* uniform tls, cons
                              data.mRefPKey,
                              pos, pos_ddx, pos_ddy, pos_ddz)) {
         // Log missing ref_P data message
-        logEvent(map, tls, me->mStaticData->sErrorMissingRefP);
+        logEvent(map, me->mStaticData->sErrorMissingRefP);
         return me->mStaticData->sFatalColor;
     }
 
@@ -61,7 +61,7 @@ sample(const uniform Map* uniform map, uniform ShadingTLState* uniform tls, cons
                            data.mRefNKey,
                            normal)) {
         // Log missing ref_N data message
-        logEvent(map, tls, me->mStaticData->sErrorMissingRefN);
+        logEvent(map, me->mStaticData->sErrorMissingRefN);
         return me->mStaticData->sFatalColor;
     }
 

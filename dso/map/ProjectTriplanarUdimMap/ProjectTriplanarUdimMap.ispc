@@ -115,7 +115,7 @@ sample(const uniform Map* uniform map, uniform ShadingTLState* uniform tls,
     Color result = Color_ctor(0.f, 0.f, 0.f);
 
     if (!me->mHasValidProjector) {
-        logEvent(map, tls, me->mStaticData->sErrorMissingProjector);
+        logEvent(map, me->mStaticData->sErrorMissingProjector);
         return result;
     }
 
@@ -137,7 +137,7 @@ sample(const uniform Map* uniform map, uniform ShadingTLState* uniform tls,
                              me->mRefPKey,
                              pos, pos_ddx, pos_ddy, pos_ddz)) {
         // Log missing ref_P data message
-        logEvent(map, tls, me->mStaticData->sErrorMissingRefP);
+        logEvent(map, me->mStaticData->sErrorMissingRefP);
         return result;
     }
 
@@ -151,7 +151,7 @@ sample(const uniform Map* uniform map, uniform ShadingTLState* uniform tls,
                            me->mRefNKey,
                            normal)) {
         // Log missing ref_N data message
-        logEvent(map, tls, me->mStaticData->sErrorMissingRefN);
+        logEvent(map, me->mStaticData->sErrorMissingRefN);
         return result;
     }
 

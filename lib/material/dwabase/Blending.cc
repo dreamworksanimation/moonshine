@@ -1674,7 +1674,7 @@ blendHairParameters(TLState *tls,
 
     if (!isZero(params0.mHairParameters.mHair) && !isZero(params1.mHairParameters.mHair) &&
         params0.mHairParameters.mHairFresnelType != params1.mHairParameters.mHairFresnelType) {
-            moonray::shading::logEvent(me, tls, errorMismatchedFresnelType);
+            moonray::shading::logEvent(me, errorMismatchedFresnelType);
             return false;
     }
 

@@ -51,10 +51,10 @@ sample(const uniform Map * uniform map,
     // Errors if either curdPds or curdPdt are zero vectors or if they are identical.
     if (isZero(lengthCurZ)) {
         if (getAttrUseWarningColor(map)) {
-            logEvent(map, tls, me->mDataPtr->sWarningZeroDerivatives);
+            logEvent(map, me->mDataPtr->sWarningZeroDerivatives);
             return evalAttrWarningColor(map, tls, state);
         } else {
-            logEvent(map, tls, me->mDataPtr->sErrorZeroDerivatives);
+            logEvent(map, me->mDataPtr->sErrorZeroDerivatives);
             return me->mFatalColor;
         }
     }
@@ -74,10 +74,10 @@ sample(const uniform Map * uniform map,
     // Errors if either refdPds or refdPdt are zero vectors or if they are identical.
     if (isZero(lengthRefZ)) {
         if (getAttrUseWarningColor(map)) {
-            logEvent(map, tls, me->mDataPtr->sWarningZeroRefDerivatives);
+            logEvent(map, me->mDataPtr->sWarningZeroRefDerivatives);
             return evalAttrWarningColor(map, tls, state);
         } else {
-            logEvent(map, tls, me->mDataPtr->sErrorZeroRefDerivatives);
+            logEvent(map, me->mDataPtr->sErrorZeroRefDerivatives);
             return me->mFatalColor;
         }
     }

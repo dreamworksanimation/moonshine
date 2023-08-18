@@ -97,7 +97,7 @@ sampleNormal(const uniform NormalMap* uniform map,
                                  me->mRefPKey,
                                  pos, pos_ddx, pos_ddy, pos_ddz)) {
             // Log missing ref_P data message
-            logEvent(map, tls, me->sErrorMissingReferenceData);
+            logEvent(map, me->sErrorMissingReferenceData);
             return n;
         }
     }

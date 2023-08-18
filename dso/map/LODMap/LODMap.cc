@@ -7,7 +7,6 @@
 #include "LODMap_ispc_stubs.h"
 
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
 
 using namespace scene_rdl2::math;
 
@@ -52,10 +51,10 @@ void
 LODMap::update()
 {
     // Construct Xform with default transforms for camera and screen.
-    mXform = fauxstd::make_unique<moonray::shading::Xform>(this,
-                                                           nullptr,
-                                                           nullptr,
-                                                           nullptr);
+    mXform = std::make_unique<moonray::shading::Xform>(this,
+                                                       nullptr,
+                                                       nullptr,
+                                                       nullptr);
 
     mIspcData.mXform = mXform->getIspcXform();
     mIspcData.mStart = get(attrStart);

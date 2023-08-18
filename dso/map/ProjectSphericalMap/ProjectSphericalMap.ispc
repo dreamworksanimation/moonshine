@@ -48,7 +48,7 @@ sample(const uniform Map* uniform map, uniform ShadingTLState* uniform tls, cons
     const uniform ProjectSphericalMap* uniform me = MAP_GET_ISPC_PTR(ProjectSphericalMap, map);
 
     if (!me->mHasValidProjector) {
-        logEvent(map, tls, me->mStaticData->sErrorMissingProjector);
+        logEvent(map, me->mStaticData->sErrorMissingProjector);
         return Color_ctor(0.0f, 0.0f, -1.0f);
     }
 
@@ -69,7 +69,7 @@ sample(const uniform Map* uniform map, uniform ShadingTLState* uniform tls, cons
                              me->mRefPKey,
                              pos, pos_ddx, pos_ddy, pos_ddz)) {
         // Log missing ref_P data message
-        logEvent(map, tls, me->mStaticData->sErrorMissingRefP);
+        logEvent(map, me->mStaticData->sErrorMissingRefP);
         return Color_ctor(0.0f, 0.0f, -1.0f);
     }
 

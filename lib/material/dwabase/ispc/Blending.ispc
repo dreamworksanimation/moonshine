@@ -1520,7 +1520,7 @@ DWABASE_blendHairParameters(const uniform Material* uniform me,
 
     if (!isZero(params0.mHairParameters.mHair) && !isZero(params1.mHairParameters.mHair) &&
         params0.mHairParameters.mHairFresnelType != params1.mHairParameters.mHairFresnelType) {
-        logEvent(me, tls, errorMismatchedFresnelType);
+        logEvent(me, errorMismatchedFresnelType);
         return false;
     }
 

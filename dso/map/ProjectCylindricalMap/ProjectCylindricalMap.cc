@@ -67,9 +67,7 @@ ProjectCylindricalMap::ProjectCylindricalMap(const scene_rdl2::rdl2::SceneClass&
     mIspc.mStaticData = (ispc::PROJECTION_StaticData*)&sStaticProjectCylindricalMapData;
 
     // Set projection error messages and fatal color
-    projection::initLogEvents(*mIspc.mStaticData,
-                              mLogEventRegistry,
-                              this);
+    projection::initLogEvents(*mIspc.mStaticData, sLogEventRegistry, this);
 }
 
 ProjectCylindricalMap::~ProjectCylindricalMap()
@@ -115,7 +113,7 @@ ProjectCylindricalMap::sample(const scene_rdl2::rdl2::Map* self, moonray::shadin
 
     if (!me->mIspc.mHasValidProjector) {
         // Log missing projector data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingProjector);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingProjector);
         *sample = Color(0.0f, 0.0f, -1.0f);
         return;
     }
@@ -137,7 +135,7 @@ ProjectCylindricalMap::sample(const scene_rdl2::rdl2::Map* self, moonray::shadin
                               me->mIspc.mRefPKey,
                               pos, pos_ddx, pos_ddy, pos_ddz)) {
         // Log missing ref_P data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefP);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefP);
         *sample = Color(0.0f, 0.0f, -1.0f);
         return;
     }
@@ -155,7 +153,7 @@ ProjectCylindricalMap::sample(const scene_rdl2::rdl2::Map* self, moonray::shadin
                                 me->mIspc.mRefNKey,
                                 normal)) {
             // Log missing ref_N data message
-            moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefN);
+            moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefN);
             *sample = Color(0.0f, 0.0f, -1.0f);
             return;
         }

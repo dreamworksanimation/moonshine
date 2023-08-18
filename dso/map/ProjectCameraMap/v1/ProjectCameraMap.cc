@@ -11,7 +11,8 @@
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 using namespace moonshine;
 using namespace scene_rdl2::math;
@@ -54,7 +55,7 @@ ProjectCameraMap::ProjectCameraMap(const scene_rdl2::rdl2::SceneClass &sceneClas
 
     // Set projection error messages and fatal color
     projection::initLogEvents(*mIspc.mStaticData,
-                              mLogEventRegistry,
+                              sLogEventRegistry,
                               this);
 }
 
@@ -78,7 +79,7 @@ ProjectCameraMap::update()
                 window[2] = get(attrWindowXMax);
                 window[3] = get(attrWindowYMax);
             }
-            mXform = fauxstd::make_unique<moonray::shading::Xform>(this, nullptr, projectorCamera, &window);
+            mXform = std::make_unique<moonray::shading::Xform>(this, nullptr, projectorCamera, &window);
             mIspc.mXform = mXform->getIspcXform();
             mIspc.mHasValidProjector = true;
         } else {
@@ -119,7 +120,7 @@ ProjectCameraMap::sample(const scene_rdl2::rdl2::Map *self, moonray::shading::TL
 
     if (!me->mIspc.mHasValidProjector) {
         // Log missing projector data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingProjector);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingProjector);
         return;
     }
 
@@ -140,7 +141,7 @@ ProjectCameraMap::sample(const scene_rdl2::rdl2::Map *self, moonray::shading::TL
                               me->mIspc.mRefPKey,
                               pos, pos_ddx, pos_ddy, pos_ddz)) {
         // Log missing ref_P data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefP);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefP);
         return;
     }
 
@@ -157,7 +158,7 @@ ProjectCameraMap::sample(const scene_rdl2::rdl2::Map *self, moonray::shading::TL
                                 me->mIspc.mRefNKey,
                                 cameraN)) {
             // Log missing ref_N data message
-            moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefN);
+            moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefN);
             return;
         }
     }

@@ -473,10 +473,10 @@ public:
                 switch (resultCode)
                 {
                 case ispc::GLITTER_RESULTCODE_NO_REFN:
-                    moonray::shading::logEvent(material, tls, eventMessages.sErrorNoRefN);
+                    moonray::shading::logEvent(material, eventMessages.sErrorNoRefN);
                     break;
                 case ispc::GLITTER_RESULTCODE_NO_REFP_PARTIALS:
-                    moonray::shading::logEvent(material, tls, eventMessages.sWarnNoRefPpartials);
+                    moonray::shading::logEvent(material, eventMessages.sWarnNoRefPpartials);
                     break;
                 default:
                     break;
@@ -498,7 +498,7 @@ public:
             // scatter_tag is a random number [0, 1) assigned to each hair
             float scatterTag = state.getAttribute(moonray::shading::StandardAttributes::sScatterTag);
             if (scene_rdl2::math::isEqual(scatterTag, -1.f)) {
-                moonray::shading::logEvent(dwaBaseLayerable, tls, eventMessages.sErrorScatterTagMissing);
+                moonray::shading::logEvent(dwaBaseLayerable, eventMessages.sErrorScatterTagMissing);
             } else {
                 glintRandom = scatterTag;
             }

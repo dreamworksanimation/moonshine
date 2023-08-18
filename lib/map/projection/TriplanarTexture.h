@@ -44,7 +44,7 @@ public:
         bool randomFlip,
         bool randomOffset,
         bool randomRot,
-        scene_rdl2::logging::LogEventRegistry& logEventRegistry,
+        scene_rdl2::rdl2::ShaderLogEventRegistry& logEventRegistry,
         const scene_rdl2::math::Color& fatalColor
     );
 
@@ -157,7 +157,7 @@ void updateTriplanarMap(scene_rdl2::rdl2::Shader* map,
                         const scene_rdl2::math::Vec3f& scale,
                         const TriplanarFaceAttrs& faceAttrs,
                         const scene_rdl2::math::Color& fatalColor,
-                        scene_rdl2::logging::LogEventRegistry& logEventRegistry,
+                        scene_rdl2::rdl2::ShaderLogEventRegistry& logEventRegistry,
                         ispc::PROJECTION_TriplanarData& outputIspcData,
                         std::array<std::unique_ptr<projection::TriplanarTexture>, 6>& outputTriplanarTextures,
                         std::unique_ptr<moonray::shading::Xform>& outputProjectorXform);

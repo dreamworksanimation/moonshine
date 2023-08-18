@@ -7,8 +7,10 @@
 #include "GradientMap_ispc_stubs.h"
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
+#include <moonray/common/mcrt_util/Atomic.h>
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 using namespace moonray::shading;
 using namespace scene_rdl2::math;
@@ -108,18 +110,12 @@ GradientMap::GradientMap(const scene_rdl2::rdl2::SceneClass &sceneClass,
 
     mIspc.mGradientMapDataPtr = (ispc::StaticGradientMapData*)&sStaticGradientMapData;
 
-     // register shade time event messages.  we require and expect
-    // these events to have the same value across all instances of the shader.
-    // no conditional registration of events is allowed.
-    // to allow for the possibility that we may someday create image maps
-    // on multiple threads, we'll protect the writes of the class statics
-    // with a mutex.
-    static tbb::mutex errorMutex;
-    tbb::mutex::scoped_lock lock(errorMutex);
+    const auto errorMissingReferenceData = sLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                           "missing reference data");
+
+    using namespace moonray::util;
     MOONRAY_START_THREADSAFE_STATIC_WRITE
-    sStaticGradientMapData.sErrorMissingReferenceData =
-        mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-                                      "missing reference data");
+    atomicStore(&sStaticGradientMapData.sErrorMissingReferenceData, errorMissingReferenceData);
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 
@@ -172,7 +168,7 @@ GradientMap::update()
                 get(attrObject)->asA<scene_rdl2::rdl2::Geometry>() : nullptr;
 
     // Construct Xform with default transforms for camera and screen.
-    mXform = fauxstd::make_unique<moonray::shading::Xform>(this, geom, nullptr, nullptr);
+    mXform = std::make_unique<moonray::shading::Xform>(this, geom, nullptr, nullptr);
     mIspc.mXform = mXform->getIspcXform();
 }
 

@@ -16,7 +16,7 @@ namespace projection  {
 
 void
 initLogEvents(ispc::PROJECTION_StaticData& staticData,
-              scene_rdl2::logging::LogEventRegistry& logEventRegistry,
+              scene_rdl2::rdl2::ShaderLogEventRegistry& logEventRegistry,
               const scene_rdl2::rdl2::Shader * shader);
 
 std::unique_ptr<moonray::shading::Xform>

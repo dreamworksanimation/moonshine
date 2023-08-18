@@ -11,7 +11,6 @@
 #include <scene_rdl2/scene/rdl2/rdl2.h>
 #include <moonray/rendering/shading/EvalAttribute.h>
 #include <scene_rdl2/common/math/MathUtil.h>
-#include <scene_rdl2/render/util/stdmemory.h>
 
 #include <memory>
 
@@ -887,10 +886,7 @@ DwaBase::updateGlitter()
 
     try {
         if (!mGlitterPointer) {
-            mGlitterPointer = std::make_unique<glitter::Glitter>(this,
-                                                                 filenames,
-                                                                 mLogEventRegistry,
-                                                                 uniformParams);
+            mGlitterPointer = std::make_unique<glitter::Glitter>(this, filenames, sLogEventRegistry, uniformParams);
         }
 
     } catch (const std::invalid_argument &e) {

@@ -5,7 +5,9 @@
 #include "ProjectionUtil.h"
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+#include <moonray/common/mcrt_util/Atomic.h>
+
+#include <memory>
 
 using namespace moonray;
 using namespace scene_rdl2::math;
@@ -15,7 +17,7 @@ namespace projection {
 
 void
 initLogEvents(ispc::PROJECTION_StaticData& staticData,
-              scene_rdl2::logging::LogEventRegistry& logEventRegistry,
+              scene_rdl2::rdl2::ShaderLogEventRegistry& logEventRegistry,
               const scene_rdl2::rdl2::Shader * shader)
 {
     // register shade time event messages.  we require and expect
@@ -24,28 +26,32 @@ initLogEvents(ispc::PROJECTION_StaticData& staticData,
     // to allow for the possibility that we may someday create image maps
     // on multiple threads, we'll protect the writes of the class statics
     // with a mutex.
-    static tbb::mutex errorMutex;
-    tbb::mutex::scoped_lock lock(errorMutex);
+
+    const auto errorMissingProjector = logEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                       "missing or invalid projector object");
+
+    const auto errorMissingRefP = logEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                  "ref_P primitive attribute is missing");
+
+    const auto errorMissingRefN = logEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                  "ref_N primitive attribute is missing and cannot be computed from ref_P partials");
+
+    const auto errorMissingdPds = logEventRegistry.createEvent(scene_rdl2::logging::WARN_LEVEL,
+                                  "dPds is not provided");
+
+    using namespace moonray::util;
+
     MOONRAY_START_THREADSAFE_STATIC_WRITE
-
-    staticData.sErrorMissingProjector = logEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-        "missing or invalid projector object");
-
-    staticData.sErrorMissingRefP = logEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-        "ref_P primitive attribute is missing");
-
-    staticData.sErrorMissingRefN = logEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-        "ref_N primitive attribute is missing and cannot be computed from ref_P partials");
-
-    staticData.sErrorMissingdPds = logEventRegistry.createEvent(scene_rdl2::logging::WARN_LEVEL,
-        "dPds is not provided");
+    atomicStore(&staticData.sErrorMissingProjector, errorMissingProjector);
+    atomicStore(&staticData.sErrorMissingRefP, errorMissingRefP);
+    atomicStore(&staticData.sErrorMissingRefN, errorMissingRefN);
+    atomicStore(&staticData.sErrorMissingdPds, errorMissingdPds);
 
     const scene_rdl2::rdl2::SceneVariables &sceneVariables =
         shader->getSceneClass().getSceneContext()->getSceneVariables();
 
-    asCpp(staticData.sFatalColor) =
-        sceneVariables.get(scene_rdl2::rdl2::SceneVariables::sFatalColor);
-
+    auto& fatalColor = asCpp(staticData.sFatalColor);
+    atomicStore(&fatalColor, sceneVariables.get(scene_rdl2::rdl2::SceneVariables::sFatalColor));
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 
@@ -64,12 +70,11 @@ getProjectorXform(const scene_rdl2::rdl2::SceneObject *shader,
     case ispc::PROJECTION_MODE_PROJECTOR:
         if (projectorObject != nullptr) {
             const scene_rdl2::rdl2::Node* projectorNode = projectorObject->asA<scene_rdl2::rdl2::Node>();
-            return fauxstd::make_unique<moonray::shading::Xform>(shader, projectorNode,
-                                                        nullptr, nullptr);
+            return std::make_unique<moonray::shading::Xform>(shader, projectorNode, nullptr, nullptr);
         }
         break;
     case ispc::PROJECTION_MODE_MATRIX:
-        return fauxstd::make_unique<moonray::shading::Xform>(shader, projectionMatrix);
+        return std::make_unique<moonray::shading::Xform>(shader, projectionMatrix);
         break;
     case ispc::PROJECTION_MODE_TRS:
         Xform3d rot(scene_rdl2::math::one);
@@ -141,7 +146,7 @@ getProjectorXform(const scene_rdl2::rdl2::SceneObject *shader,
         }
 
         Mat4d projectionMatrix(transform);
-        return fauxstd::make_unique<moonray::shading::Xform>(shader, projectionMatrix);
+        return std::make_unique<moonray::shading::Xform>(shader, projectionMatrix);
     }
 
     return nullptr;

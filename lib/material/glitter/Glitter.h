@@ -11,7 +11,6 @@
 #include <moonray/rendering/shading/BasicTexture.h>
 #include <moonray/rendering/bvh/shading/Xform.h>
 #include <scene_rdl2/scene/rdl2/Material.h>
-#include <scene_rdl2/render/util/stdmemory.h>
 #include <scene_rdl2/render/logging/logging.h>
 #include <scene_rdl2/common/math/Color.h>
 #include <scene_rdl2/common/math/Vec3.h>
@@ -60,7 +59,7 @@ public:
     // Textured Glitter Flakes
     Glitter(scene_rdl2::rdl2::Material* shader,
             const std::vector<GlitterTexture>& filenames,
-            scene_rdl2::logging::LogEventRegistry& logEventRegistry,
+            scene_rdl2::rdl2::ShaderLogEventRegistry& logEventRegistry,
             const ispc::GLITTER_UniformParameters& params);
 
     // Creates all the lobes for glitter and populates them in the bsdf container

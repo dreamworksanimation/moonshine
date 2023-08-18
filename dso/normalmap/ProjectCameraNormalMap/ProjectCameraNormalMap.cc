@@ -12,7 +12,8 @@
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
 #include <moonray/rendering/shading/BasicTexture.h>
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 using namespace moonshine;
 using namespace scene_rdl2::math;
@@ -54,13 +55,11 @@ ProjectCameraNormalMap::ProjectCameraNormalMap(const SceneClass &sceneClass, con
 
     mIspc.mStaticData = (ispc::PROJECTION_StaticData*)&sStaticProjectCameraMapData;
 
-    mTexture = fauxstd::make_unique<moonray::shading::BasicTexture>(this, mLogEventRegistry);
+    mTexture = std::make_unique<moonray::shading::BasicTexture>(this, sLogEventRegistry);
     mIspc.mTexture = &mTexture->getBasicTextureData();
 
     // Set projection error messages and fatal color
-    projection::initLogEvents(*mIspc.mStaticData,
-                              mLogEventRegistry,
-                              this);
+    projection::initLogEvents(*mIspc.mStaticData, sLogEventRegistry, this);
 }
 
 ProjectCameraNormalMap::~ProjectCameraNormalMap()
@@ -127,7 +126,7 @@ ProjectCameraNormalMap::update()
             window = { -aspectRatio, 1.0f, aspectRatio, -1.0f};
         }
 
-        mXform = fauxstd::make_unique<moonray::shading::Xform>(this, nullptr, projectorCamera, &window);
+        mXform = std::make_unique<moonray::shading::Xform>(this, nullptr, projectorCamera, &window);
         mIspc.mXform = mXform->getIspcXform();
     }
 
@@ -168,7 +167,7 @@ ProjectCameraNormalMap::sampleNormal(const NormalMap *self,
 
     if (!me->mIspc.mHasValidProjector) {
         // Log missing projector data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingProjector);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingProjector);
         return;
     }
 
@@ -189,7 +188,7 @@ ProjectCameraNormalMap::sampleNormal(const NormalMap *self,
                               me->mIspc.mRefPKey,
                               P_s, dPdx_s, dPdy_s, dPdz_s)) {
         // Log missing ref_P data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefP);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefP);
         return;
     }
 
@@ -211,7 +210,7 @@ ProjectCameraNormalMap::sampleNormal(const NormalMap *self,
                                 me->mIspc.mRefNKey,
                                 N_c)) {
             // Log missing ref_N data message
-            moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefN);
+            moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefN);
             return;
         }
     }

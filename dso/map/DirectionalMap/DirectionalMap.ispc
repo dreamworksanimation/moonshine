@@ -155,7 +155,7 @@ sample(const uniform Map *uniform map,
         if (!SHADER_DATA_getRefN(me->mRefPKey, me->mRefNKey, tls, state, &N)) {
             // There really isn't a right thing to do here, its too late
             // to fatal() the shader.
-            logEvent(map, tls, me->mStaticData->sErrorMissingRefN);
+            logEvent(map, me->mStaticData->sErrorMissingRefN);
         }
 
         // TODO: this ignores normal mapping.  Do we have a way to

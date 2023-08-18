@@ -56,9 +56,7 @@ ProjectTriplanarMap_v2::ProjectTriplanarMap_v2(const scene_rdl2::rdl2::SceneClas
     ASSIGN_TRIPLANAR_FACE_ATTRS(mFaceAttrs);
 
     // Set projection error messages and fatal color
-    projection::initLogEvents(*mIspc.mStaticData,
-                              mLogEventRegistry,
-                              this);
+    projection::initLogEvents(*mIspc.mStaticData, sLogEventRegistry, this);
 }
 
 ProjectTriplanarMap_v2::~ProjectTriplanarMap_v2()
@@ -86,7 +84,7 @@ ProjectTriplanarMap_v2::update()
                                    get(attrScale),
                                    mFaceAttrs,
                                    asCpp(mIspc.mStaticData->sFatalColor),
-                                   mLogEventRegistry,
+                                   sLogEventRegistry,
                                    mIspc.mTriplanarData,
                                    mTriplanarTextures,
                                    mProjectorXform);
@@ -108,7 +106,7 @@ ProjectTriplanarMap_v2::sample(const scene_rdl2::rdl2::Map* self, moonray::shadi
 
     if (!me->mIspc.mTriplanarData.mHasValidProjector) {
         // Log missing projector data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingProjector);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingProjector);
         *sample = asCpp(me->mIspc.mStaticData->sFatalColor);
         return;
     }
@@ -132,7 +130,7 @@ ProjectTriplanarMap_v2::sample(const scene_rdl2::rdl2::Map* self, moonray::shadi
                               data.mRefPKey,
                               pos, pos_ddx, pos_ddy, pos_ddz)) {
         // Log missing ref_P data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefP);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefP);
         *sample = asCpp(me->mIspc.mStaticData->sFatalColor);
         return;
     }
@@ -150,7 +148,7 @@ ProjectTriplanarMap_v2::sample(const scene_rdl2::rdl2::Map* self, moonray::shadi
                             data.mRefNKey,
                             normal)) {
         // Log missing ref_N data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefN);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefN);
         *sample = asCpp(me->mIspc.mStaticData->sFatalColor);
         return;
     }

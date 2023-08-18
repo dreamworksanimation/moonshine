@@ -8,10 +8,11 @@
 
 #include "DwaBaseLayerable.h"
 
+#include <moonray/common/mcrt_macros/moonray_static_check.h>
+#include <moonray/common/mcrt_util/Atomic.h>
 #include <moonray/rendering/shading/MaterialApi.h>
 #include <scene_rdl2/common/math/ReferenceFrame.h>
 #include <scene_rdl2/render/logging/logging.h>
-#include <moonray/common/mcrt_macros/moonray_static_check.h>
 
 namespace {
 
@@ -47,34 +48,27 @@ DwaBaseLayerable::registerShadeTimeEventMessages()
 {
     mIspc.mEventMessagesPtr = (ispc::DwaBaseEventMessages*)&sEventMessages;
 
-   // Register shade time event messages.  We require and expect
-   // these events to have the same value across all instances of the shader.
-   // No conditional registration of events is allowed.
-   // To allow for the possibility that we may someday create materials
-   // on multiple threads, we'll protect the writes of the class statics
-   // with a mutex.
-   static tbb::mutex errorMutex;
-   tbb::mutex::scoped_lock lock(errorMutex);
-   MOONRAY_START_THREADSAFE_STATIC_WRITE
+    const auto errorNoRefN = sLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                             "Unable to acquire refN which is required for glitter. Glitter cannot be applied");
 
-   sEventMessages.sErrorNoRefN =
-       mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-                                     "Unable to acquire refN which is required for glitter. "
-                                     "Glitter cannot be applied");
+    const auto warnNoRefPpartials = sLogEventRegistry.createEvent(scene_rdl2::logging::WARN_LEVEL,
+                                    "No partial derivatives associated with refP. "
+                                    "Unable to compute deformation for 'deformation compensation' feature. "
+                                    "Glitter may stretch");
 
-   sEventMessages.sWarnNoRefPpartials =
-       mLogEventRegistry.createEvent(scene_rdl2::logging::WARN_LEVEL,
-                                     "No partial derivatives associated with refP. "
-                                     "Unable to compute deformation for 'deformation compensation' feature. "
-                                     "Glitter may stretch");
+    const auto errorScatterTagMissing = sLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                        "scatter_tag not found in geometry. "
+                                        "Hair glint variation cannot be applied. "
+                                        "Please ensure that either scatter_tag is being output from the geometry, "
+                                        "or remove hair glint variation by setting min twists and max twists to the "
+                                        "same number");
 
-   sEventMessages.sErrorScatterTagMissing =
-       mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-                                     "scatter_tag not found in geometry. "
-                                     "Hair glint variation cannot be applied. "
-                                     "Please ensure that either scatter_tag is being output from the geometry, "
-                                     "or remove hair glint variation by setting min twists and max twists to the same number");
+    using namespace moonray::util;
 
+    MOONRAY_START_THREADSAFE_STATIC_WRITE
+    atomicStore(&sEventMessages.sErrorNoRefN, errorNoRefN);
+    atomicStore(&sEventMessages.sWarnNoRefPpartials, warnNoRefPpartials);
+    atomicStore(&sEventMessages.sErrorScatterTagMissing, errorScatterTagMissing);
    MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 

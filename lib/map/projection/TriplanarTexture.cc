@@ -5,7 +5,8 @@
 #include "TriplanarTexture.h"
 #include "ProjectionUtil.h"
 #include <scene_rdl2/render/util/Random.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 #define BLEND_EPSILON 0.0005f
 
@@ -25,10 +26,10 @@ TriplanarTexture::TriplanarTexture(
         const Vec2f& scale,
         const Vec2f& rotationCenter,
         bool randomFlip, bool randomOffset, bool randomRotation,
-        scene_rdl2::logging::LogEventRegistry& logEventRegistry,
+        scene_rdl2::rdl2::ShaderLogEventRegistry& logEventRegistry,
         const Color& fatalColor) :
     mActive(active),
-    mTexture(fauxstd::make_unique<moonray::shading::BasicTexture>(map, logEventRegistry)),
+    mTexture(std::make_unique<moonray::shading::BasicTexture>(map, logEventRegistry)),
     mScale(scale),
     mFatalColor(fatalColor)
 {
@@ -286,7 +287,7 @@ updateTriplanarMap(scene_rdl2::rdl2::Shader* map,
                    const Vec3f& scale,
                    const TriplanarFaceAttrs& faceAttrs,
                    const Color& fatalColor,
-                   scene_rdl2::logging::LogEventRegistry& logEventRegistry,
+                   scene_rdl2::rdl2::ShaderLogEventRegistry& logEventRegistry,
                    ispc::PROJECTION_TriplanarData& outputIspcData,
                    std::array<std::unique_ptr<projection::TriplanarTexture>, 6>& outputTriplanarTextures,
                    std::unique_ptr<moonray::shading::Xform>& outputProjectorXform)
@@ -296,24 +297,24 @@ updateTriplanarMap(scene_rdl2::rdl2::Shader* map,
     // Construct texture objects for each face of the projection
     for (int i = 0; i < numTextures; ++i) {
         outputTriplanarTextures[i] =
-            fauxstd::make_unique<projection::TriplanarTexture>(map,
-                                                               rand,
-                                                               gammaMode,
-                                                               map->get(faceAttrs.mTextureAttrs[i]),
-                                                               map->get(faceAttrs.mActiveAttrs[i]),
-                                                               map->get(faceAttrs.mWrapAttrs[i]),
-                                                               map->get(faceAttrs.mInvSAttrs[i]),
-                                                               map->get(faceAttrs.mInvTAttrs[i]),
-                                                               map->get(faceAttrs.mSwapSTAttrs[i]),
-                                                               map->get(faceAttrs.mRotAttrs[i]),
-                                                               map->get(faceAttrs.mOffsetAttrs[i]),
-                                                               map->get(faceAttrs.mScaleAttrs[i]),
-                                                               map->get(faceAttrs.mRotCntrAttrs[i]),
-                                                               randomizeFlip,
-                                                               randomizeOffset,
-                                                               randomizeRotation,
-                                                               logEventRegistry, 
-                                                               fatalColor);
+            std::make_unique<projection::TriplanarTexture>(map,
+                                                           rand,
+                                                           gammaMode,
+                                                           map->get(faceAttrs.mTextureAttrs[i]),
+                                                           map->get(faceAttrs.mActiveAttrs[i]),
+                                                           map->get(faceAttrs.mWrapAttrs[i]),
+                                                           map->get(faceAttrs.mInvSAttrs[i]),
+                                                           map->get(faceAttrs.mInvTAttrs[i]),
+                                                           map->get(faceAttrs.mSwapSTAttrs[i]),
+                                                           map->get(faceAttrs.mRotAttrs[i]),
+                                                           map->get(faceAttrs.mOffsetAttrs[i]),
+                                                           map->get(faceAttrs.mScaleAttrs[i]),
+                                                           map->get(faceAttrs.mRotCntrAttrs[i]),
+                                                           randomizeFlip,
+                                                           randomizeOffset,
+                                                           randomizeRotation,
+                                                           logEventRegistry,
+                                                           fatalColor);
 
         outputIspcData.mTriplanarTextures[i].mTexture = &outputTriplanarTextures[i]->mTexture->getBasicTextureData();
         outputIspcData.mTriplanarTextures[i].mActive = outputTriplanarTextures[i]->mActive;

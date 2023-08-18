@@ -36,7 +36,7 @@ sampleNormal(const uniform NormalMap* uniform map,
             ReferenceFrame_init(frame, getN(state), normalize(getdPds(state)));
             sample = localToGlobal(frame, fallback);
             if (getAttrWarnWhenUnavailable(map)) {
-                logEvent(map, tls, me->mMissingAttributeEvent);
+                logEvent(map, me->mMissingAttributeEvent);
             }
         }
     }

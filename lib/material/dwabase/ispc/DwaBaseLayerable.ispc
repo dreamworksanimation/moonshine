@@ -107,7 +107,7 @@ createHairRandomPerStrand(const uniform Material * uniform me,
         // scatter_tag is a random number [0, 1) assigned to each hair
         float scatterTag = getFloatAttribute(tls, state, dwabaselayerable->mScatterTagKey);
         if (isEqual(scatterTag, -1.f)) {
-            logEvent(me, tls, eventMessages->sErrorScatterTagMissing);
+            logEvent(me, eventMessages->sErrorScatterTagMissing);
         } else {
             glintRandom = scatterTag;
         }
@@ -142,10 +142,10 @@ DWABASE_addGlitterLobes(const uniform Material * uniform me,
             switch (resultCode)
             {
             case GLITTER_RESULTCODE_NO_REFN:
-                logEvent(me, tls, eventMessages->sErrorNoRefN);
+                logEvent(me, eventMessages->sErrorNoRefN);
                 break;
             case GLITTER_RESULTCODE_NO_REFP_PARTIALS:
-                logEvent(me, tls, eventMessages->sWarnNoRefPpartials);
+                logEvent(me, eventMessages->sWarnNoRefPpartials);
                 break;
             default:
                 break;

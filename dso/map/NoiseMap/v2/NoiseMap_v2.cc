@@ -6,14 +6,16 @@
 #include "attributes.cc"
 #include "NoiseMap_v2_ispc_stubs.h"
 
+#include <moonray/common/mcrt_util/Atomic.h>
+#include <moonray/map/primvar/Primvar.h>
 #include <moonshine/common/interpolation/Interpolation.h>
 #include <moonshine/common/noise/Perlin.h>
 #include <moonshine/common/noise/Simplex.h>
-#include <moonray/map/primvar/Primvar.h>
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 static ispc::StaticNoiseMapData sStaticNoiseMapData;
 
@@ -61,23 +63,17 @@ NoiseMap_v2::NoiseMap_v2(SceneClass const &sceneClass,
     mIspc.mNoiseMapDataPtr =
         (ispc::StaticNoiseMapData*)&sStaticNoiseMapData;
 
-    // register shade time event messages.  we require and expect
-    // these events to have the same value across all instances of the shader.
-    // no conditional registration of events is allowed.
-    // to allow for the possibility that we may someday create image maps
-    // on multiple threads, we'll protect the writes of the class statics
-    // with a mutex.
-    static tbb::mutex errorMutex;
-    tbb::mutex::scoped_lock lock(errorMutex);
-    MOONRAY_START_THREADSAFE_STATIC_WRITE
-    sStaticNoiseMapData.sErrorMissingReferenceData =
-        mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-                                      "missing reference data");
+    const auto errorMissingReferenceData = sLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                           "missing reference data");
 
-    const SceneVariables &sceneVariables =
-        getSceneClass().getSceneContext()->getSceneVariables();
-    asCpp(sStaticNoiseMapData.sFatalColor) =
-        sceneVariables.get(SceneVariables::sFatalColor);
+    using namespace moonray::util;
+    MOONRAY_START_THREADSAFE_STATIC_WRITE
+    atomicStore(&sStaticNoiseMapData.sErrorMissingReferenceData, errorMissingReferenceData);
+
+    const SceneVariables &sceneVariables = getSceneClass().getSceneContext()->getSceneVariables();
+
+    auto& cppFatalColor = asCpp(sStaticNoiseMapData.sFatalColor);
+    atomicStore(&cppFatalColor, sceneVariables.get(SceneVariables::sFatalColor));
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 
@@ -99,7 +95,7 @@ NoiseMap_v2::update()
     ispc::SHADING_Space space = static_cast<ispc::SHADING_Space>(get(attrSpace));
     if (space != ispc::SHADING_SPACE_REFERENCE && space != ispc::SHADING_SPACE_INPUT_COORDINATES) {
         // Construct Xform with custom camera
-        mXform = fauxstd::make_unique<moonray::shading::Xform>(this, geom, cam, nullptr);
+        mXform = std::make_unique<moonray::shading::Xform>(this, geom, cam, nullptr);
         mIspc.mXform = mXform->getIspcXform();
     }
 
@@ -149,11 +145,11 @@ NoiseMap_v2::update()
         if (hasChanged(attrDistortion) || hasChanged(attrDistortionNoiseType)) {
             if (!isZero(get(attrDistortion))) {
                 if (get(attrDistortionNoiseType) == ispc::NoiseType_Simplex) {
-                    mNoiseSimplexDistort = fauxstd::make_unique<noise::Simplex>(
+                    mNoiseSimplexDistort = std::make_unique<noise::Simplex>(
                         get(attrSeed), get(attrUse4D));
                     mIspc.mNoiseSimplexDistort = mNoiseSimplexDistort->getIspcSimplex();
                 } else {
-                    mNoiseDistort = fauxstd::make_unique<noise::Perlin>(
+                    mNoiseDistort = std::make_unique<noise::Perlin>(
                         get(attrSeed), 2048, false, get(attrUse4D));
                     mIspc.mNoiseDistort = mNoiseDistort->getIspcPerlin();
                 }
@@ -161,7 +157,7 @@ NoiseMap_v2::update()
         }
 
         if (get(attrNoiseType) ==  ispc::NoiseType_Simplex) {
-            mNoiseSimplexR = fauxstd::make_unique<noise::Simplex>(
+            mNoiseSimplexR = std::make_unique<noise::Simplex>(
                 get(attrSeed), get(attrUse4D));
             mIspc.mNoiseSimplexR = mNoiseSimplexR->getIspcSimplex();
 
@@ -169,28 +165,28 @@ NoiseMap_v2::update()
                 // The scene_rdl2 Random class gives the same result
                 // for seed = 0 and seed = 1 so we add + 2 and + 3 here instead
                 // of + 1 and + 2
-                mNoiseSimplexG = fauxstd::make_unique<noise::Simplex>(
+                mNoiseSimplexG = std::make_unique<noise::Simplex>(
                     get(attrSeed) + 2, get(attrUse4D));
                 mIspc.mNoiseSimplexG = mNoiseSimplexG->getIspcSimplex();
 
-                mNoiseSimplexB = fauxstd::make_unique<noise::Simplex>(
+                mNoiseSimplexB = std::make_unique<noise::Simplex>(
                     get(attrSeed) + 3, get(attrUse4D));
                 mIspc.mNoiseSimplexB = mNoiseSimplexB->getIspcSimplex();
             }
         } else {
-            mNoiseR = fauxstd::make_unique<noise::Perlin>(get(attrSeed),
+            mNoiseR = std::make_unique<noise::Perlin>(get(attrSeed),
                                                                  ispc::NOISE_MAP_TABLE_SIZE,
                                                                  false,
                                                                  get(attrUse4D));
             mIspc.mNoiseR = mNoiseR->getIspcPerlin();
 
             if (get(attrColor)) {
-                mNoiseG = fauxstd::make_unique<noise::Perlin>(get(attrSeed) + 2,
+                mNoiseG = std::make_unique<noise::Perlin>(get(attrSeed) + 2,
                                                                      ispc::NOISE_MAP_TABLE_SIZE,
                                                                      false,
                                                                      get(attrUse4D));
 
-                mNoiseB = fauxstd::make_unique<noise::Perlin>(get(attrSeed) + 3,
+                mNoiseB = std::make_unique<noise::Perlin>(get(attrSeed) + 3,
                                                                      ispc::NOISE_MAP_TABLE_SIZE,
                                                                      false,
                                                                      get(attrUse4D));
@@ -244,7 +240,7 @@ NoiseMap_v2::sample(const Map *self, moonray::shading::TLState *tls,
                                   me->mIspc.mRefPKey,
                                   pos, pos_ddx, pos_ddy, pos_ddz)) {
             // Log missing ref_P data message
-            moonray::shading::logEvent(me, tls, sStaticNoiseMapData.sErrorMissingReferenceData);
+            moonray::shading::logEvent(me, sStaticNoiseMapData.sErrorMissingReferenceData);
             *sample = asCpp(sStaticNoiseMapData.sFatalColor);
             return;
         }

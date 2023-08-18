@@ -11,6 +11,7 @@
 #include "labels.h"
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
+#include <moonray/common/mcrt_util/Atomic.h>
 #include <moonray/rendering/shading/MaterialApi.h>
 
 #include <moonshine/material/dwabase/DwaBase.h>
@@ -140,14 +141,12 @@ HairLayerMaterial::HairLayerMaterial(const scene_rdl2::rdl2::SceneClass& sceneCl
     // with a mutex.
     mIspc.mStaticData = (ispc::HairLayerMaterialStaticData*)&sStaticHairLayerMaterialData;
 
-    static tbb::mutex errorMutex;
-    tbb::mutex::scoped_lock lock(errorMutex);
+
+    const auto errorMismatchedFresnelType = sLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                            "Hair material fresnel types do not match");
+    using namespace moonray::util;
     MOONRAY_START_THREADSAFE_STATIC_WRITE
-
-    mIspc.mStaticData->sErrorMismatchedFresnelType =
-        mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-        "Hair material fresnel types do not match");
-
+    atomicStore(&mIspc.mStaticData->sErrorMismatchedFresnelType, errorMismatchedFresnelType);
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 

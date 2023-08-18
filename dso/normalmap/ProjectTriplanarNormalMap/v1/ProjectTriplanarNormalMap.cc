@@ -11,7 +11,8 @@
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 using namespace moonshine;
 using namespace scene_rdl2::math;
@@ -53,13 +54,11 @@ ProjectTriplanarNormalMap::ProjectTriplanarNormalMap(const SceneClass& sceneClas
 
     mIspc.mStaticData = (ispc::PROJECTION_StaticData*)&sStaticProjectTriplanarNormalMapData;
 
-    // Collect common per-face parameters into arrays for effecient processing
+    // Collect common per-face parameters into arrays for efficient processing
     ASSIGN_TRIPLANAR_FACE_ATTRS(mFaceAttrs);
     
     // Set projection error messages and fatal color
-    projection::initLogEvents(*mIspc.mStaticData,
-                              mLogEventRegistry,
-                              this);
+    projection::initLogEvents(*mIspc.mStaticData, sLogEventRegistry, this);
 }
 
 ProjectTriplanarNormalMap::~ProjectTriplanarNormalMap()
@@ -87,7 +86,7 @@ ProjectTriplanarNormalMap::update()
                                    get(attrScale),
                                    mFaceAttrs,
                                    asCpp(mIspc.mStaticData->sFatalColor),
-                                   mLogEventRegistry,
+                                   sLogEventRegistry,
                                    mIspc.mTriplanarData,
                                    mTriplanarTextures,
                                    mProjectorXform);
@@ -103,7 +102,7 @@ ProjectTriplanarNormalMap::update()
     }
 
     // Construct Xform for space of object being rendered to transform texture normals into
-    mObjXform = fauxstd::make_unique<moonray::shading::Xform>(this, nullptr, nullptr, nullptr);
+    mObjXform = std::make_unique<moonray::shading::Xform>(this, nullptr, nullptr, nullptr);
     mIspc.mTriplanarData.mObjXform = mObjXform->getIspcXform();
 
     // Get whether or not the normals have been reversed
@@ -123,7 +122,7 @@ ProjectTriplanarNormalMap::sampleNormal(const NormalMap* self,
 
     if (!me->mIspc.mTriplanarData.mHasValidProjector) {
         // Log missing projector data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingProjector);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingProjector);
         return;
     }
 
@@ -147,7 +146,7 @@ ProjectTriplanarNormalMap::sampleNormal(const NormalMap* self,
                               data.mRefPKey,
                               pos, pos_ddx, pos_ddy, pos_ddz)) {
         // Log missing ref_P data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefP);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefP);
         return;
     }
  
@@ -161,7 +160,7 @@ ProjectTriplanarNormalMap::sampleNormal(const NormalMap* self,
                             data.mRefNKey,
                             normal)) {
         // Log missing ref_N data message
-        moonray::shading::logEvent(me, tls, me->mIspc.mStaticData->sErrorMissingRefN);
+        moonray::shading::logEvent(me, me->mIspc.mStaticData->sErrorMissingRefN);
         return;
     }
 

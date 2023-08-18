@@ -7,8 +7,10 @@
 
 #include <moonshine/common/interpolation/Interpolation.h>
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
+#include <moonray/common/mcrt_util/Atomic.h>
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 using namespace moonshine;
 using namespace scene_rdl2::math;
@@ -51,19 +53,12 @@ DirectionalMap::DirectionalMap(const SceneClass& sceneClass, const std::string& 
 
     mIspc.mStaticData = (ispc::DirectionalMapStaticData*)&sDirectionalMapData;
 
-    // register shade time event messages.  we require and expect
-    // these events to have the same value across all instances of the shader.
-    // no conditional registration of events is allowed.
-    // to allow for the possibility that we may someday create image maps
-    // on multiple threads, we'll protect the writes of the class statics
-    // with a mutex.
-    static tbb::mutex errorMutex;
-    tbb::mutex::scoped_lock lock(errorMutex);
+    const auto errorMissingRefN = sLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                  "ref_N primitive attribute is missing and cannot be computed from ref_P partials");
+
+    using namespace moonray::util;
     MOONRAY_START_THREADSAFE_STATIC_WRITE
-
-    sDirectionalMapData.sErrorMissingRefN = mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-        "ref_N primitive attribute is missing and cannot be computed from ref_P partials");
-
+    atomicStore(&sDirectionalMapData.sErrorMissingRefN, errorMissingRefN);
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 
@@ -77,7 +72,7 @@ DirectionalMap::update()
     const Node* node = get(attrObject) ?
         get(attrObject)->asA<Node>() : nullptr;
 
-    mXform = fauxstd::make_unique<moonray::shading::Xform>(this, node, nullptr, nullptr);
+    mXform = std::make_unique<moonray::shading::Xform>(this, node, nullptr, nullptr);
     mIspc.mXform = mXform->getIspcXform();
 
     // Use reference space
@@ -186,7 +181,7 @@ DirectionalMap::sample(const Map* self, moonray::shading::TLState *tls,
         if (!state.getRefN(N)) {
             // There really isn't a right thing to do here, its too late
             // to fatal() the shader.
-            moonray::shading::logEvent(me, tls, sDirectionalMapData.sErrorMissingRefN);
+            moonray::shading::logEvent(me, sDirectionalMapData.sErrorMissingRefN);
             N = Vec3f(0.0f, 1.0f, 0.0f);
         }
 

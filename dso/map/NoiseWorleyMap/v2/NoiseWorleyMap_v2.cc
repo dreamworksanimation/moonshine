@@ -11,11 +11,13 @@
 
 #include <moonshine/common/interpolation/Interpolation.h>
 #include <moonshine/common/noise/Worley.h>
-#include <moonray/map/primvar/Primvar.h>
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
+#include <moonray/common/mcrt_util/Atomic.h>
+#include <moonray/map/primvar/Primvar.h>
 #include <moonray/rendering/shading/MapApi.h>
-#include <scene_rdl2/render/util/stdmemory.h>
+
+#include <memory>
 
 using namespace moonray;
 using namespace moonshine;
@@ -62,23 +64,17 @@ NoiseWorleyMap_v2::NoiseWorleyMap_v2(SceneClass const &sceneClass, std::string c
     mIspc.mNoiseWorleyMapDataPtr =
         (ispc::StaticNoiseWorleyMapData*)&sStaticNoiseWorleyMapData;
 
-    // register shade time event messages.  we require and expect
-    // these events to have the same value across all instances of the shader.
-    // no conditional registration of events is allowed.
-    // to allow for the possibility that we may someday create image maps
-    // on multiple threads, we'll protect the writes of the class statics
-    // with a mutex.
-    static tbb::mutex errorMutex;
-    tbb::mutex::scoped_lock lock(errorMutex);
-    MOONRAY_START_THREADSAFE_STATIC_WRITE
-    sStaticNoiseWorleyMapData.sErrorMissingReferenceData =
-        mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-                                      "missing reference data");
+    const auto errorMissingReferenceData = sLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                          "missing reference data");
 
-    const SceneVariables &sceneVariables =
-        getSceneClass().getSceneContext()->getSceneVariables();
-    asCpp(sStaticNoiseWorleyMapData.sFatalColor) =
-        sceneVariables.get(SceneVariables::sFatalColor);
+    using namespace moonray::util;
+    MOONRAY_START_THREADSAFE_STATIC_WRITE
+    atomicStore(&sStaticNoiseWorleyMapData.sErrorMissingReferenceData, errorMissingReferenceData);
+
+    const SceneVariables &sceneVariables = getSceneClass().getSceneContext()->getSceneVariables();
+
+    auto& fatalColor = asCpp(sStaticNoiseWorleyMapData.sFatalColor);
+    atomicStore(&fatalColor, sceneVariables.get(SceneVariables::sFatalColor));
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 
@@ -101,7 +97,7 @@ NoiseWorleyMap_v2::update()
     ispc::SHADING_Space space = static_cast<ispc::SHADING_Space>(get(attrSpace));
     if (space != ispc::SHADING_SPACE_REFERENCE && space != ispc::SHADING_SPACE_INPUT_COORDINATES) {
         // Construct Xform with custom camera
-        mXform = fauxstd::make_unique<moonray::shading::Xform>(this, geom, cam, nullptr);
+        mXform = std::make_unique<moonray::shading::Xform>(this, geom, cam, nullptr);
         mIspc.mXform = mXform->getIspcXform();
     }
 
@@ -142,10 +138,10 @@ NoiseWorleyMap_v2::update()
 
     // Construct the noise object
     if (hasChanged(attrSeed)) {
-        mNoise = fauxstd::make_unique<noise::Worley>(get(attrSeed),
-                                                     ispc::NOISE_WORLEY_MAP_TABLE_SIZE,
-                                                     ispc::NOISE_WORLEY_V2,
-                                                     get(attrDistanceMethod));
+        mNoise = std::make_unique<noise::Worley>(get(attrSeed),
+                                                 ispc::NOISE_WORLEY_MAP_TABLE_SIZE,
+                                                 ispc::NOISE_WORLEY_V2,
+                                                 get(attrDistanceMethod));
 
         mIspc.mNoise = mNoise->getIspcWorley();
     }
@@ -230,7 +226,7 @@ NoiseWorleyMap_v2::sample(const Map *self, moonray::shading::TLState *tls,
                                   me->mIspc.mRefPKey,
                                   pos, pos_ddx, pos_ddy, pos_ddz)) {
             // Log missing ref_P data message
-            moonray::shading::logEvent(me, tls, sStaticNoiseWorleyMapData.sErrorMissingReferenceData);
+            moonray::shading::logEvent(me, sStaticNoiseWorleyMapData.sErrorMissingReferenceData);
             *sample = asCpp(sStaticNoiseWorleyMapData.sFatalColor);
             return;
         }

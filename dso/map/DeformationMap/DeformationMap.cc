@@ -7,6 +7,7 @@
 #include "DeformationMap_ispc_stubs.h"
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
+#include <moonray/common/mcrt_util/Atomic.h>
 #include <moonray/rendering/shading/MapApi.h>
 
 static ispc::StaticDeformationMapData sStaticDeformationMapData;
@@ -50,33 +51,23 @@ DeformationMap::DeformationMap(const scene_rdl2::rdl2::SceneClass& sceneClass,
     const scene_rdl2::rdl2::SceneVariables &sv = getSceneClass().getSceneContext()->getSceneVariables();
     asCpp(mIspc.mFatalColor) = sv.get(scene_rdl2::rdl2::SceneVariables::sFatalColor);
 
-    // Register shade time event messages.  We require and expect
-    // these events to have the same value across all instances of the shader.
-    // no conditional registration of events is allowed.
-    // To allow for the possibility that we may someday create image maps
-    // on multiple threads, we'll protect the writes of the class statics
-    // with a mutex.
-    static tbb::mutex errorMutex;
-    tbb::mutex::scoped_lock lock(errorMutex);
+    const auto errorZeroDerivatives = sLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                      "Unable to compute deformation.  One of the derivatives is zero");
 
+    const auto errorZeroRefDerivatives = sLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
+                                         "Unable to compute deformation.  One of the reference derivatives is zero");
+
+    const auto warningZeroDerivatives = sLogEventRegistry.createEvent(scene_rdl2::logging::WARN_LEVEL,
+                                        "Unable to compute deformation.  One of the derivatives is zero");
+
+    const auto warningZeroRefDerivatives = sLogEventRegistry.createEvent(scene_rdl2::logging::WARN_LEVEL,
+                                          "Unable to compute deformation.  One of the reference derivatives is zero");
+    using namespace moonray::util;
     MOONRAY_START_THREADSAFE_STATIC_WRITE
-
-    sStaticDeformationMapData.sErrorZeroDerivatives =
-        mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-                                      "Unable to compute deformation.  One of the derivatives is zero");
-
-    sStaticDeformationMapData.sErrorZeroRefDerivatives =
-        mLogEventRegistry.createEvent(scene_rdl2::logging::ERROR_LEVEL,
-                                      "Unable to compute deformation.  One of the reference derivatives is zero");
-
-    sStaticDeformationMapData.sWarningZeroDerivatives =
-        mLogEventRegistry.createEvent(scene_rdl2::logging::WARN_LEVEL,
-                                      "Unable to compute deformation.  One of the derivatives is zero");
-
-    sStaticDeformationMapData.sWarningZeroRefDerivatives =
-        mLogEventRegistry.createEvent(scene_rdl2::logging::WARN_LEVEL,
-                                      "Unable to compute deformation.  One of the reference derivatives is zero");
-
+    atomicStore(&sStaticDeformationMapData.sErrorZeroDerivatives, errorZeroDerivatives);
+    atomicStore(&sStaticDeformationMapData.sErrorZeroRefDerivatives, errorZeroRefDerivatives);
+    atomicStore(&sStaticDeformationMapData.sWarningZeroDerivatives, warningZeroDerivatives);
+    atomicStore(&sStaticDeformationMapData.sWarningZeroRefDerivatives, warningZeroRefDerivatives);
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 
@@ -108,10 +99,10 @@ DeformationMap::sample(const scene_rdl2::rdl2::Map* self,
     // Errors if either curdPds or curdPdt are zero vectors or if they are identical.
     if (isZero(lengthCurZ)) {
         if (me->get(attrUseWarningColor)) {
-            logEvent(me, tls, me->mIspc.mDataPtr->sWarningZeroDerivatives);
+            logEvent(me, me->mIspc.mDataPtr->sWarningZeroDerivatives);
             *sample = evalColor(me, attrWarningColor, tls, state);
         } else {
-            logEvent(me, tls, me->mIspc.mDataPtr->sErrorZeroDerivatives);
+            logEvent(me, me->mIspc.mDataPtr->sErrorZeroDerivatives);
             *sample = asCpp(me->mIspc.mFatalColor);
         }
         return;
@@ -132,10 +123,10 @@ DeformationMap::sample(const scene_rdl2::rdl2::Map* self,
     // Errors if either refdPds or refdPdt are zero vectors or if they are identical.
     if (isZero(lengthRefZ)) {
         if (me->get(attrUseWarningColor)) {
-            logEvent(me, tls, me->mIspc.mDataPtr->sWarningZeroRefDerivatives);
+            logEvent(me, me->mIspc.mDataPtr->sWarningZeroRefDerivatives);
             *sample = evalColor(me, attrWarningColor, tls, state);
         } else {
-            logEvent(me, tls, me->mIspc.mDataPtr->sErrorZeroRefDerivatives);
+            logEvent(me, me->mIspc.mDataPtr->sErrorZeroRefDerivatives);
             *sample = asCpp(me->mIspc.mFatalColor);
         }
         return;

@@ -11,7 +11,7 @@
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
 #include <moonray/rendering/shading/MapApi.h>
 
-#include <scene_rdl2/render/util/stdmemory.h>
+#include <memory>
 
 using namespace scene_rdl2::math;
 
@@ -67,8 +67,8 @@ DistortNormalMap::update()
 
     if (hasChanged(attrSeed)) {
         // noise is not using 4D (0)
-        mNoiseU = fauxstd::make_unique<moonshine::noise::Simplex>(get(attrSeed), 0);
-        mNoiseV = fauxstd::make_unique<moonshine::noise::Simplex>(get(attrSeed) + 2, 0);
+        mNoiseU = std::make_unique<moonshine::noise::Simplex>(get(attrSeed), 0);
+        mNoiseV = std::make_unique<moonshine::noise::Simplex>(get(attrSeed) + 2, 0);
         mIspc.mNoiseU = mNoiseU->getIspcSimplex();
         mIspc.mNoiseV = mNoiseV->getIspcSimplex();
     }
@@ -156,7 +156,7 @@ DistortNormalMap::sampleNormal(const NormalMap* self,
                                              me->mIspc.mRefPKey,
                                              pos, pos_ddx, pos_ddy, pos_ddz)) {
             // Log missing ref_P data message
-            moonray::shading::logEvent(me, tls, me->mIspc.sErrorMissingReferenceData);
+            moonray::shading::logEvent(me, me->mIspc.sErrorMissingReferenceData);
             *sample = n;
             return;
         }
