@@ -73,7 +73,10 @@ NoiseMap_v2::NoiseMap_v2(SceneClass const &sceneClass,
     const SceneVariables &sceneVariables = getSceneClass().getSceneContext()->getSceneVariables();
 
     auto& cppFatalColor = asCpp(sStaticNoiseMapData.sFatalColor);
-    atomicStore(&cppFatalColor, sceneVariables.get(SceneVariables::sFatalColor));
+    const auto& sceneVarFatalColor = sceneVariables.get(SceneVariables::sFatalColor);
+    atomicStore(&cppFatalColor.r, sceneVarFatalColor.r);
+    atomicStore(&cppFatalColor.g, sceneVarFatalColor.g);
+    atomicStore(&cppFatalColor.b, sceneVarFatalColor.b);
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 

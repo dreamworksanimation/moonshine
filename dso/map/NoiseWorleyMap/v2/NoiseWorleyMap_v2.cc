@@ -74,7 +74,10 @@ NoiseWorleyMap_v2::NoiseWorleyMap_v2(SceneClass const &sceneClass, std::string c
     const SceneVariables &sceneVariables = getSceneClass().getSceneContext()->getSceneVariables();
 
     auto& fatalColor = asCpp(sStaticNoiseWorleyMapData.sFatalColor);
-    atomicStore(&fatalColor, sceneVariables.get(SceneVariables::sFatalColor));
+    const auto& sceneVarFatalColor = sceneVariables.get(SceneVariables::sFatalColor);
+    atomicStore(&fatalColor.r, sceneVarFatalColor.r);
+    atomicStore(&fatalColor.g, sceneVarFatalColor.g);
+    atomicStore(&fatalColor.b, sceneVarFatalColor.b);
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 

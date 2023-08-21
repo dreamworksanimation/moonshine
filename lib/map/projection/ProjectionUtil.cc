@@ -51,7 +51,10 @@ initLogEvents(ispc::PROJECTION_StaticData& staticData,
         shader->getSceneClass().getSceneContext()->getSceneVariables();
 
     auto& fatalColor = asCpp(staticData.sFatalColor);
-    atomicStore(&fatalColor, sceneVariables.get(scene_rdl2::rdl2::SceneVariables::sFatalColor));
+    const auto& sceneVarFatalColor = sceneVariables.get(scene_rdl2::rdl2::SceneVariables::sFatalColor);
+    atomicStore(&fatalColor.r, sceneVarFatalColor.r);
+    atomicStore(&fatalColor.g, sceneVarFatalColor.g);
+    atomicStore(&fatalColor.b, sceneVarFatalColor.b);
     MOONRAY_FINISH_THREADSAFE_STATIC_WRITE
 }
 
