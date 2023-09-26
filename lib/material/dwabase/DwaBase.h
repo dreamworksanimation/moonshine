@@ -30,6 +30,7 @@ namespace dwabase {
       aovHairTT,                     \
       aovHairTRT,                    \
       aovHairTRRT,                   \
+      aovHairDiffuse,                \
       aovFuzz,                       \
       aovOuterSpecular,              \
       aovSpecular,                   \

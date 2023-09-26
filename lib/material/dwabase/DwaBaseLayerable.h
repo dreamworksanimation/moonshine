@@ -535,7 +535,7 @@ public:
             builder.addHairDiffuseBSDF(hairDiffuseBsdf,
                                        hairParams.mHairDiffuse * (1.0f - sssWeight),
                                        ispc::BSDFBUILDER_PHYSICAL,
-                                       labels.mHairLabels.mHair);
+                                       labels.mHairLabels.mHairDiffuse);
 
             if (hasSSS) {
                 // diffuse front color substitutes for albedo in these lobes
@@ -760,9 +760,8 @@ public:
     finline static void
     addToonSpecularLobes(moonray::shading::BsdfBuilder &builder,
                          const ispc::ToonSpecularParameters &params,
-                         const ispc::DwaBaseLabels &labels)
+                         const int label)
     {
-
         const moonray::shading::ToonSpecularBRDF toonSpecularBRDF(
                 scene_rdl2::math::asCpp(params.mNormal),
                 params.mIntensity,
@@ -784,7 +783,7 @@ public:
                 toonSpecularBRDF,
                 params.mToonSpecular,
                 ispc::BSDFBUILDER_PHYSICAL,
-                labels.mSpecular);
+                label);
     }
 
     finline static void
@@ -815,7 +814,7 @@ public:
                 hairToonSpecularBRDF,
                 params.mToonSpecular,
                 ispc::BSDFBUILDER_PHYSICAL,
-                labels.mSpecular);
+                labels.mHairLabels.mHair);
     }
 
     finline static void
@@ -1204,7 +1203,7 @@ public:
             if (uParams.mHairToonS1Model == ispc::ToonSpecularModel::ToonSpecularSurface) {
                 addToonSpecularLobes(builder,
                                      params.mHairToonS1Params,
-                                     labels);
+                                     labels.mHairLabels.mHair);
             } else if (uParams.mHairToonS1Model == ispc::ToonSpecularModel::ToonSpecularHair) {
                 addHairToonSpecularLobes(builder,
                                          params.mHairToonS1Params,
@@ -1217,7 +1216,7 @@ public:
             if (uParams.mHairToonS2Model == ispc::ToonSpecularModel::ToonSpecularSurface) {
                 addToonSpecularLobes(builder,
                                      params.mHairToonS2Params,
-                                     labels);
+                                     labels.mHairLabels.mHair);
             } else if (uParams.mHairToonS2Model == ispc::ToonSpecularModel::ToonSpecularHair) {
                 addHairToonSpecularLobes(builder,
                                          params.mHairToonS2Params,
@@ -1230,7 +1229,7 @@ public:
             if (uParams.mHairToonS3Model == ispc::ToonSpecularModel::ToonSpecularSurface) {
                 addToonSpecularLobes(builder,
                                      params.mHairToonS3Params,
-                                     labels);
+                                     labels.mHairLabels.mHair);
             } else if (uParams.mHairToonS3Model == ispc::ToonSpecularModel::ToonSpecularHair) {
                 addHairToonSpecularLobes(builder,
                                          params.mHairToonS3Params,
@@ -1246,7 +1245,7 @@ public:
 
             addToonSpecularLobes(builder,
                                  toonParams,
-                                 labels);
+                                 labels.mSpecular);
 
             // Transmission
             if (!scene_rdl2::math::isZero(params.mTransmission)) { 

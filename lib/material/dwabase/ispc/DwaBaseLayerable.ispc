@@ -201,7 +201,7 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
                                        hairDiffuseBsdf,
                                        hairParams->mHairDiffuse * (1.0f - sssWeight),
                                        BSDFBUILDER_PHYSICAL,
-                                       labels->mHairLabels.mHair);
+                                       labels->mHairLabels.mHairDiffuse);
 
         if (hasSSS) {
             // diffuse front color substitutes for albedo in these lobes
@@ -430,7 +430,7 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
 void
 DWABASE_addToonSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                              const varying ToonSpecularParameters& params,
-                             const uniform DwaBaseLabels * uniform labels)
+                             const uniform int label)
 {
     ToonSpecularBRDF toonSpecularBRDF;
     ToonSpecularBRDF_init(toonSpecularBRDF,
@@ -454,7 +454,7 @@ DWABASE_addToonSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                                     toonSpecularBRDF,
                                     params.mToonSpecular, // weight
                                     BSDFBUILDER_PHYSICAL,
-                                    labels->mSpecular);
+                                    label);
 }
 
 void
@@ -486,7 +486,7 @@ DWABASE_addHairToonSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                                         hairToonSpecularBRDF,
                                         params.mToonSpecular, // weight
                                         BSDFBUILDER_PHYSICAL,
-                                        labels->mSpecular);
+                                        labels->mHairLabels.mHair);
 }
 
 void
@@ -916,7 +916,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
         if (uParams->mHairToonS1Model == ToonSpecularSurface) {
             DWABASE_addToonSpecularLobes(bsdfBuilder,
                                          params->mHairToonS1Params,
-                                         labels);
+                                         labels->mHairLabels.mHair);
         } else if (uParams->mHairToonS1Model == ToonSpecularHair) {
             DWABASE_addHairToonSpecularLobes(bsdfBuilder,
                                              params->mHairToonS1Params,
@@ -928,7 +928,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
         if (uParams->mHairToonS2Model == ToonSpecularSurface) {
             DWABASE_addToonSpecularLobes(bsdfBuilder,
                                          params->mHairToonS2Params,
-                                         labels);
+                                         labels->mHairLabels.mHair);
         } else if (uParams->mHairToonS2Model == ToonSpecularHair) {
             DWABASE_addHairToonSpecularLobes(bsdfBuilder,
                                              params->mHairToonS2Params,
@@ -940,7 +940,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
         if (uParams->mHairToonS3Model == ToonSpecularSurface) {
             DWABASE_addToonSpecularLobes(bsdfBuilder,
                                          params->mHairToonS3Params,
-                                         labels);
+                                         labels->mHairLabels.mHair);
         } else if (uParams->mHairToonS3Model == ToonSpecularHair) {
             DWABASE_addHairToonSpecularLobes(bsdfBuilder,
                                              params->mHairToonS3Params,
@@ -956,7 +956,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
 
         DWABASE_addToonSpecularLobes(bsdfBuilder,
                                      toonParams,
-                                     labels);
+                                     labels->mSpecular);
 
         // Transmission
         if (!isZero(params->mTransmission)) { 
