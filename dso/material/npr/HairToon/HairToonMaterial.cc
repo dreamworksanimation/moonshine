@@ -128,6 +128,29 @@ HairToonMaterial::update()
             dwabase->mHairToonS1Data.mRampValues[i] = values[i];
             dwabase->mHairToonS1Data.mRampInterpolators[i] = (ispc::RampInterpolatorMode)interps[i];
         }
+
+        DwaBaseAttributeKeys *keys = getAttributeKeys();
+        keys->mHairToonS1Keys.mRampMultipliers.push_back(attrHairToonS1RampMultiplier0);
+        keys->mHairToonS1Keys.mRampMultipliers.push_back(attrHairToonS1RampMultiplier1);
+        keys->mHairToonS1Keys.mRampMultipliers.push_back(attrHairToonS1RampMultiplier2);
+        keys->mHairToonS1Keys.mRampMultipliers.push_back(attrHairToonS1RampMultiplier3);
+        keys->mHairToonS1Keys.mRampMultipliers.push_back(attrHairToonS1RampMultiplier4);
+        keys->mHairToonS1Keys.mRampMultipliers.push_back(attrHairToonS1RampMultiplier5);
+        keys->mHairToonS1Keys.mRampMultipliers.push_back(attrHairToonS1RampMultiplier6);
+        keys->mHairToonS1Keys.mRampMultipliers.push_back(attrHairToonS1RampMultiplier7);
+        keys->mHairToonS1Keys.mRampMultipliers.push_back(attrHairToonS1RampMultiplier8);
+        keys->mHairToonS1Keys.mRampMultipliers.push_back(attrHairToonS1RampMultiplier9);
+
+        keys->mHairToonS1Keys.mRampOffsets.push_back(attrHairToonS1RampPositionOffset0);
+        keys->mHairToonS1Keys.mRampOffsets.push_back(attrHairToonS1RampPositionOffset1);
+        keys->mHairToonS1Keys.mRampOffsets.push_back(attrHairToonS1RampPositionOffset2);
+        keys->mHairToonS1Keys.mRampOffsets.push_back(attrHairToonS1RampPositionOffset3);
+        keys->mHairToonS1Keys.mRampOffsets.push_back(attrHairToonS1RampPositionOffset4);
+        keys->mHairToonS1Keys.mRampOffsets.push_back(attrHairToonS1RampPositionOffset5);
+        keys->mHairToonS1Keys.mRampOffsets.push_back(attrHairToonS1RampPositionOffset6);
+        keys->mHairToonS1Keys.mRampOffsets.push_back(attrHairToonS1RampPositionOffset7);
+        keys->mHairToonS1Keys.mRampOffsets.push_back(attrHairToonS1RampPositionOffset8);
+        keys->mHairToonS1Keys.mRampOffsets.push_back(attrHairToonS1RampPositionOffset9);
     }
 
     if (get(attrHairToonS2Show)) {
@@ -140,6 +163,29 @@ HairToonMaterial::update()
             dwabase->mHairToonS2Data.mRampValues[i] = values[i];
             dwabase->mHairToonS2Data.mRampInterpolators[i] = (ispc::RampInterpolatorMode)interps[i];
         }
+
+        DwaBaseAttributeKeys *keys = getAttributeKeys();
+        keys->mHairToonS2Keys.mRampMultipliers.push_back(attrHairToonS2RampMultiplier0);
+        keys->mHairToonS2Keys.mRampMultipliers.push_back(attrHairToonS2RampMultiplier1);
+        keys->mHairToonS2Keys.mRampMultipliers.push_back(attrHairToonS2RampMultiplier2);
+        keys->mHairToonS2Keys.mRampMultipliers.push_back(attrHairToonS2RampMultiplier3);
+        keys->mHairToonS2Keys.mRampMultipliers.push_back(attrHairToonS2RampMultiplier4);
+        keys->mHairToonS2Keys.mRampMultipliers.push_back(attrHairToonS2RampMultiplier5);
+        keys->mHairToonS2Keys.mRampMultipliers.push_back(attrHairToonS2RampMultiplier6);
+        keys->mHairToonS2Keys.mRampMultipliers.push_back(attrHairToonS2RampMultiplier7);
+        keys->mHairToonS2Keys.mRampMultipliers.push_back(attrHairToonS2RampMultiplier8);
+        keys->mHairToonS2Keys.mRampMultipliers.push_back(attrHairToonS2RampMultiplier9);
+
+        keys->mHairToonS2Keys.mRampOffsets.push_back(attrHairToonS2RampPositionOffset0);
+        keys->mHairToonS2Keys.mRampOffsets.push_back(attrHairToonS2RampPositionOffset1);
+        keys->mHairToonS2Keys.mRampOffsets.push_back(attrHairToonS2RampPositionOffset2);
+        keys->mHairToonS2Keys.mRampOffsets.push_back(attrHairToonS2RampPositionOffset3);
+        keys->mHairToonS2Keys.mRampOffsets.push_back(attrHairToonS2RampPositionOffset4);
+        keys->mHairToonS2Keys.mRampOffsets.push_back(attrHairToonS2RampPositionOffset5);
+        keys->mHairToonS2Keys.mRampOffsets.push_back(attrHairToonS2RampPositionOffset6);
+        keys->mHairToonS2Keys.mRampOffsets.push_back(attrHairToonS2RampPositionOffset7);
+        keys->mHairToonS2Keys.mRampOffsets.push_back(attrHairToonS2RampPositionOffset8);
+        keys->mHairToonS2Keys.mRampOffsets.push_back(attrHairToonS2RampPositionOffset9);
     }
 
     if (get(attrHairToonS3Show)) {
@@ -152,6 +198,29 @@ HairToonMaterial::update()
             dwabase->mHairToonS3Data.mRampValues[i] = values[i];
             dwabase->mHairToonS3Data.mRampInterpolators[i] = (ispc::RampInterpolatorMode)interps[i];
         }
+
+        DwaBaseAttributeKeys *keys = getAttributeKeys();
+        keys->mHairToonS3Keys.mRampMultipliers.push_back(attrHairToonS3RampMultiplier0);
+        keys->mHairToonS3Keys.mRampMultipliers.push_back(attrHairToonS3RampMultiplier1);
+        keys->mHairToonS3Keys.mRampMultipliers.push_back(attrHairToonS3RampMultiplier2);
+        keys->mHairToonS3Keys.mRampMultipliers.push_back(attrHairToonS3RampMultiplier3);
+        keys->mHairToonS3Keys.mRampMultipliers.push_back(attrHairToonS3RampMultiplier4);
+        keys->mHairToonS3Keys.mRampMultipliers.push_back(attrHairToonS3RampMultiplier5);
+        keys->mHairToonS3Keys.mRampMultipliers.push_back(attrHairToonS3RampMultiplier6);
+        keys->mHairToonS3Keys.mRampMultipliers.push_back(attrHairToonS3RampMultiplier7);
+        keys->mHairToonS3Keys.mRampMultipliers.push_back(attrHairToonS3RampMultiplier8);
+        keys->mHairToonS3Keys.mRampMultipliers.push_back(attrHairToonS3RampMultiplier9);
+
+        keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset0);
+        keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset1);
+        keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset2);
+        keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset3);
+        keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset4);
+        keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset5);
+        keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset6);
+        keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset7);
+        keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset8);
+        keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset9);
     }
 }
 

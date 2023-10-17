@@ -148,6 +148,16 @@
             "group": "Specular 1",
             "disable when": "{ specular_1_show == 0 } { specular_1_model != Toon_Surface } { specular_1_use_input_vectors_for_stretch == 0 }"
         },
+        "attrHairToonS1RampInputScale": {
+            "name": "specular_1_ramp_input_scale",
+            "label": "specular 1 ramp input scale",
+            "comment": "Scales the input value x to the ramp lookup y, where x is based on the angle between the sample direction and normal.  This has the effect of squashing or stretching the ramp point positions towards/away from 0.",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "disable when": "{ specular_1_show == 0 }"
+        },
         "attrHairToonS1RampPositions": {
             "name": "specular_1_positions",
             "type": "FloatVector",
@@ -162,7 +172,7 @@
         "attrHairToonS1RampValues": {
             "name": "specular_1_values",
             "type": "FloatVector",
-            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "default": "{1.0, 0.75, 0.25, 0.0}",
             "comment": "List of colors on the ramp",
             "structure_type": "ramp_float",
             "structure_name": "specular_1_ramp",
@@ -173,13 +183,37 @@
         "attrHairToonS1RampInterpolators": {
             "name": "specular_1_interpolations",
             "type": "IntVector",
-            "default": "{4, 4, 4, 4}",
+            "default": "{0, 0, 0, 0}",
             "comment": "None: 0 | Linear: 1 | Exponential Up: 2 | Exponential Down: 3 |\\n\\t\\t\\tSmooth: 4 | Catmull Rom: 5 | Monotone Cubic: 6",
             "structure_type": "ramp_float",
             "structure_name": "specular_1_ramp",
             "structure_path": "interpolation_types",
             "group": "Specular 1",
             "disable when": "{ specular_1_show == 0 }"
+        },
+        "attrHairToonS1RampMultiplier": {
+            "name": "specular_1_mult",
+            "label": "specular 1 mult",
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Bindable multiplier on the toon specular ramp value",
+            "default": "1.0f",
+            "multi": "10",
+            "disable when": "{ specular_1_show == 0 }",
+            "group": "Specular 1",
+            "subgroup": "Ramp Multipliers"
+        },
+        "attrHairToonS1RampPositionOffset": {
+            "name": "specular_1_offset",
+            "label": "specular 1 offset",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "Bindable offset to the toon specular ramp-position, add a small variation using noise etc for art-directable ramp thresholds",
+            "flags": "FLAGS_BINDABLE",
+            "multi": "10",
+            "disable when": "{ specular_1_show == 0 }",
+            "group": "Specular 1",
+            "subgroup": "Ramp Position Offsets"
         },
         "attrHairToonS1EnableInputNormal" : {
             "name": "specular_1_enable_input_normal",
@@ -355,6 +389,16 @@
             "group": "Specular 2",
             "disable when": "{ specular_2_show == 0 } { specular_2_model != Toon_Surface } { specular_2_use_input_vectors_for_stretch == 0 }"
         },
+        "attrHairToonS2RampInputScale": {
+            "name": "specular_2_ramp_input_scale",
+            "label": "specular 2 ramp input scale",
+            "comment": "Scales the input value x to the ramp lookup y, where x is based on the angle between the sample direction and normal.  This has the effect of squashing or stretching the ramp point positions towards/away from 0.",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "disable when": "{ specular_2_show == 0 }"
+        },
         "attrHairToonS2RampPositions": {
             "name": "specular_2_positions",
             "type": "FloatVector",
@@ -369,7 +413,7 @@
         "attrHairToonS2RampValues": {
             "name": "specular_2_values",
             "type": "FloatVector",
-            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "default": "{1.0, 0.75, 0.25, 1.0}",
             "comment": "List of colors on the ramp",
             "structure_type": "ramp_float",
             "structure_name": "specular_2_ramp",
@@ -380,13 +424,37 @@
         "attrHairToonS2RampInterpolators": {
             "name": "specular_2_interpolations",
             "type": "IntVector",
-            "default": "{4, 4, 4, 4}",
+            "default": "{0, 0, 0, 0}",
             "comment": "None: 0 | Linear: 1 | Exponential Up: 2 | Exponential Down: 3 |\\n\\t\\t\\tSmooth: 4 | Catmull Rom: 5 | Monotone Cubic: 6",
             "structure_type": "ramp_float",
             "structure_name": "specular_2_ramp",
             "structure_path": "interpolation_types",
             "group": "Specular 2",
             "disable when": "{ specular_2_show == 0 }"
+        },
+        "attrHairToonS2RampMultiplier": {
+            "name": "specular_2_mult",
+            "label": "specular 2 mult",
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Bindable multiplier on the toon specular ramp value",
+            "default": "1.0f",
+            "multi": "10",
+            "disable when": "{ specular_2_show == 0 }",
+            "group": "Specular 2",
+            "subgroup": "Ramp Multipliers"
+        },
+        "attrHairToonS2RampPositionOffset": {
+            "name": "specular_2_offset",
+            "label": "specular 2 offset",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "Bindable offset to the toon specular ramp-position, add a small variation using noise etc for art-directable ramp thresholds",
+            "flags": "FLAGS_BINDABLE",
+            "multi": "10",
+            "disable when": "{ specular_2_show == 0 }",
+            "group": "Specular 2",
+            "subgroup": "Ramp Position Offsets"
         },
         "attrHairToonS2EnableInputNormal" : {
             "name": "specular_2_enable_input_normal",
@@ -562,6 +630,16 @@
             "group": "Specular 3",
             "disable when": "{ specular_3_show == 0 } { specular_3_model != Toon_Surface } { specular_3_use_input_vectors_for_stretch == 0 }"
         },
+        "attrHairToonS3RampInputScale": {
+            "name": "specular_3_ramp_input_scale",
+            "label": "specular 3 ramp input scale",
+            "comment": "Scales the input value x to the ramp lookup y, where x is based on the angle between the sample direction and normal.  This has the effect of squashing or stretching the ramp point positions towards/away from 0.",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "disable when": "{ specular_3_show == 0 }"
+        },
         "attrHairToonS3RampPositions": {
             "name": "specular_3_positions",
             "type": "FloatVector",
@@ -576,7 +654,7 @@
         "attrHairToonS3RampValues": {
             "name": "specular_3_values",
             "type": "FloatVector",
-            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "default": "{1.0, 0.75, 0.25, 0.0}",
             "comment": "List of colors on the ramp",
             "structure_type": "ramp_float",
             "structure_name": "specular_3_ramp",
@@ -587,13 +665,37 @@
         "attrHairToonS3RampInterpolators": {
             "name": "specular_3_interpolations",
             "type": "IntVector",
-            "default": "{4, 4, 4, 4}",
+            "default": "{0, 0, 0, 0}",
             "comment": "None: 0 | Linear: 1 | Exponential Up: 2 | Exponential Down: 3 |\\n\\t\\t\\tSmooth: 4 | Catmull Rom: 5 | Monotone Cubic: 6",
             "structure_type": "ramp_float",
             "structure_name": "specular_3_ramp",
             "structure_path": "interpolation_types",
             "group": "Specular 3",
             "disable when": "{ specular_3_show == 0 }"
+        },
+        "attrHairToonS3RampMultiplier": {
+            "name": "specular_3_mult",
+            "label": "specular 3 mult",
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Bindable multiplier on the toon specular ramp value",
+            "default": "1.0f",
+            "multi": "10",
+            "disable when": "{ specular_3_show == 0 }",
+            "group": "Specular 3",
+            "subgroup": "Ramp Multipliers"
+        },
+        "attrHairToonS3RampPositionOffset": {
+            "name": "specular_3_offset",
+            "label": "specular 3 offset",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "Bindable offset to the toon specular ramp-position, add a small variation using noise etc for art-directable ramp thresholds",
+            "flags": "FLAGS_BINDABLE",
+            "multi": "10",
+            "disable when": "{ specular_3_show == 0 }",
+            "group": "Specular 3",
+            "subgroup": "Ramp Position Offsets"
         },
         "attrHairToonS3EnableInputNormal" : {
             "name": "specular_3_enable_input_normal",

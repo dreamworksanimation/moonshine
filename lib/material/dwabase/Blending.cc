@@ -746,6 +746,7 @@ copyToonSpecularParams(const ispc::ToonSpecularParameters& src,
 {
     dst.mRoughness = src.mRoughness;
     dst.mTint = src.mTint;
+    dst.mRampInputScale = src.mRampInputScale;
     dst.mRampNumPoints = src.mRampNumPoints;
     for (int i = 0; i < src.mRampNumPoints; ++i) {
         dst.mRampPositions[i] = src.mRampPositions[i];
@@ -791,6 +792,10 @@ blendToonSpecularParams(const ispc::BlendColorSpace colorSpace,
         asCpp(params.mTint) = colorSpaceLerp(asCpp(params0.mTint),
                                              asCpp(params1.mTint),
                                              mask, colorSpace);
+
+        params.mRampInputScale = lerp(params0.mRampInputScale,
+                                      params1.mRampInputScale,
+                                      mask);
 
         params.mRampNumPoints = max(params0.mRampNumPoints,
                                     params1.mRampNumPoints);

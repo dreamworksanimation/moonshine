@@ -185,6 +185,28 @@ DwaToonMaterial::update()
         dwabase->mToonSpecularData.mRampValues[i] = specValues[i];
         dwabase->mToonSpecularData.mRampInterpolators[i] = (ispc::RampInterpolatorMode)specInterps[i];
     }
+
+    keys->mToonSpecularKeys.mRampMultipliers.push_back(attrToonSpecularRampMultiplier0);
+    keys->mToonSpecularKeys.mRampMultipliers.push_back(attrToonSpecularRampMultiplier1);
+    keys->mToonSpecularKeys.mRampMultipliers.push_back(attrToonSpecularRampMultiplier2);
+    keys->mToonSpecularKeys.mRampMultipliers.push_back(attrToonSpecularRampMultiplier3);
+    keys->mToonSpecularKeys.mRampMultipliers.push_back(attrToonSpecularRampMultiplier4);
+    keys->mToonSpecularKeys.mRampMultipliers.push_back(attrToonSpecularRampMultiplier5);
+    keys->mToonSpecularKeys.mRampMultipliers.push_back(attrToonSpecularRampMultiplier6);
+    keys->mToonSpecularKeys.mRampMultipliers.push_back(attrToonSpecularRampMultiplier7);
+    keys->mToonSpecularKeys.mRampMultipliers.push_back(attrToonSpecularRampMultiplier8);
+    keys->mToonSpecularKeys.mRampMultipliers.push_back(attrToonSpecularRampMultiplier9);
+
+    keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset0);
+    keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset1);
+    keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset2);
+    keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset3);
+    keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset4);
+    keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset5);
+    keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset6);
+    keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset7);
+    keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset8);
+    keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset9);
 }
 
 void

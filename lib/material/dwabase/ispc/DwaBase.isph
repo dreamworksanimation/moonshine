@@ -73,6 +73,7 @@
 #define ASSIGN_TOON_SPEC_ATTR_FUNCS(fns, name) \
     fns.m##name##Funcs.mEvalAttrIntensity                     = (uniform intptr_t) (void*) evalAttr##name##Intensity;                     \
     fns.m##name##Funcs.mEvalAttrTint                          = (uniform intptr_t) (void*) evalAttr##name##Tint;                          \
+    fns.m##name##Funcs.mEvalAttrRampInputScale                = (uniform intptr_t) (void*) evalAttr##name##RampInputScale;                \
     fns.m##name##Funcs.mGetAttrEnableInputNormal              = (uniform intptr_t) (void*) getAttr##name##EnableInputNormal;              \
     fns.m##name##Funcs.mEvalAttrInputNormalDial               = (uniform intptr_t) (void*) evalAttr##name##InputNormalDial;               \
     fns.m##name##Funcs.mEvalAttrStretchU                      = (uniform intptr_t) (void*) evalAttr##name##StretchU;                      \
@@ -80,9 +81,29 @@
     fns.m##name##Funcs.mGetAttrUseInputVectors                = (uniform intptr_t) (void*) getAttr##name##UseInputVectors;                \
     fns.m##name##Funcs.mEvalAttrInputU                        = (uniform intptr_t) (void*) evalAttr##name##InputU;                        \
     fns.m##name##Funcs.mEvalAttrInputV                        = (uniform intptr_t) (void*) evalAttr##name##InputV;                        \
-    fns.m##name##Funcs.mGetAttrEnableIndirectReflections     = (uniform intptr_t) (void*) getAttr##name##EnableIndirectReflections;       \
-    fns.m##name##Funcs.mEvalAttrIndirectReflectionsIntensity = (uniform intptr_t) (void*) evalAttr##name##IndirectReflectionsIntensity;   \
-    fns.m##name##Funcs.mEvalAttrIndirectReflectionsRoughness = (uniform intptr_t) (void*) evalAttr##name##IndirectReflectionsRoughness;
+    fns.m##name##Funcs.mGetAttrEnableIndirectReflections      = (uniform intptr_t) (void*) getAttr##name##EnableIndirectReflections;      \
+    fns.m##name##Funcs.mEvalAttrIndirectReflectionsIntensity  = (uniform intptr_t) (void*) evalAttr##name##IndirectReflectionsIntensity;  \
+    fns.m##name##Funcs.mEvalAttrIndirectReflectionsRoughness  = (uniform intptr_t) (void*) evalAttr##name##IndirectReflectionsRoughness;  \
+    fns.m##name##Funcs.mEvalAttrRampPositionOffset0           = (uniform intptr_t) (void*) evalAttr##name##RampPositionOffset0;           \
+    fns.m##name##Funcs.mEvalAttrRampPositionOffset1           = (uniform intptr_t) (void*) evalAttr##name##RampPositionOffset1;           \
+    fns.m##name##Funcs.mEvalAttrRampPositionOffset2           = (uniform intptr_t) (void*) evalAttr##name##RampPositionOffset2;           \
+    fns.m##name##Funcs.mEvalAttrRampPositionOffset3           = (uniform intptr_t) (void*) evalAttr##name##RampPositionOffset3;           \
+    fns.m##name##Funcs.mEvalAttrRampPositionOffset4           = (uniform intptr_t) (void*) evalAttr##name##RampPositionOffset4;           \
+    fns.m##name##Funcs.mEvalAttrRampPositionOffset5           = (uniform intptr_t) (void*) evalAttr##name##RampPositionOffset5;           \
+    fns.m##name##Funcs.mEvalAttrRampPositionOffset6           = (uniform intptr_t) (void*) evalAttr##name##RampPositionOffset6;           \
+    fns.m##name##Funcs.mEvalAttrRampPositionOffset7           = (uniform intptr_t) (void*) evalAttr##name##RampPositionOffset7;           \
+    fns.m##name##Funcs.mEvalAttrRampPositionOffset8           = (uniform intptr_t) (void*) evalAttr##name##RampPositionOffset8;           \
+    fns.m##name##Funcs.mEvalAttrRampPositionOffset9           = (uniform intptr_t) (void*) evalAttr##name##RampPositionOffset9;           \
+    fns.m##name##Funcs.mEvalAttrRampMultiplier0               = (uniform intptr_t) (void*) evalAttr##name##RampMultiplier0;               \
+    fns.m##name##Funcs.mEvalAttrRampMultiplier1               = (uniform intptr_t) (void*) evalAttr##name##RampMultiplier1;               \
+    fns.m##name##Funcs.mEvalAttrRampMultiplier2               = (uniform intptr_t) (void*) evalAttr##name##RampMultiplier2;               \
+    fns.m##name##Funcs.mEvalAttrRampMultiplier3               = (uniform intptr_t) (void*) evalAttr##name##RampMultiplier3;               \
+    fns.m##name##Funcs.mEvalAttrRampMultiplier4               = (uniform intptr_t) (void*) evalAttr##name##RampMultiplier4;               \
+    fns.m##name##Funcs.mEvalAttrRampMultiplier5               = (uniform intptr_t) (void*) evalAttr##name##RampMultiplier5;               \
+    fns.m##name##Funcs.mEvalAttrRampMultiplier6               = (uniform intptr_t) (void*) evalAttr##name##RampMultiplier6;               \
+    fns.m##name##Funcs.mEvalAttrRampMultiplier7               = (uniform intptr_t) (void*) evalAttr##name##RampMultiplier7;               \
+    fns.m##name##Funcs.mEvalAttrRampMultiplier8               = (uniform intptr_t) (void*) evalAttr##name##RampMultiplier8;               \
+    fns.m##name##Funcs.mEvalAttrRampMultiplier9               = (uniform intptr_t) (void*) evalAttr##name##RampMultiplier9;
 
 struct ToonDiffuseAttributeFuncs
 {
@@ -119,6 +140,7 @@ struct ToonSpecularAttributeFuncs
     uniform intptr_t mEvalAttrIntensity;
     uniform intptr_t mEvalAttrRoughness;
     uniform intptr_t mEvalAttrTint;
+    uniform intptr_t mEvalAttrRampInputScale;
     uniform intptr_t mGetAttrEnableInputNormal;
     uniform intptr_t mEvalAttrInputNormalDial;
     uniform intptr_t mEvalAttrStretchU;
@@ -129,6 +151,26 @@ struct ToonSpecularAttributeFuncs
     uniform intptr_t mGetAttrEnableIndirectReflections;
     uniform intptr_t mEvalAttrIndirectReflectionsIntensity;
     uniform intptr_t mEvalAttrIndirectReflectionsRoughness;
+    uniform intptr_t mEvalAttrRampMultiplier0;
+    uniform intptr_t mEvalAttrRampMultiplier1;
+    uniform intptr_t mEvalAttrRampMultiplier2;
+    uniform intptr_t mEvalAttrRampMultiplier3;
+    uniform intptr_t mEvalAttrRampMultiplier4;
+    uniform intptr_t mEvalAttrRampMultiplier5;
+    uniform intptr_t mEvalAttrRampMultiplier6;
+    uniform intptr_t mEvalAttrRampMultiplier7;
+    uniform intptr_t mEvalAttrRampMultiplier8;
+    uniform intptr_t mEvalAttrRampMultiplier9;
+    uniform intptr_t mEvalAttrRampPositionOffset0;
+    uniform intptr_t mEvalAttrRampPositionOffset1;
+    uniform intptr_t mEvalAttrRampPositionOffset2;
+    uniform intptr_t mEvalAttrRampPositionOffset3;
+    uniform intptr_t mEvalAttrRampPositionOffset4;
+    uniform intptr_t mEvalAttrRampPositionOffset5;
+    uniform intptr_t mEvalAttrRampPositionOffset6;
+    uniform intptr_t mEvalAttrRampPositionOffset7;
+    uniform intptr_t mEvalAttrRampPositionOffset8;
+    uniform intptr_t mEvalAttrRampPositionOffset9;
 };
 
 struct DwaBaseAttributeFuncs
@@ -406,6 +448,7 @@ struct DwaBase
     fns.name.mEvalAttrIntensity                     = 0;        \
     fns.name.mEvalAttrRoughness                     = 0;        \
     fns.name.mEvalAttrTint                          = 0;        \
+    fns.name.mEvalAttrRampInputScale                = 0;        \
     fns.name.mGetAttrEnableInputNormal              = 0;        \
     fns.name.mEvalAttrInputNormalDial               = 0;        \
     fns.name.mEvalAttrStretchU                      = 0;        \
@@ -415,7 +458,27 @@ struct DwaBase
     fns.name.mEvalAttrInputV                        = 0;        \
     fns.name.mGetAttrEnableIndirectReflections      = 0;        \
     fns.name.mEvalAttrIndirectReflectionsIntensity  = 0;        \
-    fns.name.mEvalAttrIndirectReflectionsRoughness  = 0;
+    fns.name.mEvalAttrIndirectReflectionsRoughness  = 0;        \
+    fns.name.mEvalAttrRampMultiplier0               = 0;        \
+    fns.name.mEvalAttrRampMultiplier1               = 0;        \
+    fns.name.mEvalAttrRampMultiplier2               = 0;        \
+    fns.name.mEvalAttrRampMultiplier3               = 0;        \
+    fns.name.mEvalAttrRampMultiplier4               = 0;        \
+    fns.name.mEvalAttrRampMultiplier5               = 0;        \
+    fns.name.mEvalAttrRampMultiplier6               = 0;        \
+    fns.name.mEvalAttrRampMultiplier7               = 0;        \
+    fns.name.mEvalAttrRampMultiplier8               = 0;        \
+    fns.name.mEvalAttrRampMultiplier9               = 0;        \
+    fns.name.mEvalAttrRampPositionOffset0           = 0;        \
+    fns.name.mEvalAttrRampPositionOffset1           = 0;        \
+    fns.name.mEvalAttrRampPositionOffset2           = 0;        \
+    fns.name.mEvalAttrRampPositionOffset3           = 0;        \
+    fns.name.mEvalAttrRampPositionOffset4           = 0;        \
+    fns.name.mEvalAttrRampPositionOffset5           = 0;        \
+    fns.name.mEvalAttrRampPositionOffset6           = 0;        \
+    fns.name.mEvalAttrRampPositionOffset7           = 0;        \
+    fns.name.mEvalAttrRampPositionOffset8           = 0;        \
+    fns.name.mEvalAttrRampPositionOffset9           = 0;
 
 extern void
 DWABASE_initDwaBaseAttributeFuncs(uniform DwaBaseAttributeFuncs &fns)

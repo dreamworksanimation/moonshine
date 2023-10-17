@@ -208,6 +208,66 @@ evaluateToonRampOffsets(const uniform ToonDiffuseAttributeFuncs& attrFuncs,
 }
 
 inline void
+evaluateToonSpecRampMultipliers(const uniform ToonSpecularAttributeFuncs& attrFuncs,
+                                const uniform Material *uniform me,
+                                uniform ShadingTLState * uniform tls,
+                                const varying State &state,
+                                float multipliers[DWABASE_MAX_TOOND_RAMP_POINTS])
+{
+    MNRY_ASSERT(DWABASE_MAX_TOOND_RAMP_POINTS == 10);
+    multipliers[0] = EVALFLOATATTR(attrFuncs.mEvalAttrRampMultiplier0,
+                               me, tls, state, 0.0f);
+    multipliers[1] = EVALFLOATATTR(attrFuncs.mEvalAttrRampMultiplier1,
+                               me, tls, state, 0.0f);
+    multipliers[2] = EVALFLOATATTR(attrFuncs.mEvalAttrRampMultiplier2,
+                               me, tls, state, 0.0f);
+    multipliers[3] = EVALFLOATATTR(attrFuncs.mEvalAttrRampMultiplier3,
+                               me, tls, state, 0.0f);
+    multipliers[4] = EVALFLOATATTR(attrFuncs.mEvalAttrRampMultiplier4,
+                               me, tls, state, 0.0f);
+    multipliers[5] = EVALFLOATATTR(attrFuncs.mEvalAttrRampMultiplier5,
+                               me, tls, state, 0.0f);
+    multipliers[6] = EVALFLOATATTR(attrFuncs.mEvalAttrRampMultiplier6,
+                               me, tls, state, 0.0f);
+    multipliers[7] = EVALFLOATATTR(attrFuncs.mEvalAttrRampMultiplier7,
+                               me, tls, state, 0.0f);
+    multipliers[8] = EVALFLOATATTR(attrFuncs.mEvalAttrRampMultiplier8,
+                               me, tls, state, 0.0f);
+    multipliers[9] = EVALFLOATATTR(attrFuncs.mEvalAttrRampMultiplier9,
+                               me, tls, state, 0.0f);
+}
+
+inline void
+evaluateToonSpecRampOffsets(const uniform ToonSpecularAttributeFuncs& attrFuncs,
+                            const uniform Material *uniform me,
+                            uniform ShadingTLState * uniform tls,
+                            const varying State &state,
+                            float offsets[DWABASE_MAX_TOOND_RAMP_POINTS])
+{
+    MNRY_ASSERT(DWABASE_MAX_TOOND_RAMP_POINTS == 10);
+    offsets[0] = EVALFLOATATTR(attrFuncs.mEvalAttrRampPositionOffset0,
+                               me, tls, state, 0.0f);
+    offsets[1] = EVALFLOATATTR(attrFuncs.mEvalAttrRampPositionOffset1,
+                               me, tls, state, 0.0f);
+    offsets[2] = EVALFLOATATTR(attrFuncs.mEvalAttrRampPositionOffset2,
+                               me, tls, state, 0.0f);
+    offsets[3] = EVALFLOATATTR(attrFuncs.mEvalAttrRampPositionOffset3,
+                               me, tls, state, 0.0f);
+    offsets[4] = EVALFLOATATTR(attrFuncs.mEvalAttrRampPositionOffset4,
+                               me, tls, state, 0.0f);
+    offsets[5] = EVALFLOATATTR(attrFuncs.mEvalAttrRampPositionOffset5,
+                               me, tls, state, 0.0f);
+    offsets[6] = EVALFLOATATTR(attrFuncs.mEvalAttrRampPositionOffset6,
+                               me, tls, state, 0.0f);
+    offsets[7] = EVALFLOATATTR(attrFuncs.mEvalAttrRampPositionOffset7,
+                               me, tls, state, 0.0f);
+    offsets[8] = EVALFLOATATTR(attrFuncs.mEvalAttrRampPositionOffset8,
+                               me, tls, state, 0.0f);
+    offsets[9] = EVALFLOATATTR(attrFuncs.mEvalAttrRampPositionOffset9,
+                               me, tls, state, 0.0f);
+}
+
+inline void
 resolveToonDiffuseParams(const uniform Material *uniform me,
                          uniform ShadingTLState * uniform tls,
                          const varying State &state,
@@ -246,7 +306,7 @@ resolveToonDiffuseParams(const uniform Material *uniform me,
         evaluateToonRampColorMultipliers(attrFuncs, me, tls, state,
                                          toonDParams.mRampColors);
 
-        float offsets[10];
+        float offsets[DWABASE_MAX_TOOND_RAMP_POINTS];
         evaluateToonRampOffsets(attrFuncs, me, tls, state, offsets);
 
         for (int i = 0; i < toonDParams.mRampNumPoints; ++i) {
@@ -278,11 +338,16 @@ resolveToonSpecParams(const uniform Material *uniform me,
     params.mTint =
         clamp(EVALCOLORATTR(attrFuncs.mEvalAttrTint, me, tls, state, Color_ctor(1.0f)),
               0.0f, 1.0f);
+    params.mRampInputScale = EVALFLOATATTR(attrFuncs.mEvalAttrRampInputScale, me, tls, state, 1.0f);
 
     params.mRampNumPoints = min(DWABASE_MAX_TOOND_RAMP_POINTS, uniformData.mRampNumPoints);
+    float offsets[DWABASE_MAX_TOOND_RAMP_POINTS];
+    evaluateToonSpecRampOffsets(attrFuncs, me, tls, state, offsets);
+    float multipliers[DWABASE_MAX_TOOND_RAMP_POINTS];
+    evaluateToonSpecRampMultipliers(attrFuncs, me, tls, state, multipliers);
     for (int i = 0; i < params.mRampNumPoints; ++i) {
-        params.mRampPositions[i] = uniformData.mRampPositions[i];
-        params.mRampValues[i] = uniformData.mRampValues[i];
+        params.mRampPositions[i] = uniformData.mRampPositions[i] + offsets[i];
+        params.mRampValues[i] = uniformData.mRampValues[i] * multipliers[i];
         params.mRampInterpolators[i] = uniformData.mRampInterpolators[i];
     }
 

@@ -765,8 +765,8 @@ public:
         const moonray::shading::ToonSpecularBRDF toonSpecularBRDF(
                 scene_rdl2::math::asCpp(params.mNormal),
                 params.mIntensity,
-                params.mRoughness,
                 scene_rdl2::math::asCpp(params.mTint),
+                params.mRampInputScale,
                 params.mRampNumPoints,
                 params.mRampPositions,
                 params.mRampInterpolators,
@@ -1641,6 +1641,7 @@ public:
         params.mIntensity = 1.0f;
         params.mRoughness = 0.9f;
         scene_rdl2::math::asCpp(params.mTint) = scene_rdl2::math::Color(1.0f, 1.0f, 1.0f);
+        params.mRampInputScale = 1.0f;
         params.mRampNumPoints = 1;
         params.mRampPositions[0] = 0.0f;
         params.mRampValues[0] = 1.0f;

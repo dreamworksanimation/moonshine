@@ -98,6 +98,7 @@ namespace dwabase {
 #define ASSIGN_TOON_SPEC_ATTR_KEYS(keys, name) \
     keys.m##name##Keys.mIntensity                  = attr##name##Intensity;                        \
     keys.m##name##Keys.mTint                       = attr##name##Tint;                             \
+    keys.m##name##Keys.mRampInputScale             = attr##name##RampInputScale;                   \
     keys.m##name##Keys.mRampPositions              = attr##name##RampPositions;                    \
     keys.m##name##Keys.mRampValues                 = attr##name##RampValues;                       \
     keys.m##name##Keys.mRampInterpolators          = attr##name##RampInterpolators;                \
@@ -130,25 +131,28 @@ struct ToonDiffuseKeys
 
 struct ToonSpecularKeys
 {
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>          mShow;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Int>           mModel;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>         mIntensity;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>         mRoughness;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Rgb>           mTint;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::FloatVector>   mRampPositions;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::FloatVector>   mRampValues;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::IntVector>     mRampInterpolators;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>          mEnableInputNormal;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::SceneObject *> mInputNormal;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>         mInputNormalDial;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>         mStretchU;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>         mStretchV;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>          mUseInputVectors;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Vec3f>         mInputU;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Vec3f>         mInputV;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>          mEnableIndirectReflections;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>         mIndirectReflectionsIntensity;
-    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>         mIndirectReflectionsRoughness;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>               mShow;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Int>                mModel;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mIntensity;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mRoughness;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Rgb>                mTint;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mRampInputScale;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::FloatVector>        mRampPositions;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::FloatVector>        mRampValues;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::IntVector>          mRampInterpolators;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>               mEnableInputNormal;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::SceneObject *>      mInputNormal;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mInputNormalDial;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mStretchU;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mStretchV;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>               mUseInputVectors;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Vec3f>              mInputU;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Vec3f>              mInputV;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>               mEnableIndirectReflections;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mIndirectReflectionsIntensity;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mIndirectReflectionsRoughness;
+    std::vector<scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>> mRampMultipliers;
+    std::vector<scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>> mRampOffsets;
 };
 
 // Each derived shader must pass an instance of DwaBaseAttributeKeys.

@@ -730,6 +730,7 @@ void copyToonSpecularParams(const varying ToonSpecularParameters& src,
 {
     dst.mRoughness = src.mRoughness;
     dst.mTint = src.mTint;
+    dst.mRampInputScale = src.mRampInputScale;
     dst.mRampNumPoints = src.mRampNumPoints;
     for (int i = 0; i < src.mRampNumPoints; ++i) {
         dst.mRampPositions[i] = src.mRampPositions[i];
@@ -751,7 +752,6 @@ void blendToonSpecularParams(const uniform int colorSpace,
                              const varying ToonSpecularParameters &params1,
                              varying ToonSpecularParameters &params)
 {
-
     params.mToonSpecular = lerp(params0.mToonSpecular,
                                 params1.mToonSpecular,
                                 mask);
@@ -774,6 +774,10 @@ void blendToonSpecularParams(const uniform int colorSpace,
         params.mTint = colorSpaceLerp(params0.mTint,
                                       params1.mTint,
                                       mask, colorSpace);
+
+        params.mRampInputScale = lerp(params0.mRampInputScale,
+                                      params1.mRampInputScale,
+                                      mask);
 
         params.mRampNumPoints = max(params0.mRampNumPoints,
                                     params1.mRampNumPoints);

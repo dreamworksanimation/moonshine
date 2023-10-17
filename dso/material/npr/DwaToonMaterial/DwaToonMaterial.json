@@ -63,7 +63,8 @@
             "flags": "FLAGS_BINDABLE",
             "group": "Specular",
             "min" : "0.0f",
-            "max" : "1.0f"
+            "max" : "1.0f",
+            "disable when": "{ show_specular == 0 } { specular_model == Toon }"
         },
         "attrRefractiveIndex" : {
             "name": "refractive_index",
@@ -203,6 +204,16 @@
             "group": "Specular",
             "disable when": "{ show_specular == 0 } { specular_model != Toon } { toon_specular_use_input_vectors_for_stretch == 0 }"
         },
+        "attrToonSpecularRampInputScale": {
+            "name": "toon_specular_ramp_input_scale",
+            "label": "toon specular ramp input scale",
+            "comment": "Scales the input value x to the ramp lookup y, where x is based on the angle between the sample direction and normal.  This has the effect of squashing or stretching the ramp point positions towards/away from 0.",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Specular",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
         "attrToonSpecularRampPositions": {
             "name": "toon_specular_positions",
             "type": "FloatVector",
@@ -217,7 +228,7 @@
         "attrToonSpecularRampValues": {
             "name": "toon_specular_values",
             "type": "FloatVector",
-            "default": "{0.0, 0.25, 0.75, 1.0}",
+            "default": "{1.0, 0.75, 0.25, 0.0}",
             "comment": "List of colors on the ramp",
             "structure_type": "ramp_float",
             "structure_name": "toon_specular_ramp",
@@ -228,13 +239,37 @@
         "attrToonSpecularRampInterpolators": {
             "name": "toon_specular_interpolations",
             "type": "IntVector",
-            "default": "{4, 4, 4, 4}",
+            "default": "{0, 0, 0, 0}",
             "comment": "None: 0 | Linear: 1 | Exponential Up: 2 | Exponential Down: 3 |\\n\\t\\t\\tSmooth: 4 | Catmull Rom: 5 | Monotone Cubic: 6",
             "structure_type": "ramp_float",
             "structure_name": "toon_specular_ramp",
             "structure_path": "interpolation_types",
             "group": "Specular",
             "disable when": "{ show_specular == 0 } { specular_model != Toon }"
+        },
+        "attrToonSpecularRampMultiplier": {
+            "name": "toon_specular_mult",
+            "label": "toon specular mult",
+            "type": "Float",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "Bindable multiplier on the toon specular ramp value",
+            "default": "1.0f",
+            "multi": "10",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }",
+            "group": "Specular",
+            "subgroup": "Ramp Multipliers"
+        },
+        "attrToonSpecularRampPositionOffset": {
+            "name": "toon_specular_offset",
+            "label": "toon specular offset",
+            "type": "Float",
+            "default": "0.0f",
+            "comment": "Bindable offset to the toon specular ramp-position, add a small variation using noise etc for art-directable ramp thresholds",
+            "flags": "FLAGS_BINDABLE",
+            "multi": "10",
+            "disable when": "{ show_specular == 0 } { specular_model != Toon }",
+            "group": "Specular",
+            "subgroup": "Ramp Position Offsets"
         },
         "attrToonSpecularEnableInputNormal" : {
             "name": "toon_specular_enable_input_normal",

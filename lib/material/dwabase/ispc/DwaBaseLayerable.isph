@@ -101,6 +101,7 @@ struct ToonSpecularParameters
     float mIntensity;
     float mRoughness;
     Color mTint;
+    float mRampInputScale;
     int   mRampNumPoints;
     float mRampPositions[DWABASE_MAX_TOOND_RAMP_POINTS];
     float mRampValues[DWABASE_MAX_TOOND_RAMP_POINTS];

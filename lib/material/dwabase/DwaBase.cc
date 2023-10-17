@@ -59,10 +59,11 @@ using namespace moonray;
 using namespace scene_rdl2::math;
 using namespace moonray::shading;
 
-#define VALIDATE_TOON_SPEC_ATTR_KEYS(name)                                   \
+#define VALIDATE_TOON_SPEC_ATTR_KEYS(name)                                    \
     MNRY_ASSERT(mAttrKeys.name.mIntensity.isValid());                         \
     MNRY_ASSERT(mAttrKeys.name.mRoughness.isValid());                         \
     MNRY_ASSERT(mAttrKeys.name.mTint.isValid());                              \
+    MNRY_ASSERT(mAttrKeys.name.mRampInputScale.isValid());                    \
     MNRY_ASSERT(mAttrKeys.name.mRampPositions.isValid());                     \
     MNRY_ASSERT(mAttrKeys.name.mRampValues.isValid());                        \
     MNRY_ASSERT(mAttrKeys.name.mRampInterpolators.isValid());                 \
@@ -78,20 +79,41 @@ using namespace moonray::shading;
     MNRY_ASSERT(mAttrKeys.name.mIndirectReflectionsIntensity.isValid());      \
     MNRY_ASSERT(mAttrKeys.name.mIndirectReflectionsRoughness.isValid());
 
-#define VALIDATE_TOON_SPEC_ATTR_FUNCS(name)                                  \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrIntensity);                    \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRoughness);                    \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrTint);                         \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mGetAttrEnableInputNormal);             \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrInputNormalDial);              \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrStretchU);                     \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrStretchV);                     \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mGetAttrUseInputVectors);               \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrInputU);                       \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrInputV);                       \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mGetAttrEnableIndirectReflections);     \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrIndirectReflectionsIntensity); \
-    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrIndirectReflectionsRoughness);
+#define VALIDATE_TOON_SPEC_ATTR_FUNCS(name)                                        \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrIntensity);                         \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRoughness);                         \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrTint);                              \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampInputScale);                    \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mGetAttrEnableInputNormal);                  \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrInputNormalDial);                   \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrStretchU);                          \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrStretchV);                          \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mGetAttrUseInputVectors);                    \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrInputU);                            \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrInputV);                            \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mGetAttrEnableIndirectReflections);          \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrIndirectReflectionsIntensity);      \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrIndirectReflectionsRoughness);      \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampMultiplier0);                   \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampMultiplier1);                   \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampMultiplier2);                   \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampMultiplier3);                   \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampMultiplier4);                   \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampMultiplier5);                   \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampMultiplier6);                   \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampMultiplier7);                   \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampMultiplier8);                   \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampMultiplier9);                   \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampPositionOffset0);               \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampPositionOffset1);               \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampPositionOffset2);               \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampPositionOffset3);               \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampPositionOffset4);               \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampPositionOffset5);               \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampPositionOffset6);               \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampPositionOffset7);               \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampPositionOffset8);               \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampPositionOffset9);
 
 DwaBase::DwaBase(const scene_rdl2::rdl2::SceneClass& sceneClass,
                  const std::string& name,
@@ -1080,12 +1102,16 @@ resolveToonSpecParams(const DwaBase* me,
     params.mRoughness = evalFloat(me, keys.mRoughness, tls, state);
     asCpp(params.mTint) = clamp(evalColor(me,keys.mTint, tls, state),
                                           sBlack, sWhite);
+    params.mRampInputScale = evalFloat(me, keys.mRampInputScale, tls, state);
 
     params.mRampNumPoints = min(ispc::DWABASE_MAX_TOOND_RAMP_POINTS,
                                      uniformData.mRampNumPoints);
     for(int i = 0; i < params.mRampNumPoints; ++i) {
-        params.mRampPositions[i] = uniformData.mRampPositions[i];
-        params.mRampValues[i] = uniformData.mRampValues[i];
+        const float offset = evalFloat(me,
+                                       keys.mRampOffsets[i],
+                                       tls, state);
+        params.mRampPositions[i] = uniformData.mRampPositions[i] + offset;
+        params.mRampValues[i] = uniformData.mRampValues[i] * evalFloat(me, keys.mRampMultipliers[i], tls, state);
         params.mRampInterpolators[i] = uniformData.mRampInterpolators[i];
     }
 
