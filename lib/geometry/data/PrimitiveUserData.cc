@@ -126,7 +126,12 @@ addPrimitiveAttribute(shading::PrimitiveAttributeTable& primitiveAttributeTable,
                 // The mesh was specified in the global part list and thus has an index
                 //  into the attribute data array.
                 if (meshPartIndex < (int)data[t].size()) {
-                    perPartData[t].push_back(data[t][meshPartIndex]);
+                    if (facesetPartIndices.size() == 1 && facesetPartIndices.front() == -1) {
+                        // The mesh has no facesets in the part list
+                        perPartData[t].front() = data[t][meshPartIndex];
+                    } else {
+                        perPartData[t].push_back(data[t][meshPartIndex]);
+                    }
                 } else {
                     // The index is out of bounds of the data array, just use a default value.
                     perPartData[t].push_back(T());
