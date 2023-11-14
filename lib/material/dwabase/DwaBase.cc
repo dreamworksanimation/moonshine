@@ -1183,16 +1183,17 @@ resolveHairToonParams(const DwaBase* me,
 
     if (hints.mRequiresHairToonS1Params) {
         resolveToonSpecParams(me, tls, state,
-                              params.mSpecular,
+                              1.0f, // specular
                               dwabase->mHairToonS1Data,
                               keys.mHairToonS1Keys,
                               params.mHairToonS1Params,
                               me->getISPCBaseMaterialStruct()->mUParams.mHairToonS1Model);
+
     }
 
     if (hints.mRequiresHairToonS2Params) {
         resolveToonSpecParams(me, tls, state,
-                              params.mSpecular,
+                              1.0f, // specular
                               dwabase->mHairToonS2Data,
                               keys.mHairToonS2Keys,
                               params.mHairToonS2Params,
@@ -1201,7 +1202,7 @@ resolveHairToonParams(const DwaBase* me,
 
     if (hints.mRequiresHairToonS3Params) {
         resolveToonSpecParams(me, tls, state,
-                              params.mSpecular,
+                              1.0f, // specular
                               dwabase->mHairToonS3Data,
                               keys.mHairToonS3Keys,
                               params.mHairToonS3Params,

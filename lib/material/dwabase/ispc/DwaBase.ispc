@@ -425,7 +425,7 @@ resolveHairToonParams(const uniform DwaBase * uniform dwaBase,
 {
     if (dwaBase->mHints.mRequiresHairToonS1Params) {
         resolveToonSpecParams(me, tls, state,
-                              params->mSpecular,
+                              1.0f, // specular
                               dwaBase->mHairToonS1Data,
                               dwaBase->mAttrFuncs.mHairToonS1Funcs,
                               params->mHairToonS1Params,
@@ -434,7 +434,7 @@ resolveHairToonParams(const uniform DwaBase * uniform dwaBase,
 
     if (dwaBase->mHints.mRequiresHairToonS2Params) {
         resolveToonSpecParams(me, tls, state,
-                              params->mSpecular,
+                              1.0f, // specular
                               dwaBase->mHairToonS2Data,
                               dwaBase->mAttrFuncs.mHairToonS2Funcs,
                               params->mHairToonS2Params,
@@ -443,7 +443,7 @@ resolveHairToonParams(const uniform DwaBase * uniform dwaBase,
 
     if (dwaBase->mHints.mRequiresHairToonS3Params) {
         resolveToonSpecParams(me, tls, state,
-                              params->mSpecular,
+                              1.0f, // specular
                               dwaBase->mHairToonS3Data,
                               dwaBase->mAttrFuncs.mHairToonS3Funcs,
                               params->mHairToonS3Params,
