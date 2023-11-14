@@ -1237,60 +1237,7 @@ public:
             }
         }
 
-        // Non-hair toon specular
-        if (!scene_rdl2::math::isZero(params.mToonSpecularParams.mToonSpecular) &&
-            uParams.mToonSpecularModel == ispc::ToonSpecularModel::ToonSpecularSurface) {
-
-            const ispc::ToonSpecularParameters& toonParams = params.mToonSpecularParams;
-
-            addToonSpecularLobes(builder,
-                                 toonParams,
-                                 labels.mSpecular);
-
-            // Transmission
-            if (!scene_rdl2::math::isZero(params.mTransmission)) { 
-
-                const float roughnessClamped = scene_rdl2::math::max(params.mRoughness, minRoughness);
-
-                float refrIor = reflIor;
-                if (params.mUseIndependentTransmissionRefractiveIndex) {
-                    refrIor = params.mIndependentTransmissionRefractiveIndex;
-                }
-
-                // Dispersion
-                // Only allow for primary ray intersections to safeguard against splitting a ray twice.
-                // Ideally, we tag the ray with a wavelength it carries or whether it has been split already.
-                const float abbeNumber = (state.isIndirect()) ? 0.0f : params.mDispersionAbbeNumber;
-
-                if (roughnessClamped < scene_rdl2::math::sEpsilon) {
-                    const moonray::shading::MirrorBTDF mirrorBTDF(
-                            N,
-                            refrIor,
-                            scene_rdl2::math::asCpp(params.mTransmissionColor),
-                            abbeNumber);
-
-                    builder.addMirrorBTDF(mirrorBTDF,
-                                          params.mTransmission,
-                                          ispc::BSDFBUILDER_PHYSICAL,
-                                          labels.mSpecularTransmission);
-                } else {
-                    const moonray::shading::MicrofacetIsotropicBTDF dielectricBTDF(
-                            N,
-                            refrIor,
-                            roughnessClamped,
-                            static_cast<ispc::MicrofacetDistribution>(uParams.mSpecularModel),
-                            ispc::MICROFACET_GEOMETRIC_SMITH,
-                            scene_rdl2::math::asCpp(params.mTransmissionColor),
-                            abbeNumber);
-
-                    builder.addMicrofacetIsotropicBTDF(dielectricBTDF,
-                                          params.mTransmission,
-                                          ispc::BSDFBUILDER_PHYSICAL,
-                                          labels.mSpecularTransmission);
-                }
-            }
-
-        } else if (!scene_rdl2::math::isZero(params.mSpecular) || !scene_rdl2::math::isZero(params.mTransmission)) {
+        if (!scene_rdl2::math::isZero(params.mSpecular) || !scene_rdl2::math::isZero(params.mTransmission)) {
             // Specular reflection and transmission
 
             // Modulate roughness based on normal map mip-map anti-aliasing strategy.
@@ -1389,7 +1336,46 @@ public:
             // Ideally, we tag the ray with a wavelength it carries or whether it has been split already.
             const float abbeNumber = (state.isIndirect()) ? 0.0f : params.mDispersionAbbeNumber;
 
-            if (params.mUseIndependentTransmissionRoughness) {
+            // Toon Specular
+            if (!scene_rdl2::math::isZero(params.mToonSpecularParams.mToonSpecular) &&
+                uParams.mToonSpecularModel == ispc::ToonSpecularModel::ToonSpecularSurface) {
+
+                const ispc::ToonSpecularParameters& toonParams = params.mToonSpecularParams;
+
+                addToonSpecularLobes(builder,
+                                     toonParams,
+                                     labels.mSpecular);
+
+                // Toon Specular Transmission
+                if (!scene_rdl2::math::isZero(params.mTransmission)) { 
+                    if (roughnessClamped < scene_rdl2::math::sEpsilon) {
+                        const moonray::shading::MirrorBTDF mirrorBTDF(
+                                N,
+                                refrIor,
+                                scene_rdl2::math::asCpp(params.mTransmissionColor),
+                                abbeNumber);
+
+                        builder.addMirrorBTDF(mirrorBTDF,
+                                              params.mTransmission,
+                                              ispc::BSDFBUILDER_PHYSICAL,
+                                              labels.mSpecularTransmission);
+                    } else {
+                        const moonray::shading::MicrofacetIsotropicBTDF dielectricBTDF(
+                                N,
+                                refrIor,
+                                roughnessClamped,
+                                static_cast<ispc::MicrofacetDistribution>(uParams.mSpecularModel),
+                                ispc::MICROFACET_GEOMETRIC_SMITH,
+                                scene_rdl2::math::asCpp(params.mTransmissionColor),
+                                abbeNumber);
+
+                        builder.addMicrofacetIsotropicBTDF(dielectricBTDF,
+                                              params.mTransmission,
+                                              ispc::BSDFBUILDER_PHYSICAL,
+                                              labels.mSpecularTransmission);
+                    }
+                }
+            } else if (params.mUseIndependentTransmissionRoughness) {
                 addIndependentReflectionLobe(builder, N, reflIor,
                                              params.mAnisotropy, roughness, minRoughness, shadingTangent,
                                              static_cast<ispc::MicrofacetDistribution>(uParams.mSpecularModel),

@@ -949,61 +949,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
     }
 
     // Non-hair toon specular
-    if (!isZero(params->mToonSpecularParams.mToonSpecular) &&
-        uParams->mToonSpecularModel == ToonSpecularSurface) {
-
-        const ToonSpecularParameters& toonParams = params->mToonSpecularParams;
-
-        DWABASE_addToonSpecularLobes(bsdfBuilder,
-                                     toonParams,
-                                     labels->mSpecular);
-
-        // Transmission
-        if (!isZero(params->mTransmission)) { 
-
-            const float roughnessClamped = max(params->mRoughness, minRoughness);
-
-            float refrIor = reflIor;
-            if (params->mUseIndependentTransmissionRefractiveIndex) {
-                refrIor = params->mIndependentTransmissionRefractiveIndex;
-            }
-
-            // Dispersion
-            // Only allow for primary ray intersections to safeguard against splitting a ray twice.
-            // Ideally, we tag the ray with a wavelength it carries or whether it has been split already.
-            const varying float abbeNumber = (isIndirect(state)) ? 0.0f : params->mDispersionAbbeNumber;
-
-            if (roughnessClamped < sEpsilon) {
-                MirrorBTDF mirrorBTDF;
-                MirrorBTDF_init(mirrorBTDF,
-                                N,
-                                refrIor,
-                                params->mTransmissionColor,
-                                abbeNumber);
-                BsdfBuilder_addMirrorBTDF(bsdfBuilder,
-                                          mirrorBTDF,
-                                          params->mTransmission,
-                                          BSDFBUILDER_PHYSICAL,
-                                          labels->mSpecularTransmission);
-            } else {
-                MicrofacetIsotropicBTDF dielectricBTDF;
-                MicrofacetIsotropicBTDF_init(dielectricBTDF,
-                                             N,
-                                             refrIor,
-                                             roughnessClamped,
-                                             params->mTransmissionColor,
-                                             abbeNumber,
-                                             (uniform MicrofacetDistribution) uParams->mSpecularModel,
-                                             MICROFACET_GEOMETRIC_SMITH);
-
-                BsdfBuilder_addMicrofacetIsotropicBTDF(bsdfBuilder,
-                                                       dielectricBTDF,
-                                                       params->mTransmission,
-                                                       BSDFBUILDER_PHYSICAL,
-                                                       labels->mSpecularTransmission);
-            }
-        }
-    } else if (!isZero(params->mSpecular) || !isZero(params->mTransmission)) {
+    if (!isZero(params->mSpecular) || !isZero(params->mTransmission)) {
         // Specular reflection and transmission
         // Modulate roughness based on normal map mip-map anti-aliasing strategy.
         const varying float roughness = computeMicrofacetRoughness(
@@ -1109,7 +1055,49 @@ DWABASE_createLobes(const uniform Material * uniform me,
         // Ideally, we tag the ray with a wavelength it carries or whether it has been split already.
         const varying float abbeNumber = (isIndirect(state)) ? 0.0f : params->mDispersionAbbeNumber;
 
-        if (params->mUseIndependentTransmissionRoughness) {
+        // Toon Specular
+        if (!isZero(params->mToonSpecularParams.mToonSpecular) &&
+            uParams->mToonSpecularModel == ToonSpecularSurface) {
+
+            const ToonSpecularParameters& toonParams = params->mToonSpecularParams;
+
+            DWABASE_addToonSpecularLobes(bsdfBuilder,
+                                         toonParams,
+                                         labels->mSpecular);
+
+            // Toon Specular Transmission
+            if (!isZero(params->mTransmission)) { 
+                if (roughnessClamped < sEpsilon) {
+                    MirrorBTDF mirrorBTDF;
+                    MirrorBTDF_init(mirrorBTDF,
+                                    N,
+                                    refrIor,
+                                    params->mTransmissionColor,
+                                    abbeNumber);
+                    BsdfBuilder_addMirrorBTDF(bsdfBuilder,
+                                              mirrorBTDF,
+                                              params->mTransmission,
+                                              BSDFBUILDER_PHYSICAL,
+                                              labels->mSpecularTransmission);
+                } else {
+                    MicrofacetIsotropicBTDF dielectricBTDF;
+                    MicrofacetIsotropicBTDF_init(dielectricBTDF,
+                                                 N,
+                                                 refrIor,
+                                                 roughnessClamped,
+                                                 params->mTransmissionColor,
+                                                 abbeNumber,
+                                                 (uniform MicrofacetDistribution) uParams->mSpecularModel,
+                                                 MICROFACET_GEOMETRIC_SMITH);
+
+                    BsdfBuilder_addMicrofacetIsotropicBTDF(bsdfBuilder,
+                                                           dielectricBTDF,
+                                                           params->mTransmission,
+                                                           BSDFBUILDER_PHYSICAL,
+                                                           labels->mSpecularTransmission);
+                }
+            }
+        } else if (params->mUseIndependentTransmissionRoughness) {
             DWABASE_addIndependentReflectionLobe(bsdfBuilder,
                                                  N, reflIor,
                                                  params->mAnisotropy, roughness, minRoughness, shadingTangent,

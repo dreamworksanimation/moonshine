@@ -102,7 +102,7 @@
             "default": "0.0f",
             "flags": "FLAGS_BINDABLE",
             "group": "Specular",
-            "disable when": "{ show_specular == 0 } { specular_model == Toon }"
+            "disable when": "{ show_specular == 0 }"
         },
         "attrMetallicColor": {
             "name": "metallic_color",
@@ -117,7 +117,7 @@
                 "recolorable": "true",
                 "recolorSample": "true"
             },
-            "disable when": "{ show_specular == 0 } { specular_model == Toon } { metallic == 0.0 }"
+            "disable when": "{ show_specular == 0 } { metallic == 0.0 }"
         },
         "attrMetallicEdgeColor": {
             "name": "metallic_edge_color",
@@ -128,7 +128,7 @@
             "default": "Rgb(1.0f, 1.0f, 1.0f)",
             "flags": "FLAGS_BINDABLE",
             "group": "Specular",
-            "disable when": "{ show_specular == 0 } { specular_model == Toon } { metallic == 0.0 }"
+            "disable when": "{ show_specular == 0 } { metallic == 0.0 }"
         },
         "attrToonSpecularIntensity": {
             "name": "toon_specular_intensity",

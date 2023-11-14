@@ -1091,12 +1091,13 @@ finline void
 resolveToonSpecParams(const DwaBase* me,
                       moonray::shading::TLState *tls,
                       const moonray::shading::State& state,
+                      const float specular,
                       const ispc::ToonSpecularUniformData& uniformData,
                       const ToonSpecularKeys& keys,
                       ispc::ToonSpecularParameters &params,
                       ispc::ToonSpecularModel model)
 {
-    params.mToonSpecular = 1.0f;
+    params.mToonSpecular = specular;
 
     params.mIntensity = evalFloat(me, keys.mIntensity, tls, state);
     params.mRoughness = evalFloat(me, keys.mRoughness, tls, state);
@@ -1162,6 +1163,7 @@ resolveToonParams(const DwaBase* me,
 
     if (hints.mRequiresToonSpecularParams) {
         resolveToonSpecParams(me, tls, state,
+                              params.mSpecular,
                               me->getISPCBaseMaterialStruct()->mToonSpecularData,
                               keys.mToonSpecularKeys,
                               params.mToonSpecularParams,
@@ -1181,6 +1183,7 @@ resolveHairToonParams(const DwaBase* me,
 
     if (hints.mRequiresHairToonS1Params) {
         resolveToonSpecParams(me, tls, state,
+                              params.mSpecular,
                               dwabase->mHairToonS1Data,
                               keys.mHairToonS1Keys,
                               params.mHairToonS1Params,
@@ -1189,6 +1192,7 @@ resolveHairToonParams(const DwaBase* me,
 
     if (hints.mRequiresHairToonS2Params) {
         resolveToonSpecParams(me, tls, state,
+                              params.mSpecular,
                               dwabase->mHairToonS2Data,
                               keys.mHairToonS2Keys,
                               params.mHairToonS2Params,
@@ -1197,6 +1201,7 @@ resolveHairToonParams(const DwaBase* me,
 
     if (hints.mRequiresHairToonS3Params) {
         resolveToonSpecParams(me, tls, state,
+                              params.mSpecular,
                               dwabase->mHairToonS3Data,
                               keys.mHairToonS3Keys,
                               params.mHairToonS3Params,
@@ -1688,6 +1693,7 @@ DwaBase::resolveParameters(moonray::shading::TLState *tls,
     params.mRefractiveIndex = max(sEpsilon,
             mAttrKeys.mRefractiveIndex.isValid() ?  get(mAttrKeys.mRefractiveIndex) : 1.5f);
 
+    resolveSpecularParams(this, tls, state, castsCaustics, mIspc, mIspc.mHints, mAttrKeys, params);
     resolveHairParams(this, tls, state, castsCaustics, mIspc, mIspc.mHints, mAttrKeys, params.mHairParameters);
     resolveToonParams(this, tls, state, mIspc.mHints, mAttrKeys, params);
     resolveHairToonParams(this, tls, state, mIspc.mHints, mAttrKeys, params);
@@ -1695,7 +1701,6 @@ DwaBase::resolveParameters(moonray::shading::TLState *tls,
     resolveFuzzParams(this, tls, state, castsCaustics, mIspc.mHints, mAttrKeys, params);
     resolveIridescenceParams(this, tls, state, castsCaustics, mIspc, mIspc.mHints, mAttrKeys, params.mIridescenceParameters);
     resolveOuterSpecularParams(this, tls, state, castsCaustics, mIspc, mIspc.mHints, mAttrKeys, params);
-    resolveSpecularParams(this, tls, state, castsCaustics, mIspc, mIspc.mHints, mAttrKeys, params);
     resolveTransmissionParams(this, tls, state, castsCaustics, mIspc, mIspc.mHints, mAttrKeys, params);
     resolveFabricSpecularParams(this, tls, state, castsCaustics, mIspc, mIspc.mHints, mAttrKeys, params);
 

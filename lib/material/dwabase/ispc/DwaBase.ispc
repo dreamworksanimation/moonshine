@@ -324,12 +324,13 @@ inline void
 resolveToonSpecParams(const uniform Material *uniform me,
                       uniform ShadingTLState * uniform tls,
                       const varying State &state,
+                      const float specular,
                       const uniform ToonSpecularUniformData& uniformData,
                       const uniform ToonSpecularAttributeFuncs& attrFuncs,
                       varying ToonSpecularParameters& params,
                       const uniform ToonSpecularModel model)
 {
-    params.mToonSpecular = 1.0f;
+    params.mToonSpecular = specular;
 
     params.mIntensity = EVALFLOATATTR(attrFuncs.mEvalAttrIntensity,
                                       me, tls, state, 1.0f);
@@ -407,6 +408,7 @@ resolveToonParams(const uniform DwaBase * uniform dwaBase,
 
     if (dwaBase->mHints.mRequiresToonSpecularParams) {
         resolveToonSpecParams(me, tls, state,
+                              params->mSpecular,
                               dwaBase->mToonSpecularData,
                               dwaBase->mAttrFuncs.mToonSpecularFuncs,
                               params->mToonSpecularParams,
@@ -423,6 +425,7 @@ resolveHairToonParams(const uniform DwaBase * uniform dwaBase,
 {
     if (dwaBase->mHints.mRequiresHairToonS1Params) {
         resolveToonSpecParams(me, tls, state,
+                              params->mSpecular,
                               dwaBase->mHairToonS1Data,
                               dwaBase->mAttrFuncs.mHairToonS1Funcs,
                               params->mHairToonS1Params,
@@ -431,6 +434,7 @@ resolveHairToonParams(const uniform DwaBase * uniform dwaBase,
 
     if (dwaBase->mHints.mRequiresHairToonS2Params) {
         resolveToonSpecParams(me, tls, state,
+                              params->mSpecular,
                               dwaBase->mHairToonS2Data,
                               dwaBase->mAttrFuncs.mHairToonS2Funcs,
                               params->mHairToonS2Params,
@@ -439,6 +443,7 @@ resolveHairToonParams(const uniform DwaBase * uniform dwaBase,
 
     if (dwaBase->mHints.mRequiresHairToonS3Params) {
         resolveToonSpecParams(me, tls, state,
+                              params->mSpecular,
                               dwaBase->mHairToonS3Data,
                               dwaBase->mAttrFuncs.mHairToonS3Funcs,
                               params->mHairToonS3Params,
@@ -928,13 +933,13 @@ DWABASE_resolveParameters(DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS)
     params->mRefractiveIndex = max(sEpsilon,
         GETFLOATATTR(dwaBase->mAttrFuncs.mGetAttrRefractiveIndex, me, tls, state, 1.5f));
 
+    resolveSpecularParams(dwaBase, me, tls, state, castsCaustics, params);
     resolveHairParams(dwaBase, me, tls, state, castsCaustics, &params->mHairParameters);
     resolveToonParams(dwaBase, me, tls, state, params);
     resolveHairToonParams(dwaBase, me, tls, state, params);
     resolveGlitterParams(dwaBase, me, tls, state, castsCaustics, params);
     resolveFuzzParams(dwaBase, me, tls, state, castsCaustics, params);
     resolveOuterSpecularParams(dwaBase, me, tls, state, castsCaustics, params);
-    resolveSpecularParams(dwaBase, me, tls, state, castsCaustics, params);
     resolveFabricSpecularParams(dwaBase, me, tls, state, castsCaustics, params);
     resolveTransmissionParams(dwaBase, me, tls, state, castsCaustics, params);
 
