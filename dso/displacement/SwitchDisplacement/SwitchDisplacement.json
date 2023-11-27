@@ -7,14 +7,15 @@
             "type": "Float",
             "default": "0.0f",
             "flags": "FLAGS_BINDABLE",
-            "comment": "which of the 64 inputs (0 to 63) to use, values greater than 63 get cycled back to be in [0,63]"
+            "comment": "Which of the 64 inputs (0 to 63) to use, values greater than 63 get cycled back to be in the [0,63] range"
         },
         "attrDisplacement": {
             "name": "displacement",
             "type": "SceneObject*",
             "flags": "FLAGS_NONE",
             "interface": "INTERFACE_DISPLACEMENT",
-            "multi": "64"
+            "multi": "64",
+            "comment": "A reference to a displacement scene object"
         }
     }
 }
