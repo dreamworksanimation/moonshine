@@ -29,13 +29,13 @@ sphereProjection(const varying Vec3f& point)
     // Set projection t
     varying float len = length(point);
     if (!isZero(len)) {
-        result.y = acos(point.y / len) / sPi;
+        result.y = dw_acos(point.y / len) / sPi;
     }
 
     // Set projection s
     len = length(Vec2f_ctor(point.x, point.z));
     if (!isZero(len)) {
-        const varying float theta = 0.5f * acos(point.x / len) / sPi;
+        const varying float theta = 0.5f * dw_acos(point.x / len) / sPi;
         result.x = point.z >= 0 ? (1.0f - theta) : theta;
     }
 

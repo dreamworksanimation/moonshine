@@ -30,7 +30,7 @@ cylinderProjection(const varying Vec3f& point)
     Vec3f result = Vec3f_ctor(0.0f, point.y + 0.5f, 0.0f);
 
     // Set projection s
-    const varying float theta = 0.5f * acos(point.x / len) / sPi;
+    const varying float theta = 0.5f * dw_acos(point.x / len) / sPi;
     result.x = point.z >= 0 ? (1.0f - theta) : theta;
 
     return result;

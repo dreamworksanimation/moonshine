@@ -196,7 +196,7 @@ sample(const uniform Map *uniform map,
     if (falloffType == DIRECTIONAL_FALLOFF_COSINE) {
         falloff = cosTheta;
     } else {    // DIRECTIONAL_FALLOFF_LINEAR
-        falloff = 1.0f - acos(cosTheta) / sHalfPi;
+        falloff = 1.0f - dw_acos(cosTheta) / sHalfPi;
     }
 
     const varying float biasVal = saturate(evalAttrBias(map, tls, state));

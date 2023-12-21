@@ -153,9 +153,9 @@ op(const uniform OpType operation, const varying Color& op0, const varying Color
         result.b = (float)(int)(op0.b < 0.0f ? op0.b - 0.5f : op0.b + 0.5f);
         break;
     case ACOS:
-        result.r = acos(clamp(op0.r, -1.f, 1.f));
-        result.g = acos(clamp(op0.g, -1.f, 1.f));
-        result.b = acos(clamp(op0.b, -1.f, 1.f));
+        result.r = dw_acos(clamp(op0.r, -1.f, 1.f));
+        result.g = dw_acos(clamp(op0.g, -1.f, 1.f));
+        result.b = dw_acos(clamp(op0.b, -1.f, 1.f));
         break;
     case GREATER_THAN:
         result.r = (float)(op0.r > op1.r);

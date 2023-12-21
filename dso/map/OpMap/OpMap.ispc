@@ -156,9 +156,9 @@ colorAcos(const varying Color &a)
 {
     Color result;
     // We need to clamp to -1 < x < 1 to avoid a crash
-    result.r = acos(clamp(a.r, (-1.0f + sEpsilon), (1.0f - sEpsilon)));
-    result.g = acos(clamp(a.g, (-1.0f + sEpsilon), (1.0f - sEpsilon)));
-    result.b = acos(clamp(a.b, (-1.0f + sEpsilon), (1.0f - sEpsilon)));
+    result.r = dw_acos(clamp(a.r, (-1.0f + sEpsilon), (1.0f - sEpsilon)));
+    result.g = dw_acos(clamp(a.g, (-1.0f + sEpsilon), (1.0f - sEpsilon)));
+    result.b = dw_acos(clamp(a.b, (-1.0f + sEpsilon), (1.0f - sEpsilon)));
     return result;
 }
 
