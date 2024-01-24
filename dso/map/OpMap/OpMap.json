@@ -45,7 +45,9 @@
                 "bit_shift_left":        "35",
                 "bit_shift_right":       "36",
                 "bitwise_and":           "37",
-                "bitwise_or":            "38"
+                "bitwise_or":            "38",
+                "vector_equal":          "39",
+                "vector_not_equal":      "40"
             },
             "comment": "Operation"
         },
@@ -86,6 +88,15 @@
             "type": "Bool",
             "default": "false",
             "comment": "Whether to clamp result to 0 - 1"
+        },
+        "attrTolerance": {
+            "name": "tolerance",
+            "label": "tolerance",
+            "aliases": [ "epsilon" ],
+            "type": "Float",
+            "default": "0.001f",
+            "disable when" : "{ operation != 29 && operation != 30 && operation < 39 }",
+            "comment": "Epsilon. Sets range for almost-equals checking of values"
         }
     }
 }

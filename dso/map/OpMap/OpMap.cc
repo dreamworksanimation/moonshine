@@ -160,6 +160,12 @@ colorAcos(const Color &a)
    return result;
 }
 
+float
+floatAlmostEquals(const float a, const float b, const float epsilon)
+{
+    return std::abs(a - b) <= epsilon ? 1.0f : 0.0f;
+}
+
 }
 
 //---------------------------------------------------------------------------
@@ -194,7 +200,7 @@ void
 OpMap::update()
 {
     const int operation = get(attrOperation);
-    if (operation < 0 || operation > 38) {
+    if (operation < 0 || operation > 40) {
         fatal("Unsupported operation mode");
     }
 }
@@ -215,6 +221,8 @@ OpMap::sample(const scene_rdl2::rdl2::Map* self, moonray::shading::TLState *tls,
 
     const Color opOne = op1 * op1Factor;
     const Color opTwo = op2 * op2Factor;
+
+    const float tolerance = me->get(attrTolerance);
 
     Color result(op1);
 
@@ -324,14 +332,14 @@ OpMap::sample(const scene_rdl2::rdl2::Map* self, moonray::shading::TLState *tls,
         	result[2] = static_cast<float>(opOne[2] >= opTwo[2]);
         	break;
         case ispc::OpMapType::EQUAL:
-        	result[0] = static_cast<float>(opOne[0] == opTwo[0]);
-        	result[1] = static_cast<float>(opOne[1] == opTwo[1]);
-        	result[2] = static_cast<float>(opOne[2] == opTwo[2]);
+        	result[0] = floatAlmostEquals(opOne[0], opTwo[0], tolerance);
+        	result[1] = floatAlmostEquals(opOne[1], opTwo[1], tolerance);
+        	result[2] = floatAlmostEquals(opOne[2], opTwo[2], tolerance);
         	break;
         case ispc::OpMapType::NOT_EQUAL:
-        	result[0] = static_cast<float>(opOne[0] != opTwo[0]);
-        	result[1] = static_cast<float>(opOne[1] != opTwo[1]);
-        	result[2] = static_cast<float>(opOne[2] != opTwo[2]);
+        	result[0] = 1.0f - floatAlmostEquals(opOne[0], opTwo[0], tolerance);
+        	result[1] = 1.0f - floatAlmostEquals(opOne[1], opTwo[1], tolerance);
+        	result[2] = 1.0f - floatAlmostEquals(opOne[2], opTwo[2], tolerance);
         	break;
         case ispc::OpMapType::AND:
         	result[0] = static_cast<float>(opOne[0] && opTwo[0]);
@@ -373,6 +381,18 @@ OpMap::sample(const scene_rdl2::rdl2::Map* self, moonray::shading::TLState *tls,
         	result[1] = static_cast<float>(static_cast<int>(opOne[1]) | static_cast<int>(opTwo[1]));
         	result[2] = static_cast<float>(static_cast<int>(opOne[2]) | static_cast<int>(opTwo[2]));
         	break;
+        case ispc::OpMapType::VECTOR_EQUAL:
+            {
+                float distance = colorLength(opOne - opTwo)[0];
+                result = Color(floatAlmostEquals(distance, 0.0f, tolerance));
+                break;
+            }
+        case ispc::OpMapType::VECTOR_NOT_EQUAL:
+            {
+                float distance = colorLength(opOne - opTwo)[0];
+                result = Color(1.0f - floatAlmostEquals(distance, 0.0f, tolerance));
+                break;
+            }
         default:
             result[0] = 0.0;
             result[1] = 0.0;

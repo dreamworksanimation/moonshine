@@ -162,6 +162,12 @@ colorAcos(const varying Color &a)
     return result;
 }
 
+float
+floatAlmostEquals(const varying float a, const varying float b, const uniform float epsilon)
+{
+    return abs(a - b) <= epsilon ? 1.0f : 0.0f;
+}
+
 enum OpMapType {
     ADD                   = 0,
     SUBTRACT              = 1,
@@ -201,7 +207,9 @@ enum OpMapType {
     BIT_SHIFT_LEFT        = 35,
     BIT_SHIFT_RIGHT       = 36,
     BITWISE_AND           = 37,
-    BITWISE_OR            = 38
+    BITWISE_OR            = 38,
+    VECTOR_EQUAL          = 39,
+    VECTOR_NOT_EQUAL      = 40
 };
 
 ISPC_UTIL_EXPORT_ENUM_TO_HEADER(OpMapType);
@@ -220,6 +228,8 @@ sample(const uniform Map *uniform map,
 
     const Color opOne = op1 * op1Factor;
     const Color opTwo = op2 * op2Factor;
+
+    const uniform float tolerance = getAttrTolerance(map);
 
     Color result = op1;
 
@@ -328,14 +338,14 @@ sample(const uniform Map *uniform map,
             result.b = (float)(opOne.b >= opTwo.b);
             break;
         case EQUAL:
-            result.r = (float)(opOne.r == opTwo.r);
-            result.g = (float)(opOne.g == opTwo.g);
-            result.b = (float)(opOne.b == opTwo.b);
+            result.r = floatAlmostEquals(opOne.r, opTwo.r, tolerance);
+            result.g = floatAlmostEquals(opOne.g, opTwo.g, tolerance);
+            result.b = floatAlmostEquals(opOne.b, opTwo.b, tolerance);
             break;
         case NOT_EQUAL:
-            result.r = (float)(opOne.r != opTwo.r);
-            result.g = (float)(opOne.g != opTwo.g);
-            result.b = (float)(opOne.b != opTwo.b);
+            result.r = 1.0f - floatAlmostEquals(opOne.r, opTwo.r, tolerance);
+            result.g = 1.0f - floatAlmostEquals(opOne.g, opTwo.g, tolerance);
+            result.b = 1.0f - floatAlmostEquals(opOne.b, opTwo.b, tolerance);
             break;
         case AND:
             result.r = (float)(opOne.r && opTwo.r);
@@ -378,6 +388,16 @@ sample(const uniform Map *uniform map,
             result.r = (float)((int)opOne.r | (int)opTwo.r);
             result.g = (float)((int)opOne.g | (int)opTwo.g);
             result.b = (float)((int)opOne.b | (int)opTwo.b);
+            break;
+        case VECTOR_EQUAL:
+            Color distanceC = colorLength(opOne - opTwo);
+            float distance = distanceC.r;
+            result = Color_ctor(floatAlmostEquals(distance, 0.0f, tolerance));
+            break;
+        case VECTOR_NOT_EQUAL:
+            Color distanceC1 = colorLength(opOne - opTwo);
+            float distance1 = distanceC1.r;
+            result = Color_ctor(1.0f - floatAlmostEquals(distance1, 0.0f, tolerance));
             break;
         default:
             result = Color_ctor(0.0);
