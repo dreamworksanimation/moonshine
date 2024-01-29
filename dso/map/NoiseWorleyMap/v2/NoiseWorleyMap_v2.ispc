@@ -153,9 +153,8 @@ sample(const uniform Map * uniform map,
         pos = transformPoint(xform, pos);
     }
 
-    // Worley ultimately degrades into a series of table lookups,
-    // which defeats the function and operator overloading of autodiff.
-    // we'll need to use finite differences to compute the value
+    // Worley ultimately degrades into a series of table lookups.
+    // We'll need to use finite differences to compute the value
     // and derivatives of this function.
 
     // For each bindable input parameter, we evaluate the value.
