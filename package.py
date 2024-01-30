@@ -17,7 +17,7 @@ def version():
     """
     Increment the build in the version.
     """
-    _version = '12.11'
+    _version = '12.12'
     from rezbuild import earlybind
     return earlybind.version(this, _version)
 
@@ -70,9 +70,9 @@ sconsTargets = {
 }
 
 requires = [
-    'moonray-15.11',
+    'moonray-15.12',
     'openimageio-2.3.20.0.x',
-    'scene_rdl2-13.6',
+    'scene_rdl2-13.7',
 ]
 
 private_build_requires = [
