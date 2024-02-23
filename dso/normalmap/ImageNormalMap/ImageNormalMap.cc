@@ -13,6 +13,7 @@
 #include <memory>
 
 using namespace scene_rdl2::math;
+using namespace scene_rdl2;
 
 namespace {
 bool
@@ -101,10 +102,7 @@ ImageNormalMap::updateUdimTexture()
     }
     if (needsUpdate ||
         hasChanged(attrTexture) ||
-        hasChanged(attrWrapAround) ||
-        hasChanged(attrMaxVdim) ||
-        hasChanged(attrUDimValues) ||
-        hasChanged(attrUDimFiles)) {
+        hasChanged(attrWrapAround)) {
 
         std::string errorStr;
 
@@ -126,11 +124,10 @@ ImageNormalMap::updateUdimTexture()
                                   false,                        // use default color
                                   sBlack,                       // default color
                                   asCpp(mIspc.mFatalColor),
-                                  get(attrMaxVdim),
-                                  get(attrUDimValues),
-                                  get(attrUDimFiles),
                                   errorStr)) {
-            fatal(errorStr);
+            Logger::fatal(getSceneClass().getName(), "(\"", getName() , "\"): ", errorStr);
+            mUdimTexture = nullptr;
+            mIspc.mUdimTexture = nullptr;
             return;
         }
     }
@@ -170,7 +167,9 @@ ImageNormalMap::updateBasicTexture()
                               Color(defaultValue.x, defaultValue.y, defaultValue.z),
                               asCpp(mIspc.mFatalColor),
                               errorStr)) {
-            fatal(errorStr);
+            Logger::fatal(getSceneClass().getName(), "(\"", getName() , "\"): ", errorStr);
+            mTexture = nullptr;
+            mIspc.mTexture = nullptr;
             return;
         }
     }
@@ -181,9 +180,7 @@ ImageNormalMap::update()
 {
     const std::string filename = get(attrTexture);
     const std::size_t udimPos = filename.find("<UDIM>");
-    const IntVector udimValueList = get(attrUDimValues);
-    const bool isUdim = (udimPos != std::string::npos
-                         || (udimValueList.size() > 0));
+    const bool isUdim = udimPos != std::string::npos;
 
     if (isUdim) {
         // Udim update, if needed
@@ -210,6 +207,17 @@ ImageNormalMap::sampleNormal(const scene_rdl2::rdl2::NormalMap* self,
                              Vec3f* sample)
 {
     const ImageNormalMap* me = static_cast<const ImageNormalMap*>(self);
+
+    if (!me->mTexture && !me->mUdimTexture) {
+        if (me->get(attrUseDefaultValue)) {
+            *sample = me->get(attrDefaultValue);
+        } else {
+            *sample = Vec3f(me->mIspc.mFatalColor.r,
+                            me->mIspc.mFatalColor.g,
+                            me->mIspc.mFatalColor.b);
+        }
+        return;
+    }
 
     Vec2f st;
     float dsdx = state.getdSdx();

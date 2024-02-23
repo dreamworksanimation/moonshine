@@ -66,6 +66,16 @@ sampleNormal(const uniform NormalMap* uniform map,
 {
     const uniform ImageNormalMap* uniform me = MAP_GET_ISPC_PTR(ImageNormalMap, map);
 
+    if (!me->mTexture && !me->mUdimTexture) {
+        if (getAttrUseDefaultValue(map)) {
+            return getAttrDefaultValue(map);
+        } else {
+            return Vec3f_ctor(me->mFatalColor.r,
+                              me->mFatalColor.g,
+                              me->mFatalColor.b);
+        }
+    }
+
     Vec2f st;
     float dsdx, dtdx, dsdy, dtdy;
 

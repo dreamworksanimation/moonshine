@@ -96,25 +96,6 @@
             "default": "Vec2f(0.5f, 0.5f)",
             "comment": "The UV coordinate around which to rotate.  The order of operations is rotation, scale, and then offset.",
             "group": "UVs"
-        },
-        "attrUDimValues": {
-            "name": "udim_values",
-            "label": "udim values",
-            "type": "IntVector",
-            "comment": "Explicit list of udim values (i.e. {0, 1, 2, 3}).   These values are added to the udim start value of 1001.  The number of values must match the number of strings in the 'udim_files' attribute."
-        },
-        "attrUDimFiles": {
-            "name": "udim_files",
-            "label": "udim files",
-            "type": "StringVector",
-            "comment": "Explicit list of udim filenames (i.e. {'file.1001.tx', 'file.1002.tx' }).  The number of strings must match the number of values in the 'udim_values' attribute.  If this attribute is empty (default) and a 'UDIM' token is present in the filename, then 'UDIM' will be replaced with the udim number (i.e. 1001, 1002, etc.)"
-        },
-        "attrMaxVdim": {
-            "name": "udim_max_v",
-            "label": "udim max v",
-            "type": "Int",
-            "default": "10",
-            "comment": "Maximum v value for udim tiles.  Udim values are calculated as 1000+(u+1)+(v*10).  The v value for udim must be >= 0, and within 'udim_max_v'.  If you don't use default color, an error will be generated if the v value is out of range."
         }
     }
 }
