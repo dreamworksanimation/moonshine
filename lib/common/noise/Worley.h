@@ -12,6 +12,8 @@
 #include "Worley_ispc_stubs.h"
 #include <scene_rdl2/common/math/Color.h>
 
+#include <array>
+
 namespace moonshine {
 namespace noise {
 
