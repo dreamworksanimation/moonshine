@@ -1498,7 +1498,8 @@ public:
                 // but when blending toon materials it may be intentionally out of surface hemisphere
                 // in this case light culling will be off, so we use that for all surface diffuse
                 const scene_rdl2::math::Vec3f& shadingN = uParams.mPreventLightCulling ?
-                                                     scene_rdl2::math::asCpp(params.mToonDiffuseParams.mNormal) : N;
+                                                     scene_rdl2::math::asCpp(params.mToonDiffuseParams.mNormal) :
+                                                     scene_rdl2::math::asCpp(params.mDiffuseNormal);
 
                 // this param is blended only between toons so we need to weight it by what % of the layered material is toon
                 const float flatness = params.mToonDiffuseParams.mFlatness * params.mToonDiffuseParams.mToonDiffuse;
@@ -1520,7 +1521,7 @@ public:
                 const ispc::SubsurfaceType bssrdfType = static_cast<ispc::SubsurfaceType>(uParams.mSubsurface);
                 if (bssrdfType == ispc::SUBSURFACE_NORMALIZED_DIFFUSION) {
                     const moonray::shading::NormalizedDiffusion diffuseRefl(
-                            N,
+                            scene_rdl2::math::asCpp(params.mDiffuseNormal),
                             reflectionAlbedo,
                             scene_rdl2::math::asCpp(params.mScatteringRadius),
                             dwaBaseLayerable,
@@ -1534,7 +1535,7 @@ public:
 
                 } else if (bssrdfType == ispc::SUBSURFACE_DIPOLE_DIFFUSION) {
                     const moonray::shading::DipoleDiffusion diffuseRefl(
-                            N,
+                            scene_rdl2::math::asCpp(params.mDiffuseNormal),
                             reflectionAlbedo,
                             scene_rdl2::math::asCpp(params.mScatteringRadius),
                             dwaBaseLayerable,
@@ -1548,7 +1549,7 @@ public:
 
                 } else if (bssrdfType == ispc::SUBSURFACE_RANDOM_WALK) {
                     const moonray::shading::RandomWalkSubsurface rwSubsurface(
-                            N,
+                            scene_rdl2::math::asCpp(params.mDiffuseNormal),
                             reflectionAlbedo,
                             scene_rdl2::math::asCpp(params.mScatteringRadius),
                             params.mSSSResolveSelfIntersections,
@@ -1568,7 +1569,7 @@ public:
         // Diffuse Transmission lobe
         if (!scene_rdl2::math::isBlack(scene_rdl2::math::asCpp(params.mDiffuseTransmission))) {
             const moonray::shading::LambertianBTDF diffuseTrans(
-                    -N,
+                    -scene_rdl2::math::asCpp(params.mDiffuseNormal),
                     scene_rdl2::math::asCpp(params.mDiffuseTransmission));
 
             builder.addLambertianBTDF(diffuseTrans,
@@ -1810,6 +1811,7 @@ public:
 
         // other params
         scene_rdl2::math::asCpp(params.mNormal) = scene_rdl2::math::Vec3f(0.0f, 0.0f, 0.0f);
+        scene_rdl2::math::asCpp(params.mDiffuseNormal) = scene_rdl2::math::Vec3f(0.0f, 0.0f, 0.0f);
         params.mNormalDial = 1.0f;
         params.mNormalLength = 1.0f;
         params.mNormalAAStrategy = ispc::NormalAAStrategyType::NORMAL_AA_STRATEGY_NONE;

@@ -961,18 +961,33 @@ resolveNormalParams(const DwaBase* me,
                                                tls,
                                                state,
                                                &params.mNormalLength);
+            asCpp(params.mDiffuseNormal) = evalNormal(me,
+                                                      keys.mInputNormal,
+                                                      params.mNormalDial,
+                                                      tls,
+                                                      state,
+                                                      &params.mNormalLength,
+                                                      false); // don't call adaptNormal for diffuse
         } else {
             asCpp(params.mNormal) = evalNormal(me,
                                                keys.mInputNormal,
                                                params.mNormalDial,
                                                tls,
                                                state);
+            asCpp(params.mDiffuseNormal) = evalNormal(me,
+                                                      keys.mInputNormal,
+                                                      params.mNormalDial,
+                                                      tls,
+                                                      state,
+                                                      nullptr,
+                                                      false); // don't call adaptNormal for diffuse
         }
 
         const ispc::DwaBase* dwabase = reinterpret_cast<const ispc::DwaBase* >(getDwaBaseMaterialStruct(me));
         params.mEvalSubsurfaceNormalFn = dwabase->mAttrFuncs.mEvalSubsurfaceNormal;
     } else {
         asCpp(params.mNormal) = state.getN();
+        asCpp(params.mDiffuseNormal) = state.getN();
     }
 }
 
@@ -1066,7 +1081,9 @@ resolveToonDiffuseParams(const DwaBase* me,
                                                 keys.mInputNormal,
                                                 normalDial,
                                                 tls,
-                                                state);
+                                                state,
+                                                nullptr,
+                                                false); // don't use adaptNormal for diffuse
 
     if (toonDParams.mModel == ispc::TOON_DIFFUSE_RAMP) {
 

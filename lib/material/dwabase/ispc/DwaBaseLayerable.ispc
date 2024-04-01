@@ -1229,7 +1229,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
             // but when blending toon materials it may be intentionally out of surface hemisphere
             // in this case light culling will be off, so we use that for all surface diffuse
             const varying Vec3f shadingN = uParams->mPreventLightCulling ?
-                                           params->mToonDiffuseParams.mNormal : params->mNormal;
+                                           params->mToonDiffuseParams.mNormal : params->mDiffuseNormal;
 
             // this param is blended only between toons so we need to weight it by what % of the layered material is toon    
             const float flatness = params->mToonDiffuseParams.mFlatness * params->mToonDiffuseParams.mToonDiffuse;
@@ -1253,7 +1253,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
             if (bssrdfType == SUBSURFACE_NORMALIZED_DIFFUSION) {
                 NormalizedDiffusion diffuseRefl;
                 NormalizedDiffusion_init(diffuseRefl,
-                        N,
+                        params->mDiffuseNormal,
                         reflectionAlbedo,
                         params->mScatteringRadius,
                         me,
@@ -1268,7 +1268,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
             } else if (bssrdfType == SUBSURFACE_DIPOLE_DIFFUSION) {
                 DipoleDiffusion diffuseRefl;
                 DipoleDiffusion_init( diffuseRefl,
-                        N,
+                        params->mDiffuseNormal,
                         reflectionAlbedo,
                         params->mScatteringRadius,
                         me,
@@ -1283,7 +1283,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
             } else if (bssrdfType == SUBSURFACE_RANDOM_WALK) {
                 RandomWalkSubsurface rwSubsurface;
                 RandomWalkSubsurface_init(rwSubsurface,
-                        N,
+                        params->mDiffuseNormal,
                         reflectionAlbedo,
                         params->mScatteringRadius,
                         params->mSSSResolveSelfIntersections,
@@ -1305,7 +1305,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
 
         LambertianBTDF diffuseTrans;
         LambertianBTDF_init(diffuseTrans,
-                neg(N),
+                neg(params->mDiffuseNormal),
                 params->mDiffuseTransmission);
 
         BsdfBuilder_addLambertianBTDF(bsdfBuilder, diffuseTrans,
@@ -1545,6 +1545,7 @@ DWABASELAYERABLE_initParameters(varying DwaBaseParameters * uniform params)
 
     // other params
     params->mNormal = Vec3f_ctor(0.0f, 0.0f, 0.0f);
+    params->mDiffuseNormal = Vec3f_ctor(0.0f, 0.0f, 0.0f);
     params->mNormalDial = 1.0f;
     params->mNormalLength = 1.0f;
     params->mNormalAAStrategy = NORMAL_AA_STRATEGY_NONE;

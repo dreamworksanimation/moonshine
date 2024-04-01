@@ -174,7 +174,8 @@ sample(const uniform Map *uniform map,
                                    state,
                                    me->mNormalMap,
                                    sampleNormalFn,
-                                   normalDial);
+                                   normalDial,
+                                   false); // don't adapt normal
             N = nml;
         } else {
             N = getN(state);

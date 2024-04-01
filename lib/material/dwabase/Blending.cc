@@ -956,6 +956,9 @@ void blendCommonParams(const ispc::BlendColorSpace colorSpace,
                        ispc::DwaBaseParameters &params)
 {
 
+    asCpp(params.mDiffuseNormal) = safeNormalize(lerp(asCpp(params0.mDiffuseNormal),
+                                                      asCpp(params1.mDiffuseNormal),
+                                                      mask));
     asCpp(params.mNormal) = safeNormalize(lerp(asCpp(params0.mNormal),
                                                asCpp(params1.mNormal),
                                                mask));

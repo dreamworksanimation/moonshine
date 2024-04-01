@@ -198,7 +198,9 @@ DirectionalMap::sample(const Map* self, moonray::shading::TLState *tls,
         N = moonray::shading::evalNormal(me,
                                          attrInputNormal,
                                          evalFloat(self, attrInputNormalDial, tls, state),
-                                         tls, state);
+                                         tls, state,
+                                         nullptr, // lengthN unused
+                                         false); // don't adapt normal
     }
 
     float cosTheta = dot(N, prime);

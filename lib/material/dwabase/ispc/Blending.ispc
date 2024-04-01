@@ -937,6 +937,9 @@ void blendCommonParams(const uniform int colorSpace,
                        const varying DwaBaseParameters &params1,
                        varying DwaBaseParameters &params)
 {
+    params.mDiffuseNormal = normalize(lerp(params0.mDiffuseNormal,
+                                           params1.mDiffuseNormal,
+                                           mask));
     params.mNormal = normalize(lerp(params0.mNormal,
                                     params1.mNormal,
                                     mask));

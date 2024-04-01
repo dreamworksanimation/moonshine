@@ -282,6 +282,7 @@ struct DwaBaseParameters
 
     // other params
     Vec3f mNormal;
+    Vec3f mDiffuseNormal; // Evaluated without calling adaptNormal
     float mNormalLength;
     float mNormalDial;
     int mNormalAAStrategy;  // NormalAAStrategyType
