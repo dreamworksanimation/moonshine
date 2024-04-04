@@ -47,6 +47,7 @@ resolveNormalParams(const uniform DwaBase * uniform dwaBase,
             // For Toksvig we need the length of the normal before
             // it's normalized therefore we pass in the length by
             // reference.
+            Vec3f unadaptedN;
             params->mNormal = evalNormal(me,
                                          tls,
                                          state,
@@ -54,30 +55,18 @@ resolveNormalParams(const uniform DwaBase * uniform dwaBase,
                                          (SampleNormalPtr)dwaBase->mSampleNormalFunc,
                                          params->mNormalDial,
                                          &params->mNormalLength,
-                                         true); // adaptNormal
-            params->mDiffuseNormal = evalNormal(me,
-                                                tls,
-                                                state,
-                                                dwaBase->mNormalMap,
-                                                (SampleNormalPtr)dwaBase->mSampleNormalFunc,
-                                                params->mNormalDial,
-                                                &params->mNormalLength,
-                                                false); // don't call adaptNormal for diffuse
+                                         &unadaptedN);
+            params->mDiffuseNormal = unadaptedN;
         } else {
+            Vec3f unadaptedN;
             params->mNormal = evalNormal(me,
                                          tls,
                                          state,
                                          dwaBase->mNormalMap,
                                          (SampleNormalPtr)dwaBase->mSampleNormalFunc,
                                          params->mNormalDial,
-                                         true); // adaptNormal
-            params->mDiffuseNormal = evalNormal(me,
-                                                tls,
-                                                state,
-                                                dwaBase->mNormalMap,
-                                                (SampleNormalPtr)dwaBase->mSampleNormalFunc,
-                                                params->mNormalDial,
-                                                false); // don't call adaptNormal for diffuse
+                                         &unadaptedN);
+            params->mDiffuseNormal = unadaptedN;
         }
 
         params->mEvalSubsurfaceNormalFn = dwaBase->mAttrFuncs.mEvalSubsurfaceNormal;
@@ -311,12 +300,14 @@ resolveToonDiffuseParams(const uniform Material *uniform me,
 
     // Eval normal separately as a toon normal so adaptNormal
     // can be disabled for only diffuse lobes
-    toonDParams.mNormal = evalToonNormal(me, tls, state,
-                                         dwaBase->mNormalMap,
-                                         (SampleNormalPtr)dwaBase->mSampleNormalFunc,
-                                         params->mNormalDial,
-                                         nullptr,
-                                         false); // adaptNormal
+    Vec3f unadaptedN;
+    Vec3f nml = evalToonNormal(me, tls, state,
+                               dwaBase->mNormalMap,
+                               (SampleNormalPtr)dwaBase->mSampleNormalFunc,
+                               params->mNormalDial,
+                               nullptr,
+                               &unadaptedN);
+    toonDParams.mNormal = unadaptedN;
 
     if (toonDParams.mModel == TOON_DIFFUSE_RAMP) {
          // Get the ramp data points and validate them
@@ -378,7 +369,7 @@ resolveToonSpecParams(const uniform Material *uniform me,
                                          uniformData.mNormalMap,
                                          (SampleNormalPtr)uniformData.mSampleNormalFunc,
                                          normalDial,
-                                         true); // adaptNormal
+                                         NULL); // unadapted normal
     } else {
         params.mNormal = state.mN;
     }
@@ -665,7 +656,7 @@ resolveFuzzParams(const uniform DwaBase * uniform dwaBase,
                                              dwaBase->mFuzzNormalMap,
                                              (SampleNormalPtr)dwaBase->mFuzzSampleNormalFunc,
                                              params->mFuzzNormalDial,
-                                             true); // adaptNormal
+                                             NULL); // unadapted normal
         } else {
             params->mFuzzNormal = state.mN;
         }
@@ -698,7 +689,8 @@ resolveOuterSpecularParams(const uniform DwaBase * uniform dwaBase,
                                                           dwaBase->mOuterSpecularNormalMap,
                                                           (SampleNormalPtr)dwaBase->mOuterSpecularSampleNormalFunc,
                                                           params->mOuterSpecularNormalDial,
-                                                          &params->mOuterSpecularNormalLength);
+                                                          &params->mOuterSpecularNormalLength,
+                                                          NULL); // unadapted normal
             }
         }
 

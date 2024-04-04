@@ -169,14 +169,13 @@ sample(const uniform Map *uniform map,
         SampleNormalPtr sampleNormalFn = (SampleNormalPtr) me->mSampleNormalFunc;
         if (sampleNormalFn != NULL) {
             const uniform float normalDial = getAttrInputNormalDial(map);
-            Vec3f nml = evalNormal(map,
-                                   tls,
-                                   state,
-                                   me->mNormalMap,
-                                   sampleNormalFn,
-                                   normalDial,
-                                   false); // don't adapt normal
-            N = nml;
+            evalNormal(map,
+                       tls,
+                       state,
+                       me->mNormalMap,
+                       sampleNormalFn,
+                       normalDial,
+                       &N); // undapted normal
         } else {
             N = getN(state);
         }

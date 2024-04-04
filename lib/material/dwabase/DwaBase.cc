@@ -955,32 +955,25 @@ resolveNormalParams(const DwaBase* me,
             // For Toksvig we need the length of the normal before
             // it's normalized therefore we pass in the length by
             // reference.
+            scene_rdl2::math::Vec3f unadaptedN;
             asCpp(params.mNormal) = evalNormal(me,
                                                keys.mInputNormal,
                                                params.mNormalDial,
                                                tls,
                                                state,
-                                               &params.mNormalLength);
-            asCpp(params.mDiffuseNormal) = evalNormal(me,
-                                                      keys.mInputNormal,
-                                                      params.mNormalDial,
-                                                      tls,
-                                                      state,
-                                                      &params.mNormalLength,
-                                                      false); // don't call adaptNormal for diffuse
+                                               &params.mNormalLength,
+                                               &unadaptedN);
+            asCpp(params.mDiffuseNormal) = unadaptedN;
         } else {
+            scene_rdl2::math::Vec3f unadaptedN;
             asCpp(params.mNormal) = evalNormal(me,
                                                keys.mInputNormal,
                                                params.mNormalDial,
                                                tls,
-                                               state);
-            asCpp(params.mDiffuseNormal) = evalNormal(me,
-                                                      keys.mInputNormal,
-                                                      params.mNormalDial,
-                                                      tls,
-                                                      state,
-                                                      nullptr,
-                                                      false); // don't call adaptNormal for diffuse
+                                               state,
+                                               nullptr,
+                                               &unadaptedN);
+            asCpp(params.mDiffuseNormal) = unadaptedN;
         }
 
         const ispc::DwaBase* dwabase = reinterpret_cast<const ispc::DwaBase* >(getDwaBaseMaterialStruct(me));
@@ -1077,13 +1070,15 @@ resolveToonDiffuseParams(const DwaBase* me,
     // Eval normal separately as a toon normal so adaptNormal
     // can be disabled for only diffuse lobes
     const float normalDial = evalFloat(me, keys.mInputNormalDial, tls, state);
-    asCpp(toonDParams.mNormal) = evalToonNormal(me,
-                                                keys.mInputNormal,
-                                                normalDial,
-                                                tls,
-                                                state,
-                                                nullptr,
-                                                false); // don't use adaptNormal for diffuse
+    scene_rdl2::math::Vec3f unadaptedN;
+    evalToonNormal(me,
+                   keys.mInputNormal,
+                   normalDial,
+                   tls,
+                   state,
+                   nullptr,
+                   &unadaptedN);
+    asCpp(toonDParams.mNormal) = unadaptedN;
 
     if (toonDParams.mModel == ispc::TOON_DIFFUSE_RAMP) {
 
