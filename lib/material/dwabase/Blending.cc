@@ -1468,7 +1468,8 @@ void blendUniformParameters(const ispc::DwaBaseUniformParameters &uParams0,
                             int fallbackOuterSpecularModel,
                             bool fallbackOuterSpecularUseBending,
                             int fallbackBSSRDF,
-                            bool fallbackThinGeometry)
+                            bool fallbackThinGeometry,
+                            bool fallbackPreventLightCulling)
 {
     if (uParams0.mSpecularModel != uParams1.mSpecularModel) {
         uParams.mSpecularModel = fallbackSpecularModel;
@@ -1503,8 +1504,7 @@ void blendUniformParameters(const ispc::DwaBaseUniformParameters &uParams0,
         uParams.mThinGeometry = fallbackThinGeometry;
     }
     if (uParams0.mPreventLightCulling != uParams1.mPreventLightCulling) {
-        // Don't allow fallback. If there is any disagreement, force to false.
-        uParams.mPreventLightCulling = false;
+        uParams.mPreventLightCulling = fallbackPreventLightCulling;
     }
 }
 

@@ -174,7 +174,8 @@ DwaLayerMaterial::resolveUniformParameters(ispc::DwaBaseUniformParameters &uPara
                                get(attrFallbackOuterSpecularModel),
                                get(attrFallbackOuterSpecularUseBending),
                                get(attrFallbackBSSRDF),
-                               get(attrFallbackThinGeometry));
+                               get(attrFallbackThinGeometry),
+                               get(attrFallbackPreventLightCulling));
     } else if (!mLayerableA && mLayerableB) {
         mLayerableB->resolveUniformParameters(uParams);
     }

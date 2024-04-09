@@ -70,6 +70,14 @@
             "comment": "If child materials disagree on the type of thin geometry, this type will be used instead.",
             "group": "Advanced"
         },
+        "attrFallbackPreventLightCulling": {
+            "name": "fallback_prevent_light_culling",
+            "label": "fallback prevent light culling",
+            "type": "Bool",
+            "default": "false",
+            "comment": "If child materials disagree on prevent light culling, this will be used instead.",
+            "group": "Advanced"
+        },
         "attrColorSpace": {
             "name": "blend_color_space",
             "label": "blend color space",

@@ -86,6 +86,14 @@
             "comment": "If child materials disagree on the type of clearcoat use bending, this type will be used instead.",
             "group": "Advanced"
         },
+        "attrFallbackPreventLightCulling": {
+            "name": "fallback_prevent_light_culling",
+            "label": "fallback prevent light culling",
+            "type": "Bool",
+            "default": "false",
+            "comment": "If child materials disagree on prevent light culling, this will be used instead.",
+            "group": "Advanced"
+        },
         "attrSubsurfaceTraceSet" : {
             "name": "sss_trace_set",
             "label": "sss trace set",

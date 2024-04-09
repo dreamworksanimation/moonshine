@@ -43,7 +43,8 @@ void blendUniformParameters(const ispc::DwaBaseUniformParameters &uParams0,
                             int fallbackOuterSpecularModel,
                             bool fallbackOuterSpecularUseBending,
                             int fallbackBSSRDF,
-                            bool fallbackThinGeometry);
+                            bool fallbackThinGeometry,
+                            bool fallbackPreventLightCulling);
 
 //---------------------------------------------------------------------------
 // Functions used in shade()

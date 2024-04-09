@@ -165,7 +165,8 @@ HairLayerMaterial::resolveUniformParameters(ispc::DwaBaseUniformParameters &uPar
                            1,                       // fallback outer specular model
                            false,                   // fallback outer specular use bending
                            get(attrFallbackBSSRDF), // only attr relevant to hair
-                           false);                  // fallback thin geometry
+                           false,                   // fallback thin geometry
+                           false);                  // prevent light culling
 }
 
 void

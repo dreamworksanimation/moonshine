@@ -151,7 +151,9 @@ DwaTwoSidedMaterial::resolveUniformParameters(ispc::DwaBaseUniformParameters &uP
                            get(attrFallbackOuterSpecularModel),
                            get(attrFallbackOuterSpecularUseBending),
                            get(attrFallbackBSSRDF),
-                           true);    // attrFallbackThinGeometry
+                           true,    // attrFallbackThinGeometry
+                           get(attrFallbackPreventLightCulling));
+
 
     // this geometry must be 'thin', why else use DwaTwoSidedMaterial ?
     uParams.mThinGeometry = true;

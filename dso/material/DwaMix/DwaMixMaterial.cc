@@ -206,7 +206,8 @@ DwaMixMaterial::resolveUniformParameters(ispc::DwaBaseUniformParameters &uParams
                                        get(attrFallbackOuterSpecularModel),
                                        get(attrFallbackOuterSpecularUseBending),
                                        get(attrFallbackBSSRDF),
-                                       get(attrFallbackThinGeometry));
+                                       get(attrFallbackThinGeometry),
+                                       get(attrFallbackPreventLightCulling));
             } else {
                 uParams = uParamsCurr;
             }
