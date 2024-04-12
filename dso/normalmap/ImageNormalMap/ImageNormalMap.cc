@@ -125,9 +125,7 @@ ImageNormalMap::updateUdimTexture()
                                   sBlack,                       // default color
                                   asCpp(mIspc.mFatalColor),
                                   errorStr)) {
-            Logger::fatal(getSceneClass().getName(), "(\"", getName() , "\"): ", errorStr);
-            mUdimTexture = nullptr;
-            mIspc.mUdimTexture = nullptr;
+            fatal(errorStr);
             return;
         }
     }
@@ -167,9 +165,7 @@ ImageNormalMap::updateBasicTexture()
                               Color(defaultValue.x, defaultValue.y, defaultValue.z),
                               asCpp(mIspc.mFatalColor),
                               errorStr)) {
-            Logger::fatal(getSceneClass().getName(), "(\"", getName() , "\"): ", errorStr);
-            mTexture = nullptr;
-            mIspc.mTexture = nullptr;
+            fatal(errorStr);
             return;
         }
     }
@@ -207,17 +203,6 @@ ImageNormalMap::sampleNormal(const scene_rdl2::rdl2::NormalMap* self,
                              Vec3f* sample)
 {
     const ImageNormalMap* me = static_cast<const ImageNormalMap*>(self);
-
-    if (!me->mTexture && !me->mUdimTexture) {
-        if (me->get(attrUseDefaultValue)) {
-            *sample = me->get(attrDefaultValue);
-        } else {
-            *sample = Vec3f(me->mIspc.mFatalColor.r,
-                            me->mIspc.mFatalColor.g,
-                            me->mIspc.mFatalColor.b);
-        }
-        return;
-    }
 
     Vec2f st;
     float dsdx = state.getdSdx();
