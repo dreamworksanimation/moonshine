@@ -3,14 +3,20 @@
 
 cmake_minimum_required (VERSION 3.23.1)
 
-include(packageVersion)  # Sets versionString, projectString and PACKAGE_NAME
+include(OMR_PackageVersion)  # Sets versionString, projectString and PACKAGE_NAME
+set(languages LANGUAGES CXX)
+if(NOT CMAKE_XCODE_BUILD_SYSTEM)
+    list(APPEND languages ISPC)
+endif()
 project(${projectString}
     VERSION ${versionString}
-    LANGUAGES CXX ISPC)
+    ${languages})
 
 string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
 list(APPEND CMAKE_MESSAGE_CONTEXT ${PROJECT_NAME})
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+include(OMR_Platform)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CTest)
@@ -56,12 +62,13 @@ endif()
 # ================================================
 # Set the RPATH for binaries in the install tree
 # ================================================
-if (NOT "" STREQUAL "$ENV{REZ_ICC_ROOT}")
-    set(COMPILER_LIBRARY_DIR "$ENV{REZ_ICC_ROOT}/lib")
+set(CMAKE_INSTALL_RPATH ${GLOBAL_INSTALL_RPATH})
+if(NOT IsDarwinPlatform)
+    if (NOT "" STREQUAL "$ENV{REZ_ICC_ROOT}")
+        set(COMPILER_LIBRARY_DIR "$ENV{REZ_ICC_ROOT}/lib")
+    endif()
+    set(CMAKE_BUILD_RPATH ${COMPILER_LIBRARY_DIR})
 endif()
-
-set(CMAKE_BUILD_RPATH ${COMPILER_LIBRARY_DIR})
-set(CMAKE_INSTALL_RPATH $ORIGIN $ORIGIN/../lib64 ${COMPILER_LIBRARY_DIR})
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # ===============================================

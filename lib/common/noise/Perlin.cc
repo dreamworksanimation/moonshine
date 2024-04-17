@@ -105,9 +105,9 @@ Perlin::glattice3D(const int ix,
 float
 Perlin::perlin3D(const Vec3f &pos) const
 {
-    const int ix = (int) floor(pos.x);
-    const int iy = (int) floor(pos.y);
-    const int iz = (int) floor(pos.z);
+    const int ix = (int) scene_rdl2::math::floor(pos.x);
+    const int iy = (int) scene_rdl2::math::floor(pos.y);
+    const int iz = (int) scene_rdl2::math::floor(pos.z);
 
     const float fx0 = pos.x - (float) ix;
     const float fy0 = pos.y - (float) iy;
@@ -172,10 +172,10 @@ Perlin::glattice4D(const int ix,
 float
 Perlin::perlin4D(const Vec4f &pos) const
 {
-    const int ix = (int) floor(pos.x);
-    const int iy = (int) floor(pos.y);
-    const int iz = (int) floor(pos.z);
-    const int iw = (int) floor(pos.w);
+    const int ix = (int) scene_rdl2::math::floor(pos.x);
+    const int iy = (int) scene_rdl2::math::floor(pos.y);
+    const int iz = (int) scene_rdl2::math::floor(pos.z);
+    const int iw = (int) scene_rdl2::math::floor(pos.w);
 
     const float fx0 = pos.x - (float) ix;
     const float fy0 = pos.y - (float) iy;
@@ -249,7 +249,7 @@ Perlin::perlinFractal3D(const Vec3f &pos,
     float scale = 1.f;
     float noise = 0.f;
 
-    const int numLevels = ceil(maxLevel);
+    const int numLevels = scene_rdl2::math::ceil(maxLevel);
     for (int i = 0; i < numLevels; ++i) {
         if (i + 1 == numLevels) {
             scale *= 1.f - ((float) numLevels - maxLevel);
@@ -271,7 +271,7 @@ Perlin::perlinFractal4D(const Vec4f &pos,
     float scale = 1.f;
     float noise = 0.f;
 
-    const int numLevels = ceil(maxLevel);
+    const int numLevels = scene_rdl2::math::ceil(maxLevel);
     for (int i = 0; i < numLevels; ++i) {
         if (i + 1 == numLevels) {
             scale *= 1.f - ((float) numLevels - maxLevel);

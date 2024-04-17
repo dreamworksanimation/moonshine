@@ -253,9 +253,9 @@ OpMap::sample(const scene_rdl2::rdl2::Map* self, moonray::shading::TLState *tls,
         case ispc::OpMapType::POWER:
             {
                 Color base = max(opOne, Color(sEpsilon));
-                result[0] = pow(base[0], opTwo[0]);
-                result[1] = pow(base[1], opTwo[1]);
-                result[2] = pow(base[2], opTwo[2]);
+                result[0] = scene_rdl2::math::pow(base[0], opTwo[0]);
+                result[1] = scene_rdl2::math::pow(base[1], opTwo[1]);
+                result[2] = scene_rdl2::math::pow(base[2], opTwo[2]);
                 break;
             }
         case ispc::OpMapType::CROSS:

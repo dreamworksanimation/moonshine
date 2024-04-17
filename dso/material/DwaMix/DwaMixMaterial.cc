@@ -57,13 +57,14 @@ interpolateMix(float mix, ispc::MixInterpolation mode, int inputMultiplier) {
     case ispc::DWA_MIX_LINEAR:
         break;
     case ispc::DWA_MIX_HOLD:
-        mix = floor(mix);
+        mix = scene_rdl2::math::floor(mix);
         break;
     case ispc::DWA_MIX_NEAREST:
-        mix = floor(mix + 0.5f);
+        mix = scene_rdl2::math::floor(mix + 0.5f);
         break;
     case ispc::DWA_MIX_SMOOTH:
-        mix = (sin((mix + 0.5f) * sTwoPi) + (mix + 0.5f) * sTwoPi) * sOneOverTwoPi - 0.5f;
+        mix = (scene_rdl2::math::sin((mix + 0.5f) * sTwoPi) +
+                                     (mix + 0.5f) * sTwoPi) * sOneOverTwoPi - 0.5f;
         break;
     default:
         break;

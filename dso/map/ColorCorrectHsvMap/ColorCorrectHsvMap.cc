@@ -87,7 +87,7 @@ ColorCorrectHsvMap::sample(const scene_rdl2::rdl2::Map *self, moonray::shading::
 
     const float hueShift = evalFloat(me, attrHueShift, tls, state);
     if (!isZero(hueShift)) {
-        h = fmod(h + hueShift / 360.f, 1.f);
+        h = scene_rdl2::math::fmod(h + hueShift / 360.f, 1.f);
     }
 
     const float saturationFactor = evalFloat(me, attrSaturationFactor, tls, state);

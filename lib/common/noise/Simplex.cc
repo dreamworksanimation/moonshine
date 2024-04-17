@@ -88,9 +88,9 @@ Simplex::simplex3D(const Vec3f &pos,
 
     // Skew the input space to determine which simplex cell we're in
     float s = (pos.x + pos.y + pos.z) * sF3;
-    int i0 = (int)floor(pos.x + s);
-    int j0 = (int)floor(pos.y + s);
-    int k0 = (int)floor(pos.z + s);
+    int i0 = (int)scene_rdl2::math::floor(pos.x + s);
+    int j0 = (int)scene_rdl2::math::floor(pos.y + s);
+    int k0 = (int)scene_rdl2::math::floor(pos.z + s);
 
     // Unskew the cell origin back to (x,y,z) space
     float t = (float)(i0 + j0 + k0) * sG3; 
@@ -208,7 +208,7 @@ Simplex::simplexFractal3D(const Vec3f &pos,
     float weight = 1.f;
     float noise = 0.f;
 
-    const int numLevels = ceil(maxLevel);
+    const int numLevels = scene_rdl2::math::ceil(maxLevel);
     for (int i = 0; i < numLevels; ++i) {
 
         if (i + 1 == numLevels) {
@@ -276,10 +276,10 @@ Simplex::simplex4D(const Vec4f &pos,
 
     // Skew the input space to determine which simplex cell we're in
     float s = (pos.x + pos.y + pos.z + pos.w) * sF4;
-    int i0 = (int)floor(pos.x + s);
-    int j0 = (int)floor(pos.y + s);
-    int k0 = (int)floor(pos.z + s);
-    int l0 = (int)floor(pos.w + s);
+    int i0 = (int)scene_rdl2::math::floor(pos.x + s);
+    int j0 = (int)scene_rdl2::math::floor(pos.y + s);
+    int k0 = (int)scene_rdl2::math::floor(pos.z + s);
+    int l0 = (int)scene_rdl2::math::floor(pos.w + s);
 
     // Unskew the cell origin back to (x,y,z) space
     float t = (float)(i0 + j0 + k0 + l0) * sG4; 
@@ -412,7 +412,7 @@ Simplex::simplexFractal4D(const Vec4f &pos,
     float weight = 1.f;
     float noise = 0.f;
 
-    const int numLevels = ceil(maxLevel);
+    const int numLevels = scene_rdl2::math::ceil(maxLevel);
     for (int i = 0; i < numLevels; ++i) {
 
         if (i + 1 == numLevels) {

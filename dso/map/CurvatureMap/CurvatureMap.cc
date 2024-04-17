@@ -103,8 +103,8 @@ computeCurvatures(float power, float scale,
     concaveC = clamp(concaveC, 0.0f, 1.0f);
 
     if (power != 1) {
-        convexC = pow(convexC, power);
-        concaveC = pow(concaveC, power);
+        convexC = scene_rdl2::math::pow(convexC, power);
+        concaveC = scene_rdl2::math::pow(concaveC, power);
     }
 }
 } // namespace

@@ -24,9 +24,9 @@ isOutside(const Vec2f& uv) {
 void rotateTexCoords(float theta, const Vec2f& rotationCenter,
                      Vec2f& st, float& dsdx, float& dsdy, float& dtdx, float& dtdy)
 {
-    const Mat3f R(cos(theta), -sin(theta),     0,
-                  sin(theta),  cos(theta),     0,
-                  0,           0,     1);
+    const Mat3f R(scene_rdl2::math::cos(theta), -scene_rdl2::math::sin(theta), 0,
+                  scene_rdl2::math::sin(theta),  scene_rdl2::math::cos(theta), 0,
+                  0,                             0,                            1);
     Vec3f st3(st.x, st.y, 0.f);
     const Vec3f rotationCenter3(rotationCenter.x, rotationCenter.y, 0.f);
     // Translate rotation center to origin.

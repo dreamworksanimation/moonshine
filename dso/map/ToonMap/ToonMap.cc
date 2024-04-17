@@ -153,7 +153,9 @@ ToonMap::sample(const scene_rdl2::rdl2::Map* self,
         const Color outlineColor = evalColor(me, attrOutlineColor, tls, state);
         const Color creaseColor = evalColor(me, attrCreaseColor, tls, state);
         const float outlineThreshold = evalFloat(me, attrOutlineThreshold, tls, state);
-        const float creaseThreshold = cos(evalFloat(me, attrCreaseThreshold, tls, state) * sPi / 180.f);
+        const float creaseThreshold = scene_rdl2::math::cos(
+                                        evalFloat(me, attrCreaseThreshold, tls, state)
+                                        * sPi / 180.f);
         const float outlineScale = evalFloat(me, attrOutlineScale, tls, state);
         const float creaseScale = evalFloat(me, attrCreaseScale, tls, state);
         Vec3f normals[8];

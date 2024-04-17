@@ -35,7 +35,7 @@ void
 initializeNormalMap(const dwabase::DwaBase* dwaBase,
                     const scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::SceneObject *>& normalAttr,
                     const ispc::NormalMap** ispcNormalMapPtr,
-                    intptr_t& ispcSampleNormalFunc)
+                    int64_t& ispcSampleNormalFunc)
 {
     *ispcNormalMapPtr = nullptr;
     ispcSampleNormalFunc = 0;

@@ -351,7 +351,7 @@ Worley::initPointProbabilities()
     for (m = ispc::NOISE_WORLEY_MIN_PROB_POINTS; m <= ispc::NOISE_WORLEY_MAX_PROB_POINTS; m++) {
         // probability of m feature points in the cube 
         prob = 1.0f / (pow(static_cast<float>(ispc::NOISE_WORLEY_LAMBDA), -m) * 
-            exp(static_cast<float>(ispc::NOISE_WORLEY_LAMBDA)) * worleyFactorial(m));
+            scene_rdl2::math::exp(static_cast<float>(ispc::NOISE_WORLEY_LAMBDA)) * worleyFactorial(m));
 
         if (m == ispc::NOISE_WORLEY_MIN_PROB_POINTS) {
             mIspcWorley.mPointProbLow[m] = 0.0f;
@@ -640,9 +640,9 @@ Worley::worley3D(const float searchRadius,
 {
     const Vec3f pos = asCpp(noiseSample.position);
 
-    const int ix = (int)floor(pos.x);
-    const int iy = (int)floor(pos.y);
-    const int iz = (int)floor(pos.z);
+    const int ix = (int)scene_rdl2::math::floor(pos.x);
+    const int iy = (int)scene_rdl2::math::floor(pos.y);
+    const int iz = (int)scene_rdl2::math::floor(pos.z);
 
     const float fx = pos.x - ix;
     const float fy = pos.y - iy;
@@ -661,9 +661,9 @@ Worley::worley3D(const float searchRadius,
     auto tmpCurItr = worleyPoints.begin();
     const auto tmpEndItr = worleyPoints.end();
 
-    const int centerX = static_cast<int>(floor(pos.x));
-    const int centerY = static_cast<int>(floor(pos.y));
-    const int centerZ = static_cast<int>(floor(pos.z));
+    const int centerX = static_cast<int>(scene_rdl2::math::floor(pos.x));
+    const int centerY = static_cast<int>(scene_rdl2::math::floor(pos.y));
+    const int centerZ = static_cast<int>(scene_rdl2::math::floor(pos.z));
 
     checkCell(centerX, centerY, centerZ, noiseSample, worleyPoints,
               tmpCurItr, tmpEndItr, jitter);
@@ -770,12 +770,12 @@ Worley::searchPoints(const Flake_StyleArray* styleRadii,
     // For multiple glitter styles we choose the size probabilistically later,
     // we need to use a single consistent size here.
     const float radius = scene_rdl2::math::max((*styleRadii)[0], (*styleRadii)[1]) + noiseSample.searchRadius;
-    const int ixMin = (int)floor(pos.x-radius);
-    const int iyMin = (int)floor(pos.y-radius);
-    const int izMin = (int)floor(pos.z-radius);
-    const int ixMax = (int)floor(pos.x+radius);
-    const int iyMax = (int)floor(pos.y+radius);
-    const int izMax = (int)floor(pos.z+radius);
+    const int ixMin = (int)scene_rdl2::math::floor(pos.x-radius);
+    const int iyMin = (int)scene_rdl2::math::floor(pos.y-radius);
+    const int izMin = (int)scene_rdl2::math::floor(pos.z-radius);
+    const int ixMax = (int)scene_rdl2::math::floor(pos.x+radius);
+    const int iyMax = (int)scene_rdl2::math::floor(pos.y+radius);
+    const int izMax = (int)scene_rdl2::math::floor(pos.z+radius);
 
     Worley_PointArray tmpWorleyPoints;
     auto tmpCurItr = tmpWorleyPoints.begin();
@@ -801,10 +801,10 @@ Worley::searchPoints(const Flake_StyleArray* styleRadii,
         // Level k == 2 refers to the 98 cubes (5x5x5 = 125 - 27 = 98)
         // surrounding level 1.  
         int k = 0;
-        const int centerX = (int) floor(pos.x);
-        const int centerY = (int) floor(pos.y);
-        const int centerZ = (int) floor(pos.z);
-        const int maxRadius = (maxRadiusLimit == -1) ? ((int)floor(radius)) + 1 : maxRadiusLimit;
+        const int centerX = (int) scene_rdl2::math::floor(pos.x);
+        const int centerY = (int) scene_rdl2::math::floor(pos.y);
+        const int centerZ = (int) scene_rdl2::math::floor(pos.z);
+        const int maxRadius = (maxRadiusLimit == -1) ? ((int)scene_rdl2::math::floor(radius)) + 1 : maxRadiusLimit;
 
         checkCell(centerX, centerY, centerZ, noiseSample,
                   tmpWorleyPoints, tmpCurItr, tmpEndItr, jitter,
@@ -896,7 +896,7 @@ Worley::searchPointsFractal(const float jitter,
     }
 
     // Iterate the levels/octaves
-    const int numLevels = (int)floor(maxLevel);
+    const int numLevels = (int)scene_rdl2::math::floor(maxLevel);
     float amplitude = 1.0f;
     for (int level = 0; level < numLevels; level++) {
 

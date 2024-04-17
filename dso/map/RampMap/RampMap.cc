@@ -47,10 +47,10 @@ void
 applyWave(const Vec2f& uvWave, Vec2f& uv)
 {
     if (uvWave.x > 0.0f) {
-        uv.x += sin(2.0f * sPi * uv.y) * uvWave.x;
+        uv.x += scene_rdl2::math::sin(2.0f * sPi * uv.y) * uvWave.x;
     }
     if (uvWave.y > 0.0f) {
-        uv.y += sin(2.0f * sPi * uv.x) * uvWave.y;
+        uv.y += scene_rdl2::math::sin(2.0f * sPi * uv.x) * uvWave.y;
     }
 }
 
@@ -60,10 +60,10 @@ applyWrap(const int wrap, Vec2f& uv)
 {
     if (wrap == ispc::WRAP) {
         if (uv.x > 1.0f || uv.x < 0.0f) {
-            uv.x -= floor(uv.x);
+            uv.x -= scene_rdl2::math::floor(uv.x);
         }
         if (uv.y > 1.0f || uv.y < 0.0f) {
-            uv.y -= floor(uv.y);
+            uv.y -= scene_rdl2::math::floor(uv.y);
         }
     } else { // Clamp
         uv.x = saturate(uv.x);
