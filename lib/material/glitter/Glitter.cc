@@ -676,7 +676,7 @@ Glitter::createMacroFlakes(moonray::shading::BsdfBuilder &bsdfBuilder,
         return accumMacroFlakesColor;
     }
 
-    const float oneOverMacroFlakeVisibility = scene_rdl2::math::rcp(macroFlakeVisibility);
+    const float oneOverMacroFlakeVisibility = 1.0f / macroFlakeVisibility;
 
     // more than one flake contributes to the shading point's result
     singleMacroFlake = false;
@@ -768,7 +768,7 @@ Glitter::createMicroFlake(const ispc::GLITTER_VaryingParameters& params,
                                             label);
     }
 
-    return avgColor * scene_rdl2::math::rcp((float)microFlakeCount);
+    return avgColor * (1.0f / static_cast<const float>(microFlakeCount));
 }
 
 // The debug mode helps visualize the contributions from each of the
@@ -932,7 +932,7 @@ Glitter::createDebugColorLobes(moonray::shading::TLState *tls,
     }
 
     // Macro flakes
-    const float oneOverMacroFlakeVisibility = scene_rdl2::math::rcp(macroFlakeVis);
+    const float oneOverMacroFlakeVisibility = 1.0f / macroFlakeVis;
     for (unsigned int i = 0; i < macroFlakeCount; ++i) {
         currFlakeColor = computeFlakeColor(flakes[i].id, baseColor[i], colorVariation);
         float scale = flakes[i].weight;
@@ -966,7 +966,7 @@ Glitter::createDebugColorLobes(moonray::shading::TLState *tls,
 
     if (macroFlakeVis >= MACROFLAKES_MAX_THRESHOLD && microFlakeCount > 0) {
         // Macro flakes > 90%
-        macroFlakesAvgColor /= static_cast<float>(macroFlakeCount);
+        macroFlakesAvgColor *= 1.0f / static_cast<float>(macroFlakeCount);
         if (macroFlakeVis < MACROFLAKES_FULL_THRESHOLD && !isBlack(macroFlakesAvgColor)) {
             // Macro flakes < 99%
             float oneMinusMacroFlakesVis = 1.0f - macroFlakeVis;
@@ -985,7 +985,7 @@ Glitter::createDebugColorLobes(moonray::shading::TLState *tls,
                 microFlakesAvgColor += computeFlakeColor(
                     flakes[flakeIndex].id, baseColor[limitedFlakeIndex], colorVariation);
             }
-            microFlakesAvgColor /= static_cast<float>(microFlakeCount);
+            microFlakesAvgColor *= 1.0f / static_cast<float>(microFlakeCount);
             emissionColor += microFlakesAvgColor * microFlakeVis * coverageFactor;
         }
 
@@ -1260,7 +1260,7 @@ Glitter::createLobes(moonray::shading::TLState* tls,
     // for remaining visibility (1.0 is full coverage) instead of a microflake lobe which is more expensive
     if (macroFlakesVis >= MACROFLAKES_MAX_THRESHOLD) {
         if (microFlakeCount > 0) {
-            macroFlakesAvgColor /= static_cast<float>(macroFlakeCount);
+            macroFlakesAvgColor *= 1.0f / static_cast<float>(macroFlakeCount);
             // If we're above 90%, we don't do microflakes - so the below lobe is a compensation term
             // However, we don't add any more lobes if macro flakes visibility is > mMacroFlakesFullThresh (99% default)
             if (macroFlakesVis < MACROFLAKES_FULL_THRESHOLD && !scene_rdl2::math::isBlack(macroFlakesAvgColor)) {

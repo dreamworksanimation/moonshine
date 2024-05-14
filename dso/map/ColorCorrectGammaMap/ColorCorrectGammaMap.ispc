@@ -32,9 +32,7 @@ sample(const uniform Map* uniform map,
     }
 
     varying Color epsilonColor = Color_ctor(sEpsilon);
-    // invGam = 1.0f / max(epsilon, gam)
-    varying Color invGamma = max(epsilonColor, gamma);
-    invGamma = rcp(invGamma);
+    varying Color invGamma = 1.0f / max(epsilonColor, gamma);
     applyGamma(invGamma.r, invGamma.g, invGamma.b,
                sample.r, sample.g, sample.b);
 

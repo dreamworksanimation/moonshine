@@ -37,7 +37,7 @@ sample(const uniform Map* uniform map,
         varying float t = 0.0f;
 
         if (divisor > 0.0f)
-            t = (blendAmount - thresholdMin) * rcp(divisor);
+            t = (blendAmount - thresholdMin) / divisor;
 
         if (blendType == CUBIC) {
             t = t * t * (3 - 2 * t);

@@ -123,7 +123,7 @@ ProjectCameraMap_v2::update()
         // build window
         std::array<float, 4> window;
         if (aspectRatio >= 1.0f) {
-            aspectRatio = rcp(aspectRatio);
+            aspectRatio = 1.0f / aspectRatio;
             window = { -1.0f, aspectRatio, 1.0f, -aspectRatio};
         } else {
             window = { -aspectRatio, 1.0f, aspectRatio, -1.0f};

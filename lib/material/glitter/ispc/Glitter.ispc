@@ -616,7 +616,7 @@ createMacroFlakes(const uniform GLITTER_Glitter * uniform me,
         return accumMacroFlakesColor;
     }
 
-    const float oneOverMacroFlakeVisibility = rcp(macroFlakeVisibility);
+    const float oneOverMacroFlakeVisibility = 1.0f / macroFlakeVisibility;
 
     // more than one flake contributes to the shading point's result
     singleMacroFlake = false;
@@ -730,7 +730,7 @@ createMicroFlake(const uniform GLITTER_Glitter * uniform me,
                                             label);
     }
 
-    return avgColor * rcp((float)(microFlakeCount));
+    return avgColor * (1.0f / (const varying float)microFlakeCount);
 }
 
 // The debug mode helps visualize the contributions from each of the
@@ -915,7 +915,7 @@ GLITTER_createDebugColorLobes(const uniform GLITTER_Glitter * uniform me,
     }
 
     // Macro flakes
-    const float oneOverMacroFlakeVisibility = rcp(macroFlakeVis);
+    const float oneOverMacroFlakeVisibility = 1.0f / macroFlakeVis;
     for (int i = 0; i < macroFlakeCount; ++i) {
         varying Color baseColorI = baseColor[i];
         currFlakeColor = computeFlakeColor(me, uParams, flakes[i].id, baseColorI, colorVariation);
@@ -953,11 +953,7 @@ GLITTER_createDebugColorLobes(const uniform GLITTER_Glitter * uniform me,
 
     if (macroFlakeVis >= MACROFLAKES_MAX_THRESHOLD && microFlakeCount > 0) {
         // Macro flakes > 90%
-        macroFlakesAvgColor = Color_ctor(
-            macroFlakesAvgColor.r / (float)(macroFlakeCount),
-            macroFlakesAvgColor.g / (float)(macroFlakeCount),
-            macroFlakesAvgColor.b / (float)(macroFlakeCount)
-        );
+        macroFlakesAvgColor = macroFlakesAvgColor * (1.0f / (float)macroFlakeCount);
         if (macroFlakeVis < MACROFLAKES_FULL_THRESHOLD && !isBlack(macroFlakesAvgColor)) {
             // Macro flakes < 99%
             emissionColor = emissionColor + macroFlakesAvgColor * (1.0f - macroFlakeVis) * coverageFactor;
@@ -976,11 +972,7 @@ GLITTER_createDebugColorLobes(const uniform GLITTER_Glitter * uniform me,
                 microFlakesAvgColor = microFlakesAvgColor + computeFlakeColor(me, uParams,
                     flakes[flakeIndex].id, baseColorI, colorVariation);
             }
-            microFlakesAvgColor = Color_ctor(
-                microFlakesAvgColor.r / microFlakeCount,
-                microFlakesAvgColor.g / microFlakeCount,
-                microFlakesAvgColor.b / microFlakeCount
-            );
+            microFlakesAvgColor = microFlakesAvgColor * (1.0f / microFlakeCount);
             emissionColor = emissionColor + microFlakesAvgColor * microFlakeVis * coverageFactor;
         }
 
@@ -1223,7 +1215,7 @@ createLobes(const uniform GLITTER_Glitter * uniform me,
     // for remaining visibility (1.0 is full coverage) instead of a microflake lobe which is more expensive
     if (macroFlakesVis >= MACROFLAKES_MAX_THRESHOLD) {
         if (microFlakeCount > 0) {
-            macroFlakesAvgColor = macroFlakesAvgColor * rcp((float)macroFlakeCount);
+            macroFlakesAvgColor = macroFlakesAvgColor * (1.0f / (float)macroFlakeCount);
             // If we're above 90%, we don't do microflakes - so the below lobe is a compensation term
             // However, we don't add any more lobes if macro flakes visibility is > mMacroFlakesFullThresh (99% default)
             if (macroFlakesVis < MACROFLAKES_FULL_THRESHOLD && !isBlack(macroFlakesAvgColor)) {

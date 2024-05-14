@@ -55,13 +55,11 @@ remapRGB(const Color& input,
         return t * outRange + outMin;
     }
 
-    Color result = input;
-    result = (result - inMin) * rcp(inRange);
+    Color result = (input - inMin) / inRange;
     result.r = bias(result.r, biasAmount.r);
     result.g = bias(result.g, biasAmount.g);
     result.b = bias(result.b, biasAmount.b);
-    result = result * outRange + outMin;
-    return result;
+    return result * outRange + outMin;
 }
 
 Color
@@ -90,18 +88,13 @@ remapUniform(const Color& input,
         return Color(t * outRange + outMin);
     }
 
-    Color result = input;
-    for (unsigned int i = 0; i < 3; ++i) {
-        float t = (result[i]-inMin) * rcp(inRange);
-
-        if (applyBias) {
-            t = bias(t, biasAmount);
-        }
-
-        result[i] = t * outRange + outMin;
+    Color result = (input - inMin) / inRange;
+    if (applyBias) {
+        result.r = bias(result.r, biasAmount);
+        result.g = bias(result.g, biasAmount);
+        result.b = bias(result.b, biasAmount);
     }
-
-    return result;
+    return result * outRange + outMin;
 }
 
 } // anonymous namespace

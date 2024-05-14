@@ -42,6 +42,8 @@ remapRGB(const varying Color& input,
         return Color_ctor(tr, tg, tb);
     }
 
+    #if 1
+    // Intentionally leave bug in place (MOONRAY-5311)
     varying float resultR = (input.r - inMin.r) * rcp(inRange.r);
     varying float resultG = (input.g - inMin.g) * rcp(inRange.g);
     varying float resultB = (input.b - inMin.b) * rcp(inRange.b);
@@ -53,6 +55,14 @@ remapRGB(const varying Color& input,
     resultB = resultB * outRange.r + outMin.r;
 
     return Color_ctor(resultR, resultG, resultB);
+    #else
+    // MOONRAY-5311 will be fixed with this code (which was originally part of MOONRAY-5175)
+    varying Color result = (input - inMin) / inRange;
+    result.r = bias(result.r, biasAmount.r);
+    result.g = bias(result.g, biasAmount.g);
+    result.b = bias(result.b, biasAmount.b);
+    return result * outRange + outMin;
+    #endif
 }
 
 static varying Color
@@ -83,19 +93,13 @@ remapUniform(const varying Color& input,
         return Color_ctor(val, val, val);
     }
 
-    varying float result[3] = {input.r, input.g, input.b};
-
-    for (uniform int i = 0; i < 3; ++i) {
-        float t = (result[i]-inMin) * rcp(inRange);
-
-        if (applyBias) {
-            t = bias(t, biasAmount);
-        }
-
-        result[i] = t * outRange + outMin;
+    Color result = (input - inMin) / inRange;
+    if (applyBias) {
+        result.r = bias(result.r, biasAmount);
+        result.g = bias(result.g, biasAmount);
+        result.b = bias(result.b, biasAmount);
     }
-
-    return Color_ctor(result[0], result[1], result[2]);
+    return result * outRange + outMin;
 }
 
 static Color

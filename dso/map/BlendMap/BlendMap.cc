@@ -86,7 +86,7 @@ BlendMap::sample(const scene_rdl2::rdl2::Map *self, moonray::shading::TLState *t
 
         float t = 0.0f;
         if (divisor > 0.0f)
-            t = (blendAmount - thresholdMin) * rcp(divisor);
+            t = (blendAmount - thresholdMin) / divisor;
 
         if (blendType == ispc::CUBIC) {
             t = t * t * (3 - 2 * t);
