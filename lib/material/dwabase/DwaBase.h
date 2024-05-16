@@ -97,6 +97,7 @@ namespace dwabase {
 
 #define ASSIGN_TOON_SPEC_ATTR_KEYS(keys, name) \
     keys.m##name##Keys.mIntensity                  = attr##name##Intensity;                        \
+    keys.m##name##Keys.mFresnelBlend               = attr##name##FresnelBlend;                     \
     keys.m##name##Keys.mTint                       = attr##name##Tint;                             \
     keys.m##name##Keys.mRampInputScale             = attr##name##RampInputScale;                   \
     keys.m##name##Keys.mRampPositions              = attr##name##RampPositions;                    \
@@ -134,6 +135,7 @@ struct ToonSpecularKeys
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>               mShow;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Int>                mModel;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mIntensity;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mFresnelBlend;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mRoughness;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Rgb>                mTint;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mRampInputScale;

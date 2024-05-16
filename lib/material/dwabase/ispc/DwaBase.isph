@@ -72,6 +72,7 @@
 
 #define ASSIGN_TOON_SPEC_ATTR_FUNCS(fns, name) \
     fns.m##name##Funcs.mEvalAttrIntensity                     = (uniform intptr_t) (void*) evalAttr##name##Intensity;                     \
+    fns.m##name##Funcs.mEvalAttrFresnelBlend                  = (uniform intptr_t) (void*) evalAttr##name##FresnelBlend;                  \
     fns.m##name##Funcs.mEvalAttrTint                          = (uniform intptr_t) (void*) evalAttr##name##Tint;                          \
     fns.m##name##Funcs.mEvalAttrRampInputScale                = (uniform intptr_t) (void*) evalAttr##name##RampInputScale;                \
     fns.m##name##Funcs.mGetAttrEnableInputNormal              = (uniform intptr_t) (void*) getAttr##name##EnableInputNormal;              \
@@ -138,6 +139,7 @@ struct ToonSpecularAttributeFuncs
 {
     uniform intptr_t mGetAttrShow;
     uniform intptr_t mEvalAttrIntensity;
+    uniform intptr_t mEvalAttrFresnelBlend;
     uniform intptr_t mEvalAttrRoughness;
     uniform intptr_t mEvalAttrTint;
     uniform intptr_t mEvalAttrRampInputScale;
@@ -446,6 +448,7 @@ struct DwaBase
 #define INIT_TOON_SPEC_ATTR_FUNCS(name)                         \
     fns.name.mGetAttrShow                           = 0;        \
     fns.name.mEvalAttrIntensity                     = 0;        \
+    fns.name.mEvalAttrFresnelBlend                  = 0;        \
     fns.name.mEvalAttrRoughness                     = 0;        \
     fns.name.mEvalAttrTint                          = 0;        \
     fns.name.mEvalAttrRampInputScale                = 0;        \

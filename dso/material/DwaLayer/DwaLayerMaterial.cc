@@ -170,7 +170,6 @@ DwaLayerMaterial::resolveUniformParameters(ispc::DwaBaseUniformParameters &uPara
                                uParamsB,
                                uParams,
                                get(attrFallbackSpecularModel),
-                               get(attrFallbackToonSpecularModel),
                                get(attrFallbackOuterSpecularModel),
                                get(attrFallbackOuterSpecularUseBending),
                                get(attrFallbackBSSRDF),

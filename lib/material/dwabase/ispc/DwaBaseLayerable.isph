@@ -87,6 +87,7 @@ struct ToonDiffuseParameters
     float mTerminatorShift;
     float mFlatness;
     float mFlatnessFalloff;
+    float mRampWeight;
     int   mRampNumPoints;
     float mRampPositions[DWABASE_MAX_TOOND_RAMP_POINTS];
     Color mRampColors[DWABASE_MAX_TOOND_RAMP_POINTS];
@@ -99,6 +100,7 @@ struct ToonSpecularParameters
 {
     float mToonSpecular;
     float mIntensity;
+    float mFresnelBlend;
     float mRoughness;
     Color mTint;
     float mRampInputScale;
@@ -451,6 +453,7 @@ DWABASELAYERABLE_printToonSpecularParameters(const varying ToonSpecularParameter
 {
     print("\tmToonSpecular: %\n", DWABASE_EXTRACT((uint32_t) params->mToonSpecular));
     print("\tmIntensity: %\n", DWABASE_EXTRACT(params->mIntensity));
+    print("\tmFresnelBlend: %\n", DWABASE_EXTRACT(params->mFresnelBlend));
     print("\tmRoughness: %\n", DWABASE_EXTRACT(params->mRoughness));
     print("\tmTint: % % %\n",
         DWABASE_EXTRACT(params->mTint.r),
@@ -485,8 +488,13 @@ DWABASELAYERABLE_printToonDiffuseParameters(const varying ToonDiffuseParameters 
     print("mTerminatorShift: %\n", DWABASE_EXTRACT(params->mTerminatorShift));
     print("mFlatness: %\n", DWABASE_EXTRACT(params->mFlatness));
     print("mFlatnessFalloff: %\n", DWABASE_EXTRACT(params->mFlatnessFalloff));
-    print("mToonRampPoints: %\n", DWABASE_EXTRACT(params->mRampNumPoints));
-    print("mToonSpecularParams\n");
+    print("mRampWeight: %\n", DWABASE_EXTRACT(params->mRampWeight));
+    print("mRampNumPoints: %\n", DWABASE_EXTRACT(params->mRampNumPoints));
+    print("mExtendRamp: %\n", DWABASE_EXTRACT(params->mExtendRamp));
+    print("\tmNormal: % % %\n",
+        DWABASE_EXTRACT(params->mNormal.x),
+        DWABASE_EXTRACT(params->mNormal.y),
+        DWABASE_EXTRACT(params->mNormal.z));
 }
 
 inline void

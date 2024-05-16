@@ -161,7 +161,6 @@ HairLayerMaterial::resolveUniformParameters(ispc::DwaBaseUniformParameters &uPar
                            uParamsB,
                            uParams,
                            1,                       // fallback specular model
-                           1,                       // fallback toon specular model
                            1,                       // fallback outer specular model
                            false,                   // fallback outer specular use bending
                            get(attrFallbackBSSRDF), // only attr relevant to hair

@@ -310,6 +310,8 @@ resolveToonDiffuseParams(const uniform Material *uniform me,
     toonDParams.mNormal = unadaptedN;
 
     if (toonDParams.mModel == TOON_DIFFUSE_RAMP) {
+        toonDParams.mRampWeight = 1.0f;
+
          // Get the ramp data points and validate them
         toonDParams.mRampNumPoints = min(DWABASE_MAX_TOOND_RAMP_POINTS,
                                          uniformData.mRampNumPoints);
@@ -344,6 +346,8 @@ resolveToonSpecParams(const uniform Material *uniform me,
 
     params.mIntensity = EVALFLOATATTR(attrFuncs.mEvalAttrIntensity,
                                       me, tls, state, 1.0f);
+    params.mFresnelBlend = EVALFLOATATTR(attrFuncs.mEvalAttrFresnelBlend,
+                                         me, tls, state, 1.0f);
     params.mRoughness = EVALFLOATATTR(attrFuncs.mEvalAttrRoughness,
                                       me, tls, state, 1.0f);
     params.mTint =
@@ -809,6 +813,8 @@ resolveTransmissionParams(const uniform DwaBase * uniform dwaBase,
             params->mIndependentTransmissionRoughness =
                     saturate(EVALFLOATATTR(dwaBase->mAttrFuncs.mEvalAttrIndependentTransmissionRoughness,
                                            me, tls, state, 0.0f));
+        } else {
+            params->mIndependentTransmissionRoughness = params->mRoughness;
         }
         if (GETBOOLATTR(dwaBase->mAttrFuncs.mGetAttrUseDispersion, me, false)) {
             params->mDispersionAbbeNumber = GETFLOATATTR(dwaBase->mAttrFuncs.mGetAttrDispersionAbbeNumber,

@@ -147,7 +147,6 @@ DwaTwoSidedMaterial::resolveUniformParameters(ispc::DwaBaseUniformParameters &uP
                            uParamsBack,
                            uParams,
                            get(attrFallbackSpecularModel),
-                           get(attrFallbackToonSpecularModel),
                            get(attrFallbackOuterSpecularModel),
                            get(attrFallbackOuterSpecularUseBending),
                            get(attrFallbackBSSRDF),

@@ -645,11 +645,9 @@ void blendTransmissionParams(const ispc::BlendColorSpace colorSpace,
     }
 }
 
-void copyToonDiffuseParams(const ispc::ToonDiffuseParameters& src,
-                           ispc::ToonDiffuseParameters& dst)
+void copyToonDiffuseRampParams(const ispc::ToonDiffuseParameters& src,
+                               ispc::ToonDiffuseParameters& dst)
 {
-    dst.mModel = src.mModel;
-    dst.mNormal = src.mNormal;
     dst.mRampNumPoints = src.mRampNumPoints;
     for (int i = 0; i < src.mRampNumPoints; ++i) {
         dst.mRampPositions[i] = src.mRampPositions[i];
@@ -657,10 +655,25 @@ void copyToonDiffuseParams(const ispc::ToonDiffuseParameters& src,
         dst.mRampInterpolators[i] = src.mRampInterpolators[i];
     }
     dst.mExtendRamp = src.mExtendRamp;
+}
+
+void copyToonDiffuseOrenNayarParams(const ispc::ToonDiffuseParameters& src,
+                                    ispc::ToonDiffuseParameters& dst)
+{
     dst.mTerminatorShift = src.mTerminatorShift;
     dst.mFlatness = src.mFlatness;
     dst.mFlatnessFalloff = src.mFlatnessFalloff;
 }
+
+void copyToonDiffuseParams(const ispc::ToonDiffuseParameters& src,
+                           ispc::ToonDiffuseParameters& dst)
+{
+    dst.mModel = src.mModel;
+    dst.mNormal = src.mNormal;
+    copyToonDiffuseRampParams(src, dst);
+    copyToonDiffuseOrenNayarParams(src, dst);
+}
+
 
 void blendToonDiffuseParams(const ispc::BlendColorSpace colorSpace,
                             const float mask,
@@ -684,55 +697,74 @@ void blendToonDiffuseParams(const ispc::BlendColorSpace colorSpace,
         } else {
             params.mModel = params1.mModel;
         }
-        asCpp(params.mNormal) = safeNormalize(lerp(asCpp(params0.mNormal),
-                                              asCpp(params1.mNormal),
-                                              mask));
-        params.mTerminatorShift = lerp(params0.mTerminatorShift,
-                                       params1.mTerminatorShift,
-                                       mask);
-        params.mFlatness = lerp(params0.mFlatness,
-                                params1.mFlatness,
-                                mask);
-        params.mFlatnessFalloff = lerp(params0.mFlatnessFalloff,
-                                       params1.mFlatnessFalloff,
-                                       mask);
 
-        params.mRampNumPoints = max(params0.mRampNumPoints,
-                                    params1.mRampNumPoints);
-        const int blendAttrsCount = min(params0.mRampNumPoints,
-                                        params1.mRampNumPoints);
-        for (int i = 0; i < blendAttrsCount; ++i) {
-            params.mRampPositions[i] = lerp(params0.mRampPositions[i],
-                                            params1.mRampPositions[i],
-                                            mask);
-            asCpp(params.mRampColors[i]) = colorSpaceLerp(asCpp(params0.mRampColors[i]),
-                                                          asCpp(params1.mRampColors[i]),
-                                                          mask,
-                                                          colorSpace);
-            // Always use the material being layered's interpolator?
-            params.mRampInterpolators[i] = params1.mRampInterpolators[i];
+        // Blend normals
+        asCpp(params.mNormal) = safeNormalize(lerp(asCpp(params0.mNormal),
+                                                   asCpp(params1.mNormal),
+                                                   mask));
+
+        // Oren-nayer params
+        if (params0.mModel == ispc::TOON_DIFFUSE_OREN_NAYAR && params1.mModel == ispc::TOON_DIFFUSE_RAMP) {
+            copyToonDiffuseOrenNayarParams(params0, params);
+        } else if (params0.mModel == ispc::TOON_DIFFUSE_RAMP && params1.mModel == ispc::TOON_DIFFUSE_OREN_NAYAR) {
+            copyToonDiffuseOrenNayarParams(params1, params);
+        } else {
+            params.mTerminatorShift = lerp(params0.mTerminatorShift,
+                                           params1.mTerminatorShift,
+                                           mask);
+            params.mFlatness = lerp(params0.mFlatness,
+                                    params1.mFlatness,
+                                    mask);
+            params.mFlatnessFalloff = lerp(params0.mFlatnessFalloff,
+                                           params1.mFlatnessFalloff,
+                                           mask);
         }
 
-        if (params0.mRampNumPoints > params1.mRampNumPoints) {
-            for (int i = blendAttrsCount; i < params.mRampNumPoints; ++i) {
-                params.mRampPositions[i] = params0.mRampPositions[i];
-                params.mRampColors[i] = params0.mRampColors[i];
-                params.mRampInterpolators[i] = params0.mRampInterpolators[i];
-            }
+        // Ramp params
+        params.mRampWeight = lerp(params0.mRampWeight,
+                                  params1.mRampWeight,
+                                  mask);
+        if (params0.mModel == ispc::TOON_DIFFUSE_OREN_NAYAR && params1.mModel == ispc::TOON_DIFFUSE_RAMP) {
+            copyToonDiffuseRampParams(params1, params);
+        } else if (params0.mModel == ispc::TOON_DIFFUSE_RAMP && params1.mModel == ispc::TOON_DIFFUSE_OREN_NAYAR) {
+            copyToonDiffuseRampParams(params0, params);
         } else {
-            for (int i = blendAttrsCount; i < params.mRampNumPoints; ++i) {
-                params.mRampPositions[i] = params1.mRampPositions[i];
-                params.mRampColors[i] = params1.mRampColors[i];
+            params.mRampNumPoints = max(params0.mRampNumPoints,
+                                        params1.mRampNumPoints);
+            const int blendAttrsCount = min(params0.mRampNumPoints,
+                                            params1.mRampNumPoints);
+            for (int i = 0; i < blendAttrsCount; ++i) {
+                params.mRampPositions[i] = lerp(params0.mRampPositions[i],
+                                                params1.mRampPositions[i],
+                                                mask);
+                asCpp(params.mRampColors[i]) = colorSpaceLerp(asCpp(params0.mRampColors[i]),
+                                                              asCpp(params1.mRampColors[i]),
+                                                              mask,
+                                                              colorSpace);
+                // Always use the material being layered's interpolator?
                 params.mRampInterpolators[i] = params1.mRampInterpolators[i];
             }
-        }
-        if (params0.mExtendRamp != params1.mExtendRamp) {
-            // values are mixed: Extending the ramp wins
-            params.mExtendRamp = true;
-        } else {
-            params.mExtendRamp = params1.mExtendRamp;
-        }
 
+            if (params0.mRampNumPoints > params1.mRampNumPoints) {
+                for (int i = blendAttrsCount; i < params.mRampNumPoints; ++i) {
+                    params.mRampPositions[i] = params0.mRampPositions[i];
+                    params.mRampColors[i] = params0.mRampColors[i];
+                    params.mRampInterpolators[i] = params0.mRampInterpolators[i];
+                }
+            } else {
+                for (int i = blendAttrsCount; i < params.mRampNumPoints; ++i) {
+                    params.mRampPositions[i] = params1.mRampPositions[i];
+                    params.mRampColors[i] = params1.mRampColors[i];
+                    params.mRampInterpolators[i] = params1.mRampInterpolators[i];
+                }
+            }
+            if (params0.mExtendRamp != params1.mExtendRamp) {
+                // values are mixed: Extending the ramp wins
+                params.mExtendRamp = true;
+            } else {
+                params.mExtendRamp = params1.mExtendRamp;
+            }
+        }
     } else if (!isZero(params1.mToonDiffuse)) {
         copyToonDiffuseParams(params1, params);
     } else { // params0.mToonDiffuse != 0.0f
@@ -744,6 +776,8 @@ void
 copyToonSpecularParams(const ispc::ToonSpecularParameters& src,
                        ispc::ToonSpecularParameters& dst)
 {
+    dst.mIntensity = src.mIntensity;
+    dst.mFresnelBlend = src.mFresnelBlend;
     dst.mRoughness = src.mRoughness;
     dst.mTint = src.mTint;
     dst.mRampInputScale = src.mRampInputScale;
@@ -784,6 +818,14 @@ blendToonSpecularParams(const ispc::BlendColorSpace colorSpace,
         asCpp(params.mNormal) = safeNormalize(lerp(asCpp(params0.mNormal),
                                                    asCpp(params1.mNormal),
                                                    mask));
+
+        params.mIntensity = lerp(params0.mIntensity,
+                                 params1.mIntensity,
+                                 mask);
+
+        params.mFresnelBlend = lerp(params0.mFresnelBlend,
+                                    params1.mFresnelBlend,
+                                    mask);
 
         params.mRoughness = lerp(params0.mRoughness,
                                  params1.mRoughness,
@@ -1464,7 +1506,6 @@ void blendUniformParameters(const ispc::DwaBaseUniformParameters &uParams0,
                             const ispc::DwaBaseUniformParameters &uParams1,
                             ispc::DwaBaseUniformParameters &uParams,
                             int fallbackSpecularModel,
-                            int fallbackToonSpecularModel,
                             int fallbackOuterSpecularModel,
                             bool fallbackOuterSpecularUseBending,
                             int fallbackBSSRDF,
@@ -1473,9 +1514,6 @@ void blendUniformParameters(const ispc::DwaBaseUniformParameters &uParams0,
 {
     if (uParams0.mSpecularModel != uParams1.mSpecularModel) {
         uParams.mSpecularModel = fallbackSpecularModel;
-    }
-    if (uParams0.mToonSpecularModel != uParams1.mToonSpecularModel) {
-        uParams.mToonSpecularModel = static_cast<ispc::ToonSpecularModel>(fallbackToonSpecularModel);
     }
     if (uParams0.mOuterSpecularModel != uParams1.mOuterSpecularModel) {
         uParams.mOuterSpecularModel = fallbackOuterSpecularModel;

@@ -630,11 +630,9 @@ void blendTransmissionParams(const uniform int colorSpace,
     }
 }
 
-void copyToonDiffuseParams(const varying ToonDiffuseParameters& src,
-                           varying ToonDiffuseParameters& dst)
+void copyToonDiffuseRampParams(const varying ToonDiffuseParameters& src,
+                               varying ToonDiffuseParameters& dst)
 {
-    dst.mModel = src.mModel;
-    dst.mNormal = src.mNormal;
     dst.mRampNumPoints = src.mRampNumPoints;
     for (int i = 0; i < src.mRampNumPoints; ++i) {
         dst.mRampPositions[i] = src.mRampPositions[i];
@@ -642,9 +640,23 @@ void copyToonDiffuseParams(const varying ToonDiffuseParameters& src,
         dst.mRampInterpolators[i] = src.mRampInterpolators[i];
     }
     dst.mExtendRamp = src.mExtendRamp;
+}
+
+void copyToonDiffuseOrenNayarParams(const varying ToonDiffuseParameters& src,
+                                    varying ToonDiffuseParameters& dst)
+{
     dst.mTerminatorShift = src.mTerminatorShift;
     dst.mFlatness = src.mFlatness;
     dst.mFlatnessFalloff = src.mFlatnessFalloff;
+}
+
+void copyToonDiffuseParams(const varying ToonDiffuseParameters& src,
+                           varying ToonDiffuseParameters& dst)
+{
+    dst.mModel = src.mModel;
+    dst.mNormal = src.mNormal;
+    copyToonDiffuseRampParams(src, dst);
+    copyToonDiffuseOrenNayarParams(src, dst);
 }
 
 void blendToonDiffuseParams(const uniform int colorSpace,
@@ -670,54 +682,73 @@ void blendToonDiffuseParams(const uniform int colorSpace,
         } else {
             params.mModel = params1.mModel;
         }
+
+        // Blend normals
         params.mNormal = normalize(lerp(params0.mNormal,
                                         params1.mNormal,
                                         mask));
-        params.mTerminatorShift = lerp(params0.mTerminatorShift,
-                                       params1.mTerminatorShift,
-                                       mask);
-        params.mFlatness = lerp(params0.mFlatness,
-                                params1.mFlatness,
-                                mask);
-        params.mFlatnessFalloff = lerp(params0.mFlatnessFalloff,
-                                       params1.mFlatnessFalloff,
-                                       mask);
 
-        params.mRampNumPoints = max(params0.mRampNumPoints,
-                                    params1.mRampNumPoints);
-        const int blendAttrsCount = min(params0.mRampNumPoints,
-                                        params1.mRampNumPoints);
-        for (int i = 0; i < blendAttrsCount; ++i) {
-            params.mRampPositions[i] = lerp(params0.mRampPositions[i],
-                                            params1.mRampPositions[i],
-                                            mask);
-            params.mRampColors[i] = lerp(params0.mRampColors[i],
-                                         params1.mRampColors[i],
-                                         mask);
-            // Always use the material being layered's interpolator?
-            params.mRampInterpolators[i] = params1.mRampInterpolators[i];
+        // Oren-nayer params
+        if (params0.mModel == TOON_DIFFUSE_OREN_NAYAR && params1.mModel == TOON_DIFFUSE_RAMP) {
+            copyToonDiffuseOrenNayarParams(params0, params);
+        } else if (params0.mModel == TOON_DIFFUSE_RAMP && params1.mModel == TOON_DIFFUSE_OREN_NAYAR) {
+            copyToonDiffuseOrenNayarParams(params1, params);
+        } else {
+            params.mTerminatorShift = lerp(params0.mTerminatorShift,
+                                           params1.mTerminatorShift,
+                                           mask);
+            params.mFlatness = lerp(params0.mFlatness,
+                                    params1.mFlatness,
+                                    mask);
+            params.mFlatnessFalloff = lerp(params0.mFlatnessFalloff,
+                                           params1.mFlatnessFalloff,
+                                           mask);
         }
 
-        if (params0.mRampNumPoints > params1.mRampNumPoints) {
-            for (int i = blendAttrsCount; i < params.mRampNumPoints; ++i) {
-                params.mRampPositions[i] = params0.mRampPositions[i];
-                params.mRampColors[i] = params0.mRampColors[i];
-                params.mRampInterpolators[i] = params0.mRampInterpolators[i];
-            }
+        // Ramp params
+        params.mRampWeight = lerp(params0.mRampWeight,
+                                  params1.mRampWeight,
+                                  mask);
+        if (params0.mModel == TOON_DIFFUSE_OREN_NAYAR && params1.mModel == TOON_DIFFUSE_RAMP) {
+            copyToonDiffuseRampParams(params1, params);
+        } else if (params0.mModel == TOON_DIFFUSE_RAMP && params1.mModel == TOON_DIFFUSE_OREN_NAYAR) {
+            copyToonDiffuseRampParams(params0, params);
         } else {
-            for (int i = blendAttrsCount; i < params.mRampNumPoints; ++i) {
-                params.mRampPositions[i] = params1.mRampPositions[i];
-                params.mRampColors[i] = params1.mRampColors[i];
+            params.mRampNumPoints = max(params0.mRampNumPoints,
+                                        params1.mRampNumPoints);
+            const int blendAttrsCount = min(params0.mRampNumPoints,
+                                            params1.mRampNumPoints);
+            for (int i = 0; i < blendAttrsCount; ++i) {
+                params.mRampPositions[i] = lerp(params0.mRampPositions[i],
+                                                params1.mRampPositions[i],
+                                                mask);
+                params.mRampColors[i] = lerp(params0.mRampColors[i],
+                                             params1.mRampColors[i],
+                                             mask);
+                // Always use the material being layered's interpolator?
                 params.mRampInterpolators[i] = params1.mRampInterpolators[i];
             }
-        }
-        if (params0.mExtendRamp != params1.mExtendRamp) {
-            // values are mixed: Extending the ramp wins
-            params.mExtendRamp = true;
-        } else {
-            params.mExtendRamp = params1.mExtendRamp;
-        }
 
+            if (params0.mRampNumPoints > params1.mRampNumPoints) {
+                for (int i = blendAttrsCount; i < params.mRampNumPoints; ++i) {
+                    params.mRampPositions[i] = params0.mRampPositions[i];
+                    params.mRampColors[i] = params0.mRampColors[i];
+                    params.mRampInterpolators[i] = params0.mRampInterpolators[i];
+                }
+            } else {
+                for (int i = blendAttrsCount; i < params.mRampNumPoints; ++i) {
+                    params.mRampPositions[i] = params1.mRampPositions[i];
+                    params.mRampColors[i] = params1.mRampColors[i];
+                    params.mRampInterpolators[i] = params1.mRampInterpolators[i];
+                }
+            }
+            if (params0.mExtendRamp != params1.mExtendRamp) {
+                // values are mixed: Extending the ramp wins
+                params.mExtendRamp = true;
+            } else {
+                params.mExtendRamp = params1.mExtendRamp;
+            }
+        }
     } else if (!isZero(params1.mToonDiffuse)) {
         copyToonDiffuseParams(params1, params);
     } else { // params0.mToonDiffuse != 0.0f
@@ -728,6 +759,8 @@ void blendToonDiffuseParams(const uniform int colorSpace,
 void copyToonSpecularParams(const varying ToonSpecularParameters& src,
                             varying ToonSpecularParameters& dst)
 {
+    dst.mIntensity = src.mIntensity;
+    dst.mFresnelBlend = src.mFresnelBlend;
     dst.mRoughness = src.mRoughness;
     dst.mTint = src.mTint;
     dst.mRampInputScale = src.mRampInputScale;
@@ -766,6 +799,14 @@ void blendToonSpecularParams(const uniform int colorSpace,
         params.mNormal = normalize(lerp(params0.mNormal,
                                         params1.mNormal,
                                         mask));
+
+        params.mIntensity = lerp(params0.mIntensity,
+                                 params1.mIntensity,
+                                 mask);
+
+        params.mFresnelBlend = lerp(params0.mFresnelBlend,
+                                    params1.mFresnelBlend,
+                                    mask);
 
         params.mRoughness = lerp(params0.mRoughness,
                                  params1.mRoughness,

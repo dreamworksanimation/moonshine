@@ -51,20 +51,6 @@
             "comment": "If child materials disagree on the type of specular model, this type will be used instead.",
             "group": "Advanced"
         },
-	"attrFallbackToonSpecularModel": {
-            "name": "fallback_toon_specular_model",
-            "label": "fallback toon specular model",
-            "type": "Int",
-            "flags": "FLAGS_ENUMERABLE",
-            "enum": {
-                "Beckmann": "0",
-                "GGX": "1",
-                "Toon": "2"
-            },
-            "default": "1",
-            "comment": "If child materials disagree on the type of toon specular model, this type will be used instead.",
-            "group": "Advanced"
-        },
 	"attrFallbackOuterSpecularModel": {
             "name": "fallback_outer_specular_model",
             "label": "fallback outer specular model",

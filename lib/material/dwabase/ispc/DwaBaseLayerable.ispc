@@ -436,6 +436,7 @@ DWABASE_addToonSpecularLobes(varying BsdfBuilder &bsdfBuilder,
     ToonSpecularBRDF_init(toonSpecularBRDF,
                           params.mNormal,
                           params.mIntensity,
+                          params.mFresnelBlend,
                           params.mTint,
                           params.mRampInputScale,
                           params.mRampNumPoints,
@@ -586,153 +587,6 @@ DWABASE_addOuterSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                     params->mOuterSpecular,
                     BSDFBUILDER_PHYSICAL,
                     labels->mOuterSpecular);
-        }
-    }
-}
-
-void
-DWABASE_addIndependentReflectionLobe(varying BsdfBuilder &bsdfBuilder,
-                                     const varying Vec3f &N,
-                                     varying float reflIor,
-                                     varying float anisotropy,
-                                     varying float roughness,
-                                     varying float minRoughness,
-                                     const varying Vec3f &shadingTangent,
-                                     const uniform MicrofacetDistribution &specularModel,
-                                     varying float reflectionWeight,
-                                     varying Iridescence * uniform iridescence,
-                                     uniform int label)
-{
-    const varying float roughnessClamped = max(roughness, minRoughness);
-
-    if (roughnessClamped < sEpsilon) {
-        MirrorBRDF dielectricBRDF;
-        MirrorBRDF_init(dielectricBRDF,
-                N,
-                reflIor,
-                iridescence);
-
-        BsdfBuilder_addMirrorBRDF(
-                bsdfBuilder,
-                dielectricBRDF,
-                reflectionWeight,
-                BSDFBUILDER_PHYSICAL,
-                label);
-    } else {
-        if (isZero(anisotropy)) {
-            MicrofacetIsotropicBRDF dielectricBRDF;
-            MicrofacetIsotropicBRDF_init(dielectricBRDF,
-                    N,
-                    reflIor,
-                    roughnessClamped,
-                    specularModel,
-                    MICROFACET_GEOMETRIC_SMITH,
-                    iridescence);
-
-            BsdfBuilder_addMicrofacetIsotropicBRDF(
-                    bsdfBuilder,
-                    dielectricBRDF,
-                    reflectionWeight,
-                    BSDFBUILDER_PHYSICAL,
-                    label);
-        } else {
-            const varying Vec2f rgh = computeAnisoRoughness(roughness,
-                                                            minRoughness,
-                                                            anisotropy);
-
-            MicrofacetAnisotropicBRDF dielectricBRDF;
-            MicrofacetAnisotropicBRDF_init(dielectricBRDF,
-                    N,
-                    reflIor,
-                    rgh.x, rgh.y,
-                    shadingTangent,
-                    specularModel,
-                    MICROFACET_GEOMETRIC_SMITH,
-                    iridescence);
-
-            BsdfBuilder_addMicrofacetAnisotropicBRDF(
-                    bsdfBuilder,
-                    dielectricBRDF,
-                    reflectionWeight,
-                    BSDFBUILDER_PHYSICAL,
-                    label);
-        }
-    }
-}
-
-void
-DWABASE_addIndependentTransmissionLobe(varying BsdfBuilder &bsdfBuilder,
-                                       const varying Vec3f &N,
-                                       varying float refrIor,
-                                       varying float anisotropy,
-                                       varying float transRoughness,
-                                       varying float minRoughness,
-                                       const varying Vec3f &shadingTangent,
-                                       const uniform MicrofacetDistribution &specularModel,
-                                       const varying Color &transmissionColor,
-                                       varying float abbeNumber,
-                                       varying float transmissionWeight,
-                                       uniform int label)
-{
-    const varying float transRoughnessClamped = max(transRoughness, minRoughness);
-
-    if (transRoughnessClamped < sEpsilon) {
-        MirrorBTDF dielectricBTDF;
-        MirrorBTDF_init(dielectricBTDF,
-                N,
-                refrIor,
-                transmissionColor,
-                abbeNumber);
-
-        BsdfBuilder_addMirrorBTDF(
-                bsdfBuilder,
-                dielectricBTDF,
-                transmissionWeight,
-                BSDFBUILDER_PHYSICAL,
-                label);
-    } else {
-        // Currently only the Beckmann specular model is supported for BTDFs
-        if (isZero(anisotropy)) {
-            MicrofacetIsotropicBTDF dielectricBTDF;
-            MicrofacetIsotropicBTDF_init(dielectricBTDF,
-                    N,
-                    refrIor,
-                    transRoughnessClamped,
-                    transmissionColor,
-                    abbeNumber,
-                    specularModel,
-                    MICROFACET_GEOMETRIC_SMITH);
-
-            BsdfBuilder_addMicrofacetIsotropicBTDF(
-                    bsdfBuilder,
-                    dielectricBTDF,
-                    transmissionWeight,
-                    BSDFBUILDER_PHYSICAL,
-                    label);
-        } else {
-            const varying Vec2f rgh = computeAnisoRoughness(transRoughness,
-                                                            minRoughness,
-                                                            anisotropy);
-
-            // Currently there is no implementation for an anisotropic BTDF,
-            // this will fallback to an isotropic BTDF
-            MicrofacetAnisotropicBTDF dielectricBTDF;
-            MicrofacetAnisotropicBTDF_init(dielectricBTDF,
-                    N,
-                    refrIor,
-                    rgh.x, rgh.y,
-                    shadingTangent,
-                    transmissionColor,
-                    abbeNumber,
-                    specularModel,
-                    MICROFACET_GEOMETRIC_SMITH);
-
-            BsdfBuilder_addMicrofacetAnisotropicBTDF(
-                    bsdfBuilder,
-                    dielectricBTDF,
-                    transmissionWeight,
-                    BSDFBUILDER_PHYSICAL,
-                    label);
         }
     }
 }
@@ -948,7 +802,6 @@ DWABASE_createLobes(const uniform Material * uniform me,
         }
     }
 
-    // Non-hair toon specular
     if (!isZero(params->mSpecular) || !isZero(params->mTransmission)) {
         // Specular reflection and transmission
         // Modulate roughness based on normal map mip-map anti-aliasing strategy.
@@ -958,6 +811,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
                                             params->mNormalLength,
                                             params->mNormalAADial,
                                             params->mNormalDial);
+        const varying float roughnessClamped = max(roughness, minRoughness);
 
         // setup shading tangent if needed
         varying Vec3f shadingTangent = Vec3f_ctor(0.f);
@@ -973,7 +827,6 @@ DWABASE_createLobes(const uniform Material * uniform me,
         }
 
         // Metallic and dielectric specular reflection lobes
-        const varying float roughnessClamped = max(roughness, minRoughness);
 
         // Metallic specular reflection lobe
         const varying float metallicWeight = params->mSpecular * params->mMetallic;
@@ -1041,8 +894,6 @@ DWABASE_createLobes(const uniform Material * uniform me,
             return;
         }
 
-        const varying float dielectricWeight = params->mSpecular;
-
         // Coupled dielectric specular reflection and transmission lobes
         float refrIor = reflIor;
 
@@ -1055,9 +906,10 @@ DWABASE_createLobes(const uniform Material * uniform me,
         // Ideally, we tag the ray with a wavelength it carries or whether it has been split already.
         const varying float abbeNumber = (isIndirect(state)) ? 0.0f : params->mDispersionAbbeNumber;
 
+        BsdfBuilder_startAdjacentComponents(bsdfBuilder);
+
         // Toon Specular
-        if (!isZero(params->mToonSpecularParams.mToonSpecular) &&
-            uParams->mToonSpecularModel == ToonSpecularSurface) {
+        if (!isZero(params->mToonSpecularParams.mToonSpecular)) {
 
             const ToonSpecularParameters& toonParams = params->mToonSpecularParams;
 
@@ -1097,97 +949,104 @@ DWABASE_createLobes(const uniform Material * uniform me,
                                                            labels->mSpecularTransmission);
                 }
             }
-        } else if (params->mUseIndependentTransmissionRoughness) {
-            DWABASE_addIndependentReflectionLobe(bsdfBuilder,
-                                                 N, reflIor,
-                                                 params->mAnisotropy, roughness, minRoughness, shadingTangent,
-                                                 (uniform MicrofacetDistribution) uParams->mSpecularModel,
-                                                 dielectricWeight,
-                                                 primaryIridescence,
-                                                 labels->mSpecular);
+        }
 
-            DWABASE_addIndependentTransmissionLobe(bsdfBuilder,
-                                                   N, refrIor,
-                                                   params->mAnisotropy,
-                                                   params->mIndependentTransmissionRoughness,
-                                                   minRoughness,
-                                                   shadingTangent,
-                                                   (uniform MicrofacetDistribution) uParams->mSpecularModel,
-                                                   params->mTransmissionColor,
-                                                   abbeNumber,
-                                                   params->mTransmission,
-                                                   labels->mSpecularTransmission);
+        const varying float dielectricWeight = params->mSpecular * (1.0f - params->mToonSpecularParams.mToonSpecular);
+        const varying float transmissionWeight = params->mTransmission * (1.0f - params->mToonSpecularParams.mToonSpecular);
+        varying float transmissionRoughness = roughness;
+        varying float transmissionRoughnessClamped = roughnessClamped;
+        if (params->mUseIndependentTransmissionRoughness) {
+            transmissionRoughness = computeMicrofacetRoughness(
+                            params->mIndependentTransmissionRoughness,
+                            params->mNormalAAStrategy,
+                            params->mNormalLength,
+                            params->mNormalAADial,
+                            params->mNormalDial);
+            transmissionRoughnessClamped = max(transmissionRoughness, minRoughness);
+        }
+
+        
+        if (roughnessClamped < sEpsilon) {
+            MirrorBSDF dielectricBSDF;
+            MirrorBSDF_init(dielectricBSDF,
+                            N,
+                            reflIor,
+                            params->mTransmissionColor,
+                            abbeNumber,
+                            refrIor,
+                            dielectricWeight,
+                            transmissionWeight,
+                            primaryIridescence);
+
+            BsdfBuilder_addMirrorBSDF(bsdfBuilder,
+                                      dielectricBSDF,
+                                      1.f, // weight
+                                      BSDFBUILDER_PHYSICAL,
+                                      labels->mSpecular,
+                                      labels->mSpecularTransmission);
         } else {
-            if (roughnessClamped < sEpsilon) {
-                MirrorBSDF dielectricBSDF;
-                MirrorBSDF_init(dielectricBSDF,
-                                N,
-                                reflIor,
-                                params->mTransmissionColor,
-                                abbeNumber,
-                                refrIor,
-                                dielectricWeight,
-                                params->mTransmission,
-                                primaryIridescence);
+            if (isZero(params->mAnisotropy)) {
+                MicrofacetIsotropicBSDF dielectricBSDF;
+                MicrofacetIsotropicBSDF_init(dielectricBSDF,
+                        N,
+                        reflIor,
+                        roughnessClamped,
+                        transmissionRoughnessClamped,
+                        params->mUseIndependentTransmissionRoughness,
+                        (uniform MicrofacetDistribution) uParams->mSpecularModel,
+                        MICROFACET_GEOMETRIC_SMITH,
+                        params->mTransmissionColor,
+                        abbeNumber,
+                        refrIor,
+                        dielectricWeight,
+                        transmissionWeight,
+                        primaryIridescence);
 
-                BsdfBuilder_addMirrorBSDF(bsdfBuilder,
-                                          dielectricBSDF,
-                                          1.f, // weight
-                                          BSDFBUILDER_PHYSICAL,
-                                          labels->mSpecular,
-                                          labels->mSpecularTransmission);
+
+                BsdfBuilder_addMicrofacetIsotropicBSDF(
+                        bsdfBuilder,
+                        dielectricBSDF,
+                        1.f, // weight
+                        BSDFBUILDER_PHYSICAL,
+                        labels->mSpecular,
+                        labels->mSpecularTransmission);
             } else {
-                if (isZero(params->mAnisotropy)) {
-                    MicrofacetIsotropicBSDF dielectricBSDF;
-                    MicrofacetIsotropicBSDF_init(dielectricBSDF,
-                            N,
-                            reflIor,
-                            roughnessClamped,
-                            (uniform MicrofacetDistribution) uParams->mSpecularModel,
-                            MICROFACET_GEOMETRIC_SMITH,
-                            params->mTransmissionColor,
-                            abbeNumber,
-                            refrIor,
-                            dielectricWeight,
-                            params->mTransmission,
-                            primaryIridescence);
+                const Vec2f rgh =
+                    computeAnisoRoughness(roughness, minRoughness, params->mAnisotropy);
 
-                    BsdfBuilder_addMicrofacetIsotropicBSDF(
-                            bsdfBuilder,
-                            dielectricBSDF,
-                            1.f, // weight
-                            BSDFBUILDER_PHYSICAL,
-                            labels->mSpecular,
-                            labels->mSpecularTransmission);
-                } else {
-                    const Vec2f rgh =
-                        computeAnisoRoughness(roughness, minRoughness, params->mAnisotropy);
-
-                    MicrofacetAnisotropicBSDF dielectricBSDF;
-                    MicrofacetAnisotropicBSDF_init(dielectricBSDF,
-                            N,
-                            reflIor,
-                            rgh.x, rgh.y,
-                            shadingTangent,
-                            (uniform MicrofacetDistribution) uParams->mSpecularModel,
-                            MICROFACET_GEOMETRIC_SMITH,
-                            params->mTransmissionColor,
-                            abbeNumber,
-                            refrIor,
-                            dielectricWeight,
-                            params->mTransmission,
-                            primaryIridescence);
-
-                    BsdfBuilder_addMicrofacetAnisotropicBSDF(
-                            bsdfBuilder,
-                            dielectricBSDF,
-                            1.f,
-                            BSDFBUILDER_PHYSICAL,
-                            labels->mSpecular,
-                            labels->mSpecularTransmission);
+                Vec2f transRgh = rgh;
+                if (params->mUseIndependentTransmissionRoughness) {
+                    transRgh = computeAnisoRoughness(transmissionRoughness, minRoughness, params->mAnisotropy);
                 }
+
+                MicrofacetAnisotropicBSDF dielectricBSDF;
+                MicrofacetAnisotropicBSDF_init(dielectricBSDF,
+                        N,
+                        reflIor,
+                        rgh.x, rgh.y,
+                        transRgh.x, transRgh.y,
+                        params->mUseIndependentTransmissionRoughness,
+                        shadingTangent,
+                        (uniform MicrofacetDistribution) uParams->mSpecularModel,
+                        MICROFACET_GEOMETRIC_SMITH,
+                        params->mTransmissionColor,
+                        abbeNumber,
+                        refrIor,
+                        dielectricWeight,
+                        transmissionWeight,
+                        primaryIridescence);
+
+                BsdfBuilder_addMicrofacetAnisotropicBSDF(
+                        bsdfBuilder,
+                        dielectricBSDF,
+                        1.f,
+                        BSDFBUILDER_PHYSICAL,
+                        labels->mSpecular,
+                        labels->mSpecularTransmission);
             }
         }
+
+        BsdfBuilder_endAdjacentComponents(bsdfBuilder);
     }
 
     // Diffuse lobes
@@ -1215,7 +1074,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
 
             BsdfBuilder_addToonBRDF(bsdfBuilder,
                                     toon,
-                                    params->mFabricAttenuation * params->mToonDiffuseParams.mToonDiffuse,
+                                    params->mFabricAttenuation * params->mToonDiffuseParams.mToonDiffuse * params->mToonDiffuseParams.mRampWeight,
                                     BSDFBUILDER_PHYSICAL,
                                     labels->mDiffuse);
         }
@@ -1412,9 +1271,11 @@ DWABASELAYERABLE_initToonSpecularParameters(varying ToonSpecularParameters * uni
 {
     params->mToonSpecular = 0.0f;
     params->mIntensity = 1.0f;
+    params->mFresnelBlend = 1.0f;
     params->mRoughness = 0.9f;
     params->mTint = Color_ctor(1.0f, 1.0f, 1.0f);
     params->mNormal = Vec3f_ctor(0.0f, 0.0f, 0.0f);
+    params->mRampInputScale = 1.0f;
     params->mRampNumPoints = 1;
     params->mRampPositions[0] = 0.0f;
     params->mRampValues[0] = 1.0f;
@@ -1444,6 +1305,7 @@ DWABASELAYERABLE_initToonDiffuseParameters(varying ToonDiffuseParameters * unifo
     params->mTerminatorShift = 0.0f;
     params->mFlatness = 0.0f;
     params->mFlatnessFalloff = 0.0f;
+    params->mRampWeight = 0.0f;
     params->mRampNumPoints = 1;
     params->mRampPositions[0] = 0.0f;
     params->mRampColors[0] = sWhite;

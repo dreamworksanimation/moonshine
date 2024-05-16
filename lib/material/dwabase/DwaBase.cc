@@ -61,6 +61,7 @@ using namespace moonray::shading;
 
 #define VALIDATE_TOON_SPEC_ATTR_KEYS(name)                                    \
     MNRY_ASSERT(mAttrKeys.name.mIntensity.isValid());                         \
+    MNRY_ASSERT(mAttrKeys.name.mFresnelBlend.isValid());                      \
     MNRY_ASSERT(mAttrKeys.name.mRoughness.isValid());                         \
     MNRY_ASSERT(mAttrKeys.name.mTint.isValid());                              \
     MNRY_ASSERT(mAttrKeys.name.mRampInputScale.isValid());                    \
@@ -81,6 +82,7 @@ using namespace moonray::shading;
 
 #define VALIDATE_TOON_SPEC_ATTR_FUNCS(name)                                        \
     MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrIntensity);                         \
+    MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrFresnelBlend);                      \
     MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRoughness);                         \
     MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrTint);                              \
     MNRY_ASSERT(mIspc.mAttrFuncs.name.mEvalAttrRampInputScale);                    \
@@ -1082,6 +1084,8 @@ resolveToonDiffuseParams(const DwaBase* me,
 
     if (toonDParams.mModel == ispc::TOON_DIFFUSE_RAMP) {
 
+        toonDParams.mRampWeight = 1.0f;
+
         // Get the ramp data points and validate them
         toonDParams.mRampNumPoints = min(ispc::DWABASE_MAX_TOOND_RAMP_POINTS,
                                          uniformData.mRampNumPoints);
@@ -1112,6 +1116,7 @@ resolveToonSpecParams(const DwaBase* me,
     params.mToonSpecular = specular;
 
     params.mIntensity = evalFloat(me, keys.mIntensity, tls, state);
+    params.mFresnelBlend = evalFloat(me, keys.mFresnelBlend, tls, state);
     params.mRoughness = evalFloat(me, keys.mRoughness, tls, state);
     asCpp(params.mTint) = clamp(evalColor(me,keys.mTint, tls, state),
                                           sBlack, sWhite);
@@ -1554,7 +1559,10 @@ resolveTransmissionParams(const DwaBase* me,
         if (params.mUseIndependentTransmissionRoughness) {
             params.mIndependentTransmissionRoughness =
                     saturate(evalFloat(me, keys.mIndependentTransmissionRoughness, tls, state));
+        } else {
+            params.mIndependentTransmissionRoughness = params.mRoughness;
         }
+
         if (me->get(keys.mUseDispersion))
             params.mDispersionAbbeNumber = max(0.0f, me->get(keys.mDispersionAbbeNumber));
         else {
