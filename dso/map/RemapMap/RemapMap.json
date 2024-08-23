@@ -30,6 +30,7 @@
             "enable if": {
                 "remap_method": "uniform"
             },
+            "flags": "FLAGS_BINDABLE",
             "comment": "the input value that will be remapped to the 'output min' value"
         },
         "attrInMax": {
@@ -41,6 +42,7 @@
             "enable if": {
                 "remap_method": "uniform"
             },
+            "flags": "FLAGS_BINDABLE",
             "comment": "the input value that will be remapped to the 'output max' value"
         },
         "attrOutMin": {
@@ -52,6 +54,7 @@
             "enable if": {
                 "remap_method": "uniform"
             },
+            "flags": "FLAGS_BINDABLE",
             "comment": "the value that 'input min' is remapped to"
         },
         "attrOutMax": {
@@ -63,6 +66,7 @@
             "enable if": {
                 "remap_method": "uniform"
             },
+            "flags": "FLAGS_BINDABLE",
             "comment": "the value that 'input max' is remapped to"
         },
         "attrBias": {
@@ -74,6 +78,7 @@
             "enable if": {
                 "remap_method": "uniform"
             },
+            "flags": "FLAGS_BINDABLE",
             "comment": "biases the in-between values toward 'output min' or 'output max'. Default = 0.5"
         },
         "attrClamp": {
@@ -116,6 +121,7 @@
             "enable if": {
                 "remap_method": "RGB"
             },
+            "flags": "FLAGS_BINDABLE",
             "comment": "the input value that will be remapped to the 'output min' value"
         },
         "attrInMaxRGB": {
@@ -127,6 +133,7 @@
             "enable if": {
                 "remap_method": "RGB"
             },
+            "flags": "FLAGS_BINDABLE",
             "comment": "the input value that will be remapped to the 'output max' value"
         },
         "attrOutMinRGB": {
@@ -138,6 +145,7 @@
             "enable if": {
                 "remap_method": "RGB"
             },
+            "flags": "FLAGS_BINDABLE",
             "comment": "the value that 'input min' is remapped to"
         },
         "attrOutMaxRGB": {
@@ -149,6 +157,7 @@
             "enable if": {
                 "remap_method": "RGB"
             },
+            "flags": "FLAGS_BINDABLE",
             "comment": "the value that 'input max' is remapped to"
         },
         "attrBiasRGB": {
@@ -160,6 +169,7 @@
             "enable if": {
                 "remap_method": "RGB"
             },
+            "flags": "FLAGS_BINDABLE",
             "comment": "biases the in-between values toward 'output min' or 'output max'. Default = 0.5"
         },
         "attrClampRGB": {

@@ -124,17 +124,17 @@ RemapMap::sample(const scene_rdl2::rdl2::Map* self, moonray::shading::TLState *t
     const RemapMap* me = static_cast<const RemapMap*>(self);
 
     const Color input       = evalColor(me, attrInput, tls, state);
-    const float inMin       = me->get(attrInMin);
-    const float inMax       = me->get(attrInMax);
-    const float outMin      = me->get(attrOutMin);
-    const float outMax      = me->get(attrOutMax);
-    const float biasAmount  = me->get(attrBias);
+    const float inMin       = evalFloat(me, attrInMin, tls, state);
+    const float inMax       = evalFloat(me, attrInMax, tls, state);
+    const float outMin      = evalFloat(me, attrOutMin, tls, state);
+    const float outMax      = evalFloat(me, attrOutMax, tls, state);
+    const float biasAmount  = evalFloat(me, attrBias, tls, state);
 
-    const Color inMinRGB       = me->get(attrInMinRGB);
-    const Color inMaxRGB       = me->get(attrInMaxRGB);
-    const Color outMinRGB      = me->get(attrOutMinRGB);
-    const Color outMaxRGB      = me->get(attrOutMaxRGB);
-    const Color biasAmountRGB  = me->get(attrBiasRGB);
+    const Color inMinRGB       = evalColor(me, attrInMinRGB, tls, state);
+    const Color inMaxRGB       = evalColor(me, attrInMaxRGB, tls, state);
+    const Color outMinRGB      = evalColor(me, attrOutMinRGB, tls, state);
+    const Color outMaxRGB      = evalColor(me, attrOutMaxRGB, tls, state);
+    const Color biasAmountRGB  = evalColor(me, attrBiasRGB, tls, state);
 
     const bool applyBias = !isEqual(biasAmount, 0.5f);
 

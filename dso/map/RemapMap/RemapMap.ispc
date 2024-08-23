@@ -16,12 +16,12 @@ ISPC_UTIL_EXPORT_ENUM_TO_HEADER(RemapMethod);
 
 static varying Color
 remapRGB(const varying Color& input,
-         const uniform Color& inMin, const uniform Color& inMax,
-         const uniform Color& outMin, const uniform Color& outMax,
-         const uniform Color& biasAmount)
+         const varying Color& inMin, const varying Color& inMax,
+         const varying Color& outMin, const varying Color& outMax,
+         const varying Color& biasAmount)
 {
-    const uniform Color inRange = inMax - inMin;
-    const uniform Color outRange = outMax - outMin;
+    const varying Color inRange = inMax - inMin;
+    const varying Color outRange = outMax - outMin;
 
     // Handle certain edge cases.  It is slightly unclear what the behavior
     // should be in these cases, but we need to handle them somehow.
@@ -32,9 +32,9 @@ remapRGB(const varying Color& input,
     } else if (isBlack(inRange)) {
         // both inMin and inMax are the same, so all input values remap to the same
         // output value.  Start off with average of outMin and outMax, bias if necessary.
-        uniform float tr = 0.5f;
-        uniform float tg = 0.5f;
-        uniform float tb = 0.5f;
+        varying float tr = 0.5f;
+        varying float tg = 0.5f;
+        varying float tb = 0.5f;
         tr = !isEqual(biasAmount.r, 0.5f) ? bias(tr, biasAmount.r) : tr;
         tg = !isEqual(biasAmount.g, 0.5f) ? bias(tg, biasAmount.g) : tg;
         tb = !isEqual(biasAmount.b, 0.5f) ? bias(tb, biasAmount.b) : tb;
@@ -67,13 +67,13 @@ remapRGB(const varying Color& input,
 
 static varying Color
 remapUniform(const varying Color& input,
-             const uniform float inMin, const uniform float inMax,
-             const uniform float outMin, const uniform float outMax,
-             const uniform bool applyBias,
-             const uniform float biasAmount)
+             const varying float inMin, const varying float inMax,
+             const varying float outMin, const varying float outMax,
+             const varying bool applyBias,
+             const varying float biasAmount)
 {
-    const uniform float inRange = inMax - inMin;
-    const uniform float outRange = outMax - outMin;
+    const varying float inRange = inMax - inMin;
+    const varying float outRange = outMax - outMin;
 
     // Handle certain edge cases.  It is slightly unclear what the behavior
     // should be in these cases, but we need to handle them somehow.
@@ -108,20 +108,20 @@ sample(const uniform Map *            uniform map,
        const varying State &                  state)
 {
     const varying Color input      = evalAttrInput(map, tls, state);
-    const uniform float inMin      = getAttrInMin(map);
-    const uniform float inMax      = getAttrInMax(map);
-    const uniform float outMin     = getAttrOutMin(map);
-    const uniform float outMax     = getAttrOutMax(map);
-    const uniform float biasAmount = getAttrBias(map);
+    const varying float inMin      = evalAttrInMin(map, tls, state);
+    const varying float inMax      = evalAttrInMax(map, tls, state);
+    const varying float outMin     = evalAttrOutMin(map, tls, state);
+    const varying float outMax     = evalAttrOutMax(map, tls, state);
+    const varying float biasAmount = evalAttrBias(map, tls, state);
 
     // going to cast all of these to make them iterable
-    const uniform Color inMinRGB      = getAttrInMinRGB(map);
-    const uniform Color inMaxRGB      = getAttrInMaxRGB(map);
-    const uniform Color outMinRGB     = getAttrOutMinRGB(map);
-    const uniform Color outMaxRGB     = getAttrOutMaxRGB(map);
-    const uniform Color biasAmountRGB = getAttrBiasRGB(map);
+    const varying Color inMinRGB      = evalAttrInMinRGB(map, tls, state);
+    const varying Color inMaxRGB      = evalAttrInMaxRGB(map, tls, state);
+    const varying Color outMinRGB     = evalAttrOutMinRGB(map, tls, state);
+    const varying Color outMaxRGB     = evalAttrOutMaxRGB(map, tls, state);
+    const varying Color biasAmountRGB = evalAttrBiasRGB(map, tls, state);
 
-    const uniform bool applyBias = !isEqual(biasAmount, 0.5f);
+    const varying bool applyBias = !isEqual(biasAmount, 0.5f);
 
     varying Color result = input;
 
