@@ -178,6 +178,7 @@ finline std::ostream& operator<<(std::ostream& os,
         << "mRampWeight: " << p.mRampWeight << "\n"
         << "mRampNumPoints: " << p.mRampNumPoints << "\n"
         << "mExtendRamp: " << p.mExtendRamp << "\n"
+        << "mRampInputScale: " << p.mRampInputScale << "\n"
         << "mNormal: "
             << scene_rdl2::math::asCpp(p.mNormal).x << " "
             << scene_rdl2::math::asCpp(p.mNormal).y << " "
@@ -1358,6 +1359,7 @@ public:
                 const scene_rdl2::math::Color* rampColors = reinterpret_cast<const scene_rdl2::math::Color*>(toonDParams.mRampColors);
                 const moonray::shading::ToonBRDF toon(toonN,
                                                       reflectionAlbedo,
+                                                      toonDParams.mRampInputScale,
                                                       toonDParams.mRampNumPoints,
                                                       toonDParams.mRampPositions,
                                                       toonDParams.mRampInterpolators,
@@ -1501,6 +1503,7 @@ public:
                 scene_rdl2::math::Color(1.0f, 1.0f, 1.0f);
         params.mRampInterpolators[0] = ispc::RAMP_INTERPOLATOR_MODE_NONE;
         params.mExtendRamp = false;
+        params.mRampInputScale = 1.0f;
         scene_rdl2::math::asCpp(params.mNormal) = scene_rdl2::math::Vec3f(0.0f, 0.0f, 0.0f);
     }
 

@@ -329,6 +329,7 @@ resolveToonDiffuseParams(const uniform Material *uniform me,
             toonDParams.mRampColors[i] = toonDParams.mRampColors[i] * dwaBase->mToonDiffuseData.mRampColors[i];
         }
         toonDParams.mExtendRamp = GETBOOLATTR(attrFuncs.mGetAttrExtendRamp, me, false);
+        toonDParams.mRampInputScale = EVALFLOATATTR(attrFuncs.mEvalAttrRampInputScale, me, tls, state, 1.0f);
     }
 }
 

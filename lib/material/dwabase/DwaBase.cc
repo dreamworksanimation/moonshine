@@ -210,6 +210,7 @@ DwaBase::DwaBase(const scene_rdl2::rdl2::SceneClass& sceneClass,
         MNRY_ASSERT(mAttrKeys.mToonDiffuseKeys.mRampInterpolators.isValid());
         MNRY_ASSERT(mAttrKeys.mToonDiffuseKeys.mRampPositions.isValid());
         MNRY_ASSERT(mAttrKeys.mToonDiffuseKeys.mExtendRamp.isValid());
+        MNRY_ASSERT(mAttrKeys.mToonDiffuseKeys.mRampInputScale.isValid());
 
         MNRY_ASSERT(mIspc.mAttrFuncs.mToonDiffuseFuncs.mEvalAttrTerminatorShift);
         MNRY_ASSERT(mIspc.mAttrFuncs.mToonDiffuseFuncs.mEvalAttrFlatness);
@@ -1100,6 +1101,7 @@ resolveToonDiffuseParams(const DwaBase* me,
             toonDParams.mRampInterpolators[i] = uniformData.mRampInterpolators[i];
         }
         toonDParams.mExtendRamp = me->get(keys.mExtendRamp);
+        toonDParams.mRampInputScale = evalFloat(me, keys.mRampInputScale, tls, state);
     }
 }
 

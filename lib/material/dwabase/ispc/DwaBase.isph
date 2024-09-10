@@ -44,11 +44,12 @@
     fns.mGetAttrIridescenceRampInterpolationMode   = (uniform intptr_t) (void*) getAttrIridescenceRampInterpolationMode;
 
 #define ASSIGN_TOON_DIFFUSE_ATTR_FUNCS(fns) \
-    fns.mToonDiffuseFuncs.mGetAttrModel            = (uniform intptr_t) (void*) getAttrToonDiffuseModel;                                \
-    fns.mToonDiffuseFuncs.mGetAttrExtendRamp              = (uniform intptr_t) (void*) getAttrToonExtendRamp;                                  \
-    fns.mToonDiffuseFuncs.mEvalAttrTerminatorShift        = (uniform intptr_t) (void*) evalAttrToonTerminatorShift;                             \
-    fns.mToonDiffuseFuncs.mEvalAttrFlatness        = (uniform intptr_t) (void*) evalAttrToonDiffuseFlatness;                            \
-    fns.mToonDiffuseFuncs.mEvalAttrFlatnessFalloff = (uniform intptr_t) (void*) evalAttrToonDiffuseFlatnessFalloff;                     \
+    fns.mToonDiffuseFuncs.mGetAttrModel                  = (uniform intptr_t) (void*) getAttrToonDiffuseModel;                                \
+    fns.mToonDiffuseFuncs.mGetAttrExtendRamp             = (uniform intptr_t) (void*) getAttrToonExtendRamp;                                  \
+    fns.mToonDiffuseFuncs.mEvalAttrRampInputScale        = (uniform intptr_t) (void*) evalAttrToonRampInputScale;                             \
+    fns.mToonDiffuseFuncs.mEvalAttrTerminatorShift       = (uniform intptr_t) (void*) evalAttrToonTerminatorShift;                            \
+    fns.mToonDiffuseFuncs.mEvalAttrFlatness              = (uniform intptr_t) (void*) evalAttrToonDiffuseFlatness;                            \
+    fns.mToonDiffuseFuncs.mEvalAttrFlatnessFalloff       = (uniform intptr_t) (void*) evalAttrToonDiffuseFlatnessFalloff;                     \
     fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset0   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset0;                       \
     fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset1   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset1;                       \
     fns.mToonDiffuseFuncs.mEvalAttrRampPositionOffset2   = (uniform intptr_t) (void*) evalAttrToonDRampPositionOffset2;                       \
@@ -113,6 +114,7 @@ struct ToonDiffuseAttributeFuncs
     uniform intptr_t mEvalAttrFlatnessFalloff;
     uniform intptr_t mGetAttrModel;
     uniform intptr_t mGetAttrExtendRamp;
+    uniform intptr_t mEvalAttrRampInputScale;
     uniform intptr_t mEvalAttrRampColorMultiplier0;
     uniform intptr_t mEvalAttrRampColorMultiplier1;
     uniform intptr_t mEvalAttrRampColorMultiplier2;
@@ -623,6 +625,7 @@ DWABASE_initDwaBaseAttributeFuncs(uniform DwaBaseAttributeFuncs &fns)
 
     fns.mToonDiffuseFuncs.mGetAttrModel                  = 0;
     fns.mToonDiffuseFuncs.mGetAttrExtendRamp             = 0;
+    fns.mToonDiffuseFuncs.mEvalAttrRampInputScale        = 0;
     fns.mToonDiffuseFuncs.mEvalAttrTerminatorShift       = 0;
     fns.mToonDiffuseFuncs.mEvalAttrFlatness              = 0;
     fns.mToonDiffuseFuncs.mEvalAttrFlatnessFalloff       = 0;

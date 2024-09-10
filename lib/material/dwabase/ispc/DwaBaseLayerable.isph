@@ -94,6 +94,7 @@ struct ToonDiffuseParameters
     RampInterpolatorMode mRampInterpolators[DWABASE_MAX_TOOND_RAMP_POINTS];
     Vec3f mNormal;
     bool mExtendRamp;
+    float mRampInputScale;
 };
 
 struct ToonSpecularParameters
@@ -491,6 +492,7 @@ DWABASELAYERABLE_printToonDiffuseParameters(const varying ToonDiffuseParameters 
     print("mRampWeight: %\n", DWABASE_EXTRACT(params->mRampWeight));
     print("mRampNumPoints: %\n", DWABASE_EXTRACT(params->mRampNumPoints));
     print("mExtendRamp: %\n", DWABASE_EXTRACT(params->mExtendRamp));
+    print("mRampInputScale: %\n", DWABASE_EXTRACT(params->mRampInputScale));
     print("\tmNormal: % % %\n",
         DWABASE_EXTRACT(params->mNormal.x),
         DWABASE_EXTRACT(params->mNormal.y),

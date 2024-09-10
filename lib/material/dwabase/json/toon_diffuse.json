@@ -113,6 +113,20 @@
             },
             "group": "Diffuse"
         },
+        "attrToonRampInputScale" : {
+            "name": "ramp_input_scale",
+            "label": "ramp input scale",
+            "comment": "Factor to apply to the input diffuse reflectance before using it as the input to the ramp",
+            "type": "Float",
+            "default": "1.0f",
+            "flags": "FLAGS_BINDABLE",
+            "enable if": {
+                "diffuse_model": "1",
+                "show_diffuse": "true",
+                "prevent_light_culling": "true"
+            },
+            "group": "Diffuse"
+        },
         "attrToonDRampPositions": {
             "name": "positions",
             "type": "FloatVector",

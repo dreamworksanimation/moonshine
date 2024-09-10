@@ -91,6 +91,7 @@ namespace dwabase {
     keys.mToonDiffuseKeys.mRampPositions      = attrToonDRampPositions;           \
     keys.mToonDiffuseKeys.mRampInterpolators  = attrToonDRampInterpolators;       \
     keys.mToonDiffuseKeys.mExtendRamp         = attrToonExtendRamp;               \
+    keys.mToonDiffuseKeys.mRampInputScale     = attrToonRampInputScale;           \
     keys.mToonDiffuseKeys.mTerminatorShift    = attrToonTerminatorShift;          \
     keys.mToonDiffuseKeys.mFlatness           = attrToonDiffuseFlatness;          \
     keys.mToonDiffuseKeys.mFlatnessFalloff    = attrToonDiffuseFlatnessFalloff;   
@@ -126,6 +127,7 @@ struct ToonDiffuseKeys
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::IntVector>          mRampInterpolators;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::FloatVector>        mRampPositions;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>               mExtendRamp;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>              mRampInputScale;
     std::vector<scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Rgb>>   mRampColors;
     std::vector<scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>> mRampOffsets;
 };

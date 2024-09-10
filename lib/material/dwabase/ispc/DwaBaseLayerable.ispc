@@ -1066,6 +1066,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
             ToonBRDF_init(toon,
                           params->mToonDiffuseParams.mNormal,
                           reflectionAlbedo,
+                          params->mToonDiffuseParams.mRampInputScale,
                           params->mToonDiffuseParams.mRampNumPoints,
                           params->mToonDiffuseParams.mRampPositions,
                           params->mToonDiffuseParams.mRampInterpolators,
@@ -1312,6 +1313,7 @@ DWABASELAYERABLE_initToonDiffuseParameters(varying ToonDiffuseParameters * unifo
     params->mRampInterpolators[0] = RAMP_INTERPOLATOR_MODE_NONE;
     params->mNormal = Vec3f_ctor(0.0f, 0.0f, 0.0f);
     params->mExtendRamp = false;
+    params->mRampInputScale = 1.0f;
 }
 
 void
