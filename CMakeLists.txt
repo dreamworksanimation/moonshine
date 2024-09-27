@@ -107,7 +107,12 @@ add_subdirectory(dso)
 if(GLD STREQUAL "$ENV{STUDIO}")
     set(SDKScript_template "##-*-python-*-\n\nImport('env')\n\nenv.GatherProxies()\n")
     file(WRITE ${CMAKE_BINARY_DIR}/SDKScript ${SDKScript_template})
-    install(FILES ${CMAKE_BINARY_DIR}/SDKScript DESTINATION .)
+    install(FILES ${CMAKE_BINARY_DIR}/SDKScript
+        DESTINATION .
+        PERMISSIONS
+          OWNER_READ OWNER_WRITE
+          GROUP_READ GROUP_WRITE
+          WORLD_READ)
 endif()
 
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR ${PROJECT_NAME_UPPER}_BUILD_TESTING)
