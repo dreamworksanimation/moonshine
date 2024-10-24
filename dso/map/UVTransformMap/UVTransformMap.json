@@ -21,12 +21,14 @@
         "attrOffset": {
             "name": "offset",
             "type": "Vec2f",
+            "flags": "FLAGS_BINDABLE",
             "default": "Vec2f(0.0f, 0.0f)",
             "comment": "Shifts UV coordinates"
         },
         "attrScale": {
             "name": "scale",
             "type": "Vec2f",
+            "flags": "FLAGS_BINDABLE",
             "default": "Vec2f(1.0f, 1.0f)",
             "comment": "Scales UV coordinates (after rotation, before offset)"
         },

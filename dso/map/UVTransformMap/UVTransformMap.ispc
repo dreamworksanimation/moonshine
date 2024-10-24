@@ -40,8 +40,9 @@ sample(const uniform Map *            uniform  map,
 {
     const uniform UVTransformMap * uniform me = MAP_GET_ISPC_CPTR(UVTransformMap, map);
 
-    const uniform Vec2f offset = getAttrOffset(map);
-    const uniform Vec2f scale = getAttrScale(map);
+    const varying Vec2f offset = evalAttrOffset(map, tls, state);
+    const varying Vec2f scale = evalAttrScale(map, tls, state);
+
     const uniform Vec2f rotationCenter = getAttrRotationCenter(map);
     const uniform Vec3f rotationAxis = getAttrRotationAxis(map);
 

@@ -137,8 +137,9 @@ UVTransformMap::sample(const Map* self,
                        Color* sample)
 {
     const UVTransformMap* me = static_cast<const UVTransformMap*>(self);
-    const Vec2f offset = me->get(attrOffset);
-    const Vec2f scale  = me->get(attrScale);
+    const Vec2f offset = evalVec2f(me, attrOffset, tls, state);
+    const Vec2f scale = evalVec2f(me, attrScale, tls, state);
+
 
     Vec3f pos;
     const int space = me->get(attrSpace);
