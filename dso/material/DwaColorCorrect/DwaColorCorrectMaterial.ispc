@@ -18,6 +18,7 @@
 struct DwaColorCorrectMaterial
 {
     uniform SubMtlData mSubMaterial;
+    uniform intptr_t mEvalSubsurfaceNormal;
     uniform DwaBaseUniformParameters mUParams;
 };
 ISPC_UTIL_EXPORT_UNIFORM_STRUCT_TO_HEADER(DwaColorCorrectMaterial);
@@ -194,6 +195,9 @@ DWACOLORCORRECT_resolveParameters(DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS)
         const uniform DWABASELAYERABLE_CastsCausticsFunc
         castsCausticsFn = (const uniform DWABASELAYERABLE_CastsCausticsFunc) subMtl.mGetCastsCausticsFunc;
         result = resolveFn(material, tls, state, castsCausticsFn(material), params);
+        // override this, to make sure *this* material's evalSubsurfaceNormal() func is called,
+        // and not the child material's func. Also see DwaSwitchMaterial.
+        params->mEvalSubsurfaceNormalFn = ccMtl->mEvalSubsurfaceNormal;
         modifyParameters(me, tls, state, *params);
     }
     return result;

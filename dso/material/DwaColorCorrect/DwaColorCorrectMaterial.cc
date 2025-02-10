@@ -131,6 +131,7 @@ DwaColorCorrectMaterial::DwaColorCorrectMaterial(
 
     mShadeFunc = DwaColorCorrectMaterial::shade;
     mShadeFuncv = (scene_rdl2::rdl2::ShadeFuncv) ispc::DwaColorCorrectMaterial_getShadeFunc();
+    mIspc.mEvalSubsurfaceNormal = (intptr_t)DwaColorCorrectMaterial::evalSubsurfaceNormal;
 }
 
 void
@@ -177,6 +178,9 @@ DwaColorCorrectMaterial::resolveParameters(TLState *tls,
     bool result = false;
     if (mInputMtl) {
         result = mInputMtl->resolveParameters(tls, state, castsCaustics, params);
+        // override this, to make sure *this* material's evalSubsurfaceNormal() func is called,
+        // and not the child material's func. Also see DwaSwitchMaterial.
+        params.mEvalSubsurfaceNormalFn = mIspc.mEvalSubsurfaceNormal;
         if (result) {
             modifyParameters(tls, state, params);
         }
