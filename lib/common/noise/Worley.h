@@ -186,7 +186,7 @@ private:
 
     // Static data
     static bool sIsWorleyDataInitialized;
-    static tbb::mutex sWorleyInitDataMutex;
+    static std::mutex sWorleyInitDataMutex;
 
     static std::vector<float> sWorleyPointsX;
     static std::vector<float> sWorleyPointsY;
