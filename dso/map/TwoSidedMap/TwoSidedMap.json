@@ -1,0 +1,22 @@
+{
+    "name": "TwoSidedMap",
+    "type": "Map",
+    "attributes": {
+        "attrFrontColor": {
+            "name": "front_color",
+            "label": "front color",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "The color rendered on the front side of geometry"
+        },
+        "attrBackColor": {
+            "name": "back_color",
+            "label": "back color",
+            "type": "Rgb",
+            "default": "Rgb(1.0f, 1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
+            "comment": "The color rendered on the back side of geometry"
+        }
+    }
+}
