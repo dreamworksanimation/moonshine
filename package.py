@@ -29,23 +29,15 @@ help = ('For assistance, '
         "please contact the folio's owner at: moonbase-dev@dreamworks.com")
 
 variants = [
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'gcc-11.x'],
-    ['os-rocky-9', 'opt_level-debug', 'refplat-vfx2023.1', 'gcc-11.x'],
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'clang-17.0.6.x'],
-    ['os-rocky-9', 'opt_level-debug', 'refplat-vfx2023.1', 'clang-17.0.6.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'openimageio-2.3.20.0.x', 'gcc-11.x'],
+    ['os-rocky-9', 'opt_level-debug',    'refplat-vfx2023.1', 'openimageio-2.3.20.0.x', 'gcc-11.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'openimageio-2.3.20.0.x', 'clang-17.0.6.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'openimageio-2.4.8.0.x',  'gcc-11.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2022.0', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2024.0', 'openimageio-2.4.8.0.x',  'gcc-11.x'],
 
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2021.0', 'gcc-9.3.x.1'],
-    ['os-rocky-9', 'opt_level-debug', 'refplat-vfx2021.0', 'gcc-9.3.x.1'],
-
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2022.0', 'gcc-9.3.x.1'],
-    ['os-rocky-9', 'opt_level-debug', 'refplat-vfx2022.0', 'gcc-9.3.x.1'],
-
-    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2021.0', 'gcc-9.3.x.1'],
-    ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2021.0', 'gcc-9.3.x.1'],
-    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2021.0', 'clang-13'],
-
-    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2022.0', 'gcc-9.3.x.1'],
-    ['os-CentOS-7', 'opt_level-debug', 'refplat-vfx2022.0', 'gcc-9.3.x.1'],
+    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2022.0', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1'],
+    ['os-CentOS-7', 'opt_level-debug',    'refplat-vfx2022.0', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1'],
 ]
 
 conf_rats_variants = variants[0:2]
@@ -53,7 +45,6 @@ conf_CI_variants = variants
 
 requires = [
     'moonray-17.8',
-    'openimageio-2.3.20.0.x',
     'scene_rdl2-15.5',
 ]
 
@@ -61,7 +52,7 @@ private_build_requires = [
     'cmake_modules-1.0',
     'cppunit',
     'ispc-1.20.0.x',
-    'python-2.7|3.7|3.9|3.10'
+    'python-2.7|3.7|3.9|3.10|3.11'
 ]
 
 commandstr = lambda i: "cd build/"+os.path.join(*variants[i])+"; ctest -j $(nproc)"
