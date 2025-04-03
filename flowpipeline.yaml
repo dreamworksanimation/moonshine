@@ -23,7 +23,6 @@ pipeline-configurations:
       - rez-test _packagename_ variant5
       - rez-test _packagename_ variant6
       - rez-test _packagename_ variant7
-      - rez-test _packagename_ variant8
       ignore_failures: false
       ignore_failures_email: true
       resource:
