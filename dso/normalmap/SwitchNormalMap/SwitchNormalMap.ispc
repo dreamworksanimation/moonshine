@@ -20,23 +20,25 @@ struct SwitchNormalMap
 ISPC_UTIL_EXPORT_UNIFORM_STRUCT_TO_HEADER(SwitchNormalMap);
 
 static varying Vec3f
-sampleNormal(const uniform NormalMap *uniform me,
+sampleNormal(const uniform NormalMap *uniform map,
              uniform ShadingTLState *uniform tls,
              const varying State &state)
 {
-    const uniform SwitchNormalMap * uniform sn = NORMALMAP_GET_ISPC_PTR(SwitchNormalMap, me);
+    const uniform SwitchNormalMap * uniform me = NORMALMAP_GET_ISPC_PTR(SwitchNormalMap, map);
     varying Vec3f norm = state.mN;
 
-    uniform int choice = max(0, (uniform int) getAttrChoice(me));
+    varying int choice = max(0, (varying int) evalAttrChoice(map, tls, state));
     choice = choice % SN_MAX_INPUTS;
 
-    const uniform NormalMap* uniform nm = 
-        (const uniform NormalMap* uniform) (sn->mNormalMap[choice]);
+    foreach_unique(val in choice) {
+        const uniform NormalMap* uniform nm =
+            (const uniform NormalMap* uniform) (me->mNormalMap[val]);
 
-    if (nm) {
-        SampleNormalPtr sampleNormalFn = (SampleNormalPtr) sn->mSampleNormalFn[choice];
-        if (sampleNormalFn != NULL) {
-            sampleNormalFn(nm, tls, &state, &norm);
+        if (nm) {
+            SampleNormalPtr sampleNormalFn = (SampleNormalPtr) me->mSampleNormalFn[val];
+            if (sampleNormalFn != NULL) {
+                sampleNormalFn(nm, tls, &state, &norm);
+            }
         }
     }
 
