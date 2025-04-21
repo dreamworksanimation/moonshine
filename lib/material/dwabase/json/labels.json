@@ -12,6 +12,26 @@
         "aovSpecular":              "specular",
         "aovDiffuse":               "diffuse",
         "aovSpecularTransmission":  "specular transmission",
-        "aovDiffuseTransmission":   "diffuse transmission"
+        "aovDiffuseTransmission":   "diffuse transmission",
+        "aovDiffuseAccent":         "diffuse accent",
+        "aovDiffuseAccent1":        "diffuse accent1",
+        "aovDiffuseAccent2":        "diffuse accent2",
+        "aovDiffuseAccent3":        "diffuse accent3",
+        "aovDiffuseAccent4":        "diffuse accent3",
+        "aovDiffuseAccent5":        "diffuse accent5",
+        "aovDiffuseAccent6":        "diffuse accent6",
+        "aovDiffuseAccent7":        "diffuse accent7",
+        "aovDiffuseAccent8":        "diffuse accent8",
+        "aovDiffuseAccent9":        "diffuse accent9",
+        "aovSpecularAccent":        "specular accent",
+        "aovSpecularAccent1":       "specular accent1",
+        "aovSpecularAccent2":       "specular accent2",
+        "aovSpecularAccent3":       "specular accent3",
+        "aovSpecularAccent4":       "specular accent4",
+        "aovSpecularAccent5":       "specular accent5",
+        "aovSpecularAccent6":       "specular accent6",
+        "aovSpecularAccent7":       "specular accent7",
+        "aovSpecularAccent8":       "specular accent8",
+        "aovSpecularAccent9":       "specular accent9"
     }
 }

@@ -11,11 +11,14 @@
 #include <moonshine/material/dwabase/ispc/DwaBase.isph>
 #include <moonshine/material/dwabase/ispc/Blending.isph>
 #include <moonray/rendering/shading/ispc/MaterialApi.isph>
+#include <moonray/rendering/shading/ispc/EvalShader.isph>
 
 struct DwaTwoSidedMaterial
 {
     uniform SubMtlData mFrontMaterial;
     uniform SubMtlData mBackMaterial;
+    uniform bool mFrontIsInterfaceDwaBaseLayerable;
+    uniform bool mBackIsInterfaceDwaBaseLayerable;
     uniform TraceSet * uniform mSubsurfaceTraceSet;
     uniform intptr_t mEvalSubsurfaceNormal;
     uniform DwaBaseUniformParameters mUParams;
@@ -200,13 +203,35 @@ shade(const uniform Material *      uniform  me,
     const uniform DwaTwoSidedMaterial* uniform twoSidedMaterial =
         (const uniform DwaTwoSidedMaterial* uniform)getDwaTwoSidedMaterialStruct(me);
 
+    const uniform SubMtlData& front = twoSidedMaterial->mFrontMaterial;
+    const uniform SubMtlData& back = twoSidedMaterial->mBackMaterial;
+    const uniform Material* uniform frontMaterial = (const uniform Material * uniform) front.mDwaBaseLayerable;
+    const uniform Material* uniform backMaterial = (const uniform Material * uniform) back.mDwaBaseLayerable;
+
     varying DwaBaseParameters params;
 
-    if (DWATWOSIDED_resolveParameters(me, tls, state, false, &params)) {
-        // get sss trace set
-        params.mSubsurfaceTraceSet = twoSidedMaterial->mSubsurfaceTraceSet;
-
-        DWABASE_createLobes(me, tls, state, bsdfBuilder, &params, &twoSidedMaterial->mUParams);
+    if (isEntering(state) && frontMaterial) {
+        if (twoSidedMaterial->mFrontIsInterfaceDwaBaseLayerable) {
+            const DWABASELAYERABLE_ResolveParametersFunc resolveFnFront = (DWABASELAYERABLE_ResolveParametersFunc) front.mResolveParametersFunc;
+            const uniform DWABASELAYERABLE_CastsCausticsFunc castsCausticsFnFront = (const uniform DWABASELAYERABLE_CastsCausticsFunc) front.mGetCastsCausticsFunc;
+            if (resolveFnFront(frontMaterial, tls, state, castsCausticsFnFront(frontMaterial), &params)) {
+                params.mSubsurfaceTraceSet = twoSidedMaterial->mSubsurfaceTraceSet;
+                DWABASE_createLobes(me, tls, state, bsdfBuilder, &params, &twoSidedMaterial->mUParams);
+            }
+        } else {
+            shadeMaterial(frontMaterial, tls, 1, &state, &bsdfBuilder);
+        }
+    } else if (!isEntering(state) && backMaterial) {
+        if (twoSidedMaterial->mBackIsInterfaceDwaBaseLayerable) {
+            const DWABASELAYERABLE_ResolveParametersFunc resolveFnBack = (DWABASELAYERABLE_ResolveParametersFunc) back.mResolveParametersFunc;
+            const uniform DWABASELAYERABLE_CastsCausticsFunc castsCausticsFnBack = (const uniform DWABASELAYERABLE_CastsCausticsFunc) back.mGetCastsCausticsFunc;
+            if (resolveFnBack(backMaterial, tls, state, castsCausticsFnBack(backMaterial), &params)) {
+                params.mSubsurfaceTraceSet = twoSidedMaterial->mSubsurfaceTraceSet;
+                DWABASE_createLobes(me, tls, state, bsdfBuilder, &params, &twoSidedMaterial->mUParams);
+            }
+        } else {
+            shadeMaterial(backMaterial, tls, 1, &state, &bsdfBuilder);
+        }
     }
 }
 
