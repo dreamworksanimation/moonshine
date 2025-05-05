@@ -443,6 +443,71 @@ public:
     {
         return mGlitterPointer.get();
     }
+
+    finline void
+    resolveGlitterParams(const DwaBase* me,
+                         moonray::shading::TLState *tls,
+                         const moonray::shading::State& state,
+                         bool castsCaustics,
+                         const ispc::DwaBase& ispcDwaBase,
+                         const ispc::DwaBaseParameterHints& hints,
+                         const DwaBaseAttributeKeys& keys,
+                         ispc::DwaBaseParameters &params)
+    {
+        if (hints.mRequiresGlitterParams) {
+            params.mGlitterPointerScalar = (intptr_t)(me->getGlitterPointer());
+
+            // We don't need to get the uniform parameters for
+            // scalar because they are stored in the Glitter object.
+            //params.mGlitterUniformParameters = ispcDwaBase.mGlitterUniformParameters;
+
+            ispc::GLITTER_VaryingParameters& vParams = params.mGlitterVaryingParameters;
+
+            if (hints.mGlitterIsOne) {
+                vParams.mGlitterMask = 1.0f;
+            } else {
+                vParams.mGlitterMask = scene_rdl2::math::saturate(evalFloat(me, keys.mGlitter, tls, state));
+            }
+
+            // Gather varying attributes
+            vParams.mFlakeStyleFrequency[0] = evalFloat(me, keys.mGlitterStyleAFrequency, tls, state);
+            vParams.mFlakeStyleFrequency[1] = evalFloat(me, keys.mGlitterStyleBFrequency, tls, state);
+
+            // These conditionals ensure that if the style is "off" then its flake size is 0
+            // so that the max() calculation in NoiseWorley::searchPoints is correct.
+            if (!scene_rdl2::math::isZero(vParams.mFlakeStyleFrequency[0])) {
+                scene_rdl2::math::asCpp(vParams.mFlakeColor[0]) = evalColor(me, keys.mGlitterFlakeColorA, tls, state);
+                vParams.mFlakeSize[0] = evalFloat(me, keys.mGlitterFlakeSizeA, tls, state);
+                vParams.mFlakeRoughness[0] = me->get(keys.mGlitterFlakeRoughnessA);
+            } else {
+                scene_rdl2::math::asCpp(vParams.mFlakeColor[0]) = scene_rdl2::math::sBlack;
+                vParams.mFlakeSize[0] = 0.f;
+                vParams.mFlakeRoughness[0] = 0.14f;
+            }
+
+            if (!scene_rdl2::math::isZero(vParams.mFlakeStyleFrequency[1])) {
+                scene_rdl2::math::asCpp(vParams.mFlakeColor[1]) = evalColor(me, keys.mGlitterFlakeColorB, tls, state);
+                vParams.mFlakeSize[1] = evalFloat(me, keys.mGlitterFlakeSizeB, tls, state);
+                vParams.mFlakeRoughness[1] = me->get(keys.mGlitterFlakeRoughnessB);
+            } else {
+                scene_rdl2::math::asCpp(vParams.mFlakeColor[1]) = scene_rdl2::math::sBlack;
+                vParams.mFlakeSize[1] = 0.f;
+                vParams.mFlakeRoughness[1] = 0.14f;
+            }
+
+            scene_rdl2::math::asCpp(vParams.mFlakeHSVColorVariation) =
+                scene_rdl2::math::Vec3f(evalFloat(me, keys.mGlitterFlakeHueVariation, tls, state),
+                            evalFloat(me, keys.mGlitterFlakeSaturationVariation, tls, state),
+                            evalFloat(me, keys.mGlitterFlakeValueVariation, tls, state));
+
+            vParams.mFlakeDensity = evalFloat(me, keys.mGlitterFlakeDensity, tls, state);
+            vParams.mFlakeJitter = evalFloat(me, keys.mGlitterFlakeJitter, tls, state);
+            vParams.mFlakeOrientationRandomness = me->get(keys.mGlitterFlakeOrientationRandomness);
+            vParams.mCompensateDeformation = me->get(keys.mGlitterCompensateDeformation);
+            vParams.mApproximateForSecRays = me->get(keys.mGlitterApproximateForSecondaryRays);
+        }
+    }
+
     // ---------------------------
 
 private:

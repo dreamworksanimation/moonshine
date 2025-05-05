@@ -29,7 +29,6 @@ enum VelvetVersion {
 // Access Function to retrieve ISPC LABELS struct
 extern "C" const void* uniform getLabelsDataPtr(const uniform Material* uniform);
 
-extern "C" const void* uniform getISPCDwaBaseLayerablePtr(const uniform Material* uniform);
 
 // When no label present set to invalid value defined in Bsdf.isph::BsdfLobe_setLabel.
 static const uniform int noLabel = -1;

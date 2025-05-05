@@ -10,6 +10,9 @@
 #include <moonray/rendering/shading/ispc/Ior.isph>
 #include <moonshine/material/glitter/ispc/Glitter.isph>
 
+// Access Function to retrieve ISPC LABELS struct
+extern "C" const void* uniform getISPCDwaBaseLayerablePtr(const uniform Material* uniform);
+
 // Corresponding enum must be updated in BsdfToon.h and BsdfToon.isph
 // and number of ToonDRampColorMultiplier attributes
 enum DWABASE_ToonDiffuseConstants {
@@ -692,7 +695,6 @@ void DWABASE_addGlitterLobes(varying BsdfBuilder &builder,
                              const varying DwaBaseParameters * uniform params,
                              const uniform DwaBaseLabels * uniform labels,
                              const uniform DwaBaseEventMessages& eventMessages);
-
 
 void DWABASE_addOuterSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                                    const varying DwaBaseParameters * uniform params,

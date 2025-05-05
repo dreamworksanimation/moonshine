@@ -681,6 +681,14 @@ DWABASE_initDwaBaseAttributeFuncs(uniform DwaBaseAttributeFuncs &fns)
 extern bool
 DWABASE_resolveParameters(DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS);
 
+extern void
+DWABASE_resolveGlitterParams(const uniform DwaBase * uniform dwaBase,
+                             const uniform Material *uniform me,
+                             uniform ShadingTLState * uniform tls,
+                             const varying State &state,
+                             const uniform bool castsCaustics,
+                             varying DwaBaseParameters * uniform params);
+
 /// Accessor Function to retrieve the ISPC data pointer struct from C++ code branch
 extern "C" const void* uniform getDwaBaseMaterialStruct(const uniform Material* uniform);
 

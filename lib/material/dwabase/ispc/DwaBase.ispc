@@ -76,13 +76,13 @@ resolveNormalParams(const uniform DwaBase * uniform dwaBase,
     }
 }
 
-inline void
-resolveGlitterParams(const uniform DwaBase * uniform dwaBase,
-                     const uniform Material *uniform me,
-                     uniform ShadingTLState * uniform tls,
-                     const varying State &state,
-                     const uniform bool castsCaustics,
-                     varying DwaBaseParameters * uniform params)
+extern void
+DWABASE_resolveGlitterParams(const uniform DwaBase * uniform dwaBase,
+                             const uniform Material *uniform me,
+                             uniform ShadingTLState * uniform tls,
+                             const varying State &state,
+                             const uniform bool castsCaustics,
+                             varying DwaBaseParameters * uniform params)
 {
     if (dwaBase->mHints.mRequiresGlitterParams) {
         params->mGlitterPointerVector = dwaBase->mGlitterPointer;
@@ -957,7 +957,7 @@ DWABASE_resolveParameters(DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS)
     resolveHairParams(dwaBase, me, tls, state, castsCaustics, &params->mHairParameters);
     resolveToonParams(dwaBase, me, tls, state, params);
     resolveHairToonParams(dwaBase, me, tls, state, params);
-    resolveGlitterParams(dwaBase, me, tls, state, castsCaustics, params);
+    DWABASE_resolveGlitterParams(dwaBase, me, tls, state, castsCaustics, params);
     resolveFuzzParams(dwaBase, me, tls, state, castsCaustics, params);
     resolveOuterSpecularParams(dwaBase, me, tls, state, castsCaustics, params);
     resolveFabricSpecularParams(dwaBase, me, tls, state, castsCaustics, params);
