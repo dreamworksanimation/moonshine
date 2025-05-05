@@ -452,7 +452,7 @@ public:
                          const ispc::DwaBase& ispcDwaBase,
                          const ispc::DwaBaseParameterHints& hints,
                          const DwaBaseAttributeKeys& keys,
-                         ispc::DwaBaseParameters &params)
+                         ispc::DwaBaseParameters &params) const
     {
         if (hints.mRequiresGlitterParams) {
             params.mGlitterPointerScalar = (intptr_t)(me->getGlitterPointer());
