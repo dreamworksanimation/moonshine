@@ -111,6 +111,15 @@ DwaRefractiveMaterial::update()
 {
     // must call DwaBase::update()!
     DwaBase::update();
+
+    ispc::DwaBase* dwabase = getISPCBaseMaterialStruct();
+
+    if (get(attrDiffuseLightSet)) {
+        dwabase->mDiffuseLightSet = get(attrDiffuseLightSet)->asA<scene_rdl2::rdl2::LightSet>();
+    }
+    if (get(attrSpecularLightSet)) {
+        dwabase->mSpecularLightSet = get(attrSpecularLightSet)->asA<scene_rdl2::rdl2::LightSet>();
+    }
 }
 
 void

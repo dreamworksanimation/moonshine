@@ -207,6 +207,13 @@ DwaToonMaterial::update()
     keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset7);
     keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset8);
     keys->mToonSpecularKeys.mRampOffsets.push_back(attrToonSpecularRampPositionOffset9);
+
+    if (get(attrDiffuseLightSet)) {
+        dwabase->mDiffuseLightSet  = get(attrDiffuseLightSet)->asA<scene_rdl2::rdl2::LightSet>();
+    }
+    if (get(attrSpecularLightSet)) {
+        dwabase->mSpecularLightSet = get(attrSpecularLightSet)->asA<scene_rdl2::rdl2::LightSet>();
+    }
 }
 
 void

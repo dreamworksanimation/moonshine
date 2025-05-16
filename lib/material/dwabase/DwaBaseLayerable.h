@@ -517,7 +517,8 @@ public:
                  const ispc::DwaBaseLabels &labels,
                  const moonray::shading::TLState *tls,
                  const moonray::shading::State &state,
-                 const ispc::DwaBaseEventMessages &eventMessages)
+                 const ispc::DwaBaseEventMessages &eventMessages,
+                 const scene_rdl2::rdl2::LightSet* lightSet)
     {
         const ispc::HairParameters hairParams = params.mHairParameters;
 
@@ -538,7 +539,8 @@ public:
             builder.addHairDiffuseBSDF(hairDiffuseBsdf,
                                        hairParams.mHairDiffuse * (1.0f - sssWeight),
                                        ispc::BSDFBUILDER_PHYSICAL,
-                                       labels.mHairLabels.mHairDiffuse);
+                                       labels.mHairLabels.mHairDiffuse,
+                                       lightSet);
 
             if (hasSSS) {
                 // diffuse front color substitutes for albedo in these lobes
@@ -558,7 +560,8 @@ public:
                     builder.addNormalizedDiffusion(diffuseRefl,
                                                    hairParams.mHairDiffuse * sssWeight,
                                                    ispc::BSDFBUILDER_PHYSICAL,
-                                                   labels.mHairLabels.mHair);
+                                                   labels.mHairLabels.mHair,
+                                                   lightSet);
 
                 } else if (bssrdfType == ispc::SUBSURFACE_DIPOLE_DIFFUSION) {
                     const moonray::shading::DipoleDiffusion diffuseRefl(
@@ -572,7 +575,8 @@ public:
                     builder.addDipoleDiffusion(diffuseRefl,
                                                hairParams.mHairDiffuse * sssWeight,
                                                ispc::BSDFBUILDER_PHYSICAL,
-                                               labels.mHairLabels.mHair);
+                                               labels.mHairLabels.mHair,
+                                               lightSet);
 
                 }
             }
@@ -594,7 +598,8 @@ public:
                 builder.addHairDiffuseBSDF(hairDiffuseBsdf,
                                            1.0f,
                                            ispc::BSDFBUILDER_PHYSICAL,
-                                           labels.mHairLabels.mHair);
+                                           labels.mHairLabels.mHair,
+                                           lightSet);
             } else {
                 scene_rdl2::math::Vec3f N = scene_rdl2::math::Vec3f(0.f);
                 float hairRotation = 0.0f;
@@ -655,7 +660,8 @@ public:
                     builder.addHairBSDF(hairBsdf,
                                         1.0f,
                                         ispc::BSDFBUILDER_PHYSICAL,
-                                        labels.mHairLabels.mHair);
+                                        labels.mHairLabels.mHair,
+                                        lightSet);
                 } else {
                     if (hairParams.mHairShowR) {
                         moonray::shading::HairRBRDF hairRBRDF(
@@ -670,7 +676,8 @@ public:
                         builder.addHairRBRDF(hairRBRDF,
                                              1.0f,
                                              ispc::BSDFBUILDER_PHYSICAL,
-                                             labels.mHairLabels.mHairR);
+                                             labels.mHairLabels.mHairR,
+                                             lightSet);
                     }
 
                     // these 3 lobes need to be added as adjacent lobes because while
@@ -694,7 +701,8 @@ public:
                        builder.addHairTTBTDF(hairTTBTDF,
                                              1.0f,
                                              ispc::BSDFBUILDER_PHYSICAL,
-                                             labels.mHairLabels.mHairTT);
+                                             labels.mHairLabels.mHairTT,
+                                             lightSet);
                     }
 
                     if (hairParams.mHairShowTRT) {
@@ -718,7 +726,8 @@ public:
                        builder.addHairTRTBRDF(hairTRTBRDF,
                                               1.0f,
                                               ispc::BSDFBUILDER_PHYSICAL,
-                                              labels.mHairLabels.mHairTRT);
+                                              labels.mHairLabels.mHairTRT,
+                                              lightSet);
                     }
 
                     if (hairParams.mHairShowTRRT) {
@@ -735,7 +744,8 @@ public:
                        builder.addHairTRRTBRDF(hairTRRTBRDF,
                                                1.0f,
                                                ispc::BSDFBUILDER_PHYSICAL,
-                                               labels.mHairLabels.mHairTRRT);
+                                               labels.mHairLabels.mHairTRRT,
+                                               lightSet);
                     }
 
                     builder.endAdjacentComponents();
@@ -763,7 +773,8 @@ public:
     finline static void
     addToonSpecularLobes(moonray::shading::BsdfBuilder &builder,
                          const ispc::ToonSpecularParameters &params,
-                         const int label)
+                         const int label,
+                         const scene_rdl2::rdl2::LightSet* lightSet)
     {
         const moonray::shading::ToonSpecularBRDF toonSpecularBRDF(
                 scene_rdl2::math::asCpp(params.mNormal),
@@ -787,13 +798,15 @@ public:
                 toonSpecularBRDF,
                 params.mToonSpecular,
                 ispc::BSDFBUILDER_PHYSICAL,
-                label);
+                label,
+                lightSet);
     }
 
     finline static void
     addHairToonSpecularLobes(moonray::shading::BsdfBuilder &builder,
                          const ispc::ToonSpecularParameters &params,
-                         const ispc::DwaBaseLabels &labels)
+                         const ispc::DwaBaseLabels &labels,
+                         const scene_rdl2::rdl2::LightSet* lightSet)
     {
         const moonray::shading::HairToonSpecularBRDF hairToonSpecularBRDF(
                 scene_rdl2::math::asCpp(params.mNormal),
@@ -818,7 +831,8 @@ public:
                 hairToonSpecularBRDF,
                 params.mToonSpecular,
                 ispc::BSDFBUILDER_PHYSICAL,
-                labels.mHairLabels.mHair);
+                labels.mHairLabels.mHair,
+                lightSet);
     }
 
     finline static void
@@ -827,7 +841,8 @@ public:
                           const ispc::DwaBaseUniformParameters &uParams,
                           const ispc::DwaBaseLabels &labels,
                           float minRoughness,
-                          const moonray::shading::Iridescence * iridescence)
+                          const moonray::shading::Iridescence * iridescence,
+                          const scene_rdl2::rdl2::LightSet* lightSet)
     {
         const bool refracts =
             (uParams.mOuterSpecularUseBending && (!uParams.mThinGeometry));
@@ -861,7 +876,8 @@ public:
                         clearcoat,
                         params.mOuterSpecular,
                         ispc::BSDFBUILDER_PHYSICAL,
-                        labels.mOuterSpecular);
+                        labels.mOuterSpecular,
+                        lightSet);
             } else { // microfacet
                 const moonray::shading::MicrofacetIsotropicClearcoat clearcoat(
                         scene_rdl2::math::asCpp(params.mOuterSpecularNormal),
@@ -878,7 +894,8 @@ public:
                         clearcoat,
                         params.mOuterSpecular,
                         ispc::BSDFBUILDER_PHYSICAL,
-                        labels.mOuterSpecular);
+                        labels.mOuterSpecular,
+                        lightSet);
             }
         } else { // not clearcoat, just a reflection lobe
             if (scene_rdl2::math::isZero(roughness)) { // mirror
@@ -891,7 +908,8 @@ public:
                         reflection,
                         params.mOuterSpecular,
                         ispc::BSDFBUILDER_PHYSICAL,
-                        labels.mOuterSpecular);
+                        labels.mOuterSpecular,
+                        lightSet);
             } else { // microfacet
                 const moonray::shading::MicrofacetIsotropicBRDF reflection(
                         scene_rdl2::math::asCpp(params.mOuterSpecularNormal),
@@ -904,7 +922,8 @@ public:
                 builder.addMicrofacetIsotropicBRDF(reflection,
                                                    params.mOuterSpecular,
                                                    ispc::BSDFBUILDER_PHYSICAL,
-                                                   labels.mOuterSpecular);
+                                                   labels.mOuterSpecular,
+                                                   lightSet);
             }
         }
     }
@@ -940,6 +959,9 @@ public:
             builder.setPreventLightCulling(true);
         }
 
+        const scene_rdl2::rdl2::LightSet* diffuseLightSet = reinterpret_cast<const scene_rdl2::rdl2::LightSet*>(params.mDiffuseLightSet);
+        const scene_rdl2::rdl2::LightSet* specularLightSet = reinterpret_cast<const scene_rdl2::rdl2::LightSet*>(params.mSpecularLightSet);
+
         // Apply roughness clamping
         // FIXME: We should handle roughness clamping automatically
         // in the BsdfBuilder, rather than relying on the shader
@@ -963,7 +985,8 @@ public:
             builder.addVelvetBRDF(fuzz,
                                   params.mFuzz,
                                   ispc::BSDFBUILDER_PHYSICAL,
-                                  labels.mFuzz);
+                                  labels.mFuzz,
+                                  diffuseLightSet);
         }
 
         // setup iridescence if needed
@@ -1010,7 +1033,7 @@ public:
 
         // Outer specular reflection/clearcoat (ignored when exiting)
         if (!scene_rdl2::math::isZero(params.mOuterSpecular) && state.isEntering() == true) {
-            addOuterSpecularLobes(builder, params, uParams, labels, minRoughness, outerIridescence);
+            addOuterSpecularLobes(builder, params, uParams, labels, minRoughness, outerIridescence, specularLightSet);
         }
 
         // Glitter lobes
@@ -1040,7 +1063,8 @@ public:
                 builder.addFabricBRDF(warp,
                                       params.mWarpThreadCoverage * params.mFabricSpecular,
                                       ispc::BSDFBUILDER_PHYSICAL,
-                                      labels.mSpecular);
+                                      labels.mSpecular,
+                                      specularLightSet);
             }
 
             const scene_rdl2::math::Color& weftColor = scene_rdl2::math::asCpp(params.mWeftColor);
@@ -1060,7 +1084,8 @@ public:
                 builder.addFabricBRDF(weft,
                                       (1.f - params.mWarpThreadCoverage) * params.mFabricSpecular,
                                       ispc::BSDFBUILDER_PHYSICAL,
-                                      labels.mSpecular);
+                                      labels.mSpecular,
+                                      specularLightSet);
             }
 
             builder.endAdjacentComponents();
@@ -1080,11 +1105,13 @@ public:
             if (uParams.mHairToonS1Model == ispc::ToonSpecularModel::ToonSpecularSurface) {
                 addToonSpecularLobes(builder,
                                      params.mHairToonS1Params,
-                                     labels.mHairLabels.mHair);
+                                     labels.mHairLabels.mHair,
+                                     specularLightSet);
             } else if (uParams.mHairToonS1Model == ispc::ToonSpecularModel::ToonSpecularHair) {
                 addHairToonSpecularLobes(builder,
                                          params.mHairToonS1Params,
-                                         labels);
+                                         labels,
+                                         specularLightSet);
             }
         }
 
@@ -1093,11 +1120,13 @@ public:
             if (uParams.mHairToonS2Model == ispc::ToonSpecularModel::ToonSpecularSurface) {
                 addToonSpecularLobes(builder,
                                      params.mHairToonS2Params,
-                                     labels.mHairLabels.mHair);
+                                     labels.mHairLabels.mHair,
+                                     specularLightSet);
             } else if (uParams.mHairToonS2Model == ispc::ToonSpecularModel::ToonSpecularHair) {
                 addHairToonSpecularLobes(builder,
                                          params.mHairToonS2Params,
-                                         labels);
+                                         labels,
+                                         specularLightSet);
             }
         }
 
@@ -1106,11 +1135,13 @@ public:
             if (uParams.mHairToonS3Model == ispc::ToonSpecularModel::ToonSpecularSurface) {
                 addToonSpecularLobes(builder,
                                      params.mHairToonS3Params,
-                                     labels.mHairLabels.mHair);
+                                     labels.mHairLabels.mHair,
+                                     specularLightSet);
             } else if (uParams.mHairToonS3Model == ispc::ToonSpecularModel::ToonSpecularHair) {
                 addHairToonSpecularLobes(builder,
                                          params.mHairToonS3Params,
-                                         labels);
+                                         labels,
+                                         specularLightSet);
             }
         }
 
@@ -1154,7 +1185,8 @@ public:
                     builder.addMirrorBRDF(conductorBRDF,
                                           metallicWeight,
                                           ispc::BSDFBUILDER_PHYSICAL,
-                                          labels.mSpecular);
+                                          labels.mSpecular,
+                                          specularLightSet);
 
                 } else {
                     if (scene_rdl2::math::isZero(params.mAnisotropy)) {
@@ -1170,7 +1202,8 @@ public:
                         builder.addMicrofacetIsotropicBRDF(conductorBRDF,
                                                            metallicWeight,
                                                            ispc::BSDFBUILDER_PHYSICAL,
-                                                           labels.mSpecular);
+                                                           labels.mSpecular,
+                                                           specularLightSet);
                     } else {
                         const scene_rdl2::math::Vec2f rgh = computeAnisoRoughness(roughness,
                                                                              minRoughness,
@@ -1189,7 +1222,8 @@ public:
                         builder.addMicrofacetAnisotropicBRDF(conductorBRDF,
                                                              metallicWeight,
                                                              ispc::BSDFBUILDER_PHYSICAL,
-                                                             labels.mSpecular);
+                                                             labels.mSpecular,
+                                                             specularLightSet);
                     }
                 }
             }
@@ -1219,7 +1253,8 @@ public:
 
                 addToonSpecularLobes(builder,
                                      toonParams,
-                                     labels.mSpecular);
+                                     labels.mSpecular,
+                                     specularLightSet);
 
                 // Toon Specular Transmission
                 if (!scene_rdl2::math::isZero(params.mTransmission)) { 
@@ -1229,11 +1264,11 @@ public:
                                 refrIor,
                                 scene_rdl2::math::asCpp(params.mTransmissionColor),
                                 abbeNumber);
-
                         builder.addMirrorBTDF(mirrorBTDF,
                                               params.mTransmission,
                                               ispc::BSDFBUILDER_PHYSICAL,
-                                              labels.mSpecularTransmission);
+                                              labels.mSpecularTransmission,
+                                              specularLightSet);
                     } else {
                         const moonray::shading::MicrofacetIsotropicBTDF dielectricBTDF(
                                 N,
@@ -1243,11 +1278,11 @@ public:
                                 ispc::MICROFACET_GEOMETRIC_SMITH,
                                 scene_rdl2::math::asCpp(params.mTransmissionColor),
                                 abbeNumber);
-
                         builder.addMicrofacetIsotropicBTDF(dielectricBTDF,
                                               params.mTransmission,
                                               ispc::BSDFBUILDER_PHYSICAL,
-                                              labels.mSpecularTransmission);
+                                              labels.mSpecularTransmission,
+                                              specularLightSet);
                     }
                 }
             }
@@ -1281,7 +1316,8 @@ public:
                                       1.f,
                                       ispc::BSDFBUILDER_PHYSICAL,
                                       labels.mSpecular,
-                                      labels.mSpecularTransmission);
+                                      labels.mSpecularTransmission,
+                                      specularLightSet);
             } else {
                 if (scene_rdl2::math::isZero(params.mAnisotropy)) {
                     const moonray::shading::MicrofacetIsotropicBSDF dielectricBSDF(
@@ -1303,7 +1339,8 @@ public:
                                                        1.f,
                                                        ispc::BSDFBUILDER_PHYSICAL,
                                                        labels.mSpecular,
-                                                       labels.mSpecularTransmission);
+                                                       labels.mSpecularTransmission,
+                                                       specularLightSet);
                 } else {
                     const scene_rdl2::math::Vec2f rgh =
                         computeAnisoRoughness(roughness, minRoughness, params.mAnisotropy);
@@ -1333,7 +1370,8 @@ public:
                                                          1.f,
                                                          ispc::BSDFBUILDER_PHYSICAL,
                                                          labels.mSpecular,
-                                                         labels.mSpecularTransmission);
+                                                         labels.mSpecularTransmission,
+                                                         specularLightSet);
                 }
             }
 
@@ -1369,8 +1407,8 @@ public:
                 builder.addToonBRDF(toon,
                                     params.mFabricAttenuation * toonDParams.mToonDiffuse * toonDParams.mRampWeight,
                                     ispc::BSDFBUILDER_PHYSICAL,
-                                    labels.mDiffuse);
-
+                                    labels.mDiffuse,
+                                    diffuseLightSet);
             }
         }
 
@@ -1396,11 +1434,11 @@ public:
                                                                     flatness,
                                                                     params.mToonDiffuseParams.mFlatnessFalloff);
 
-
                 builder.addFlatDiffuseBRDF(diffuseRefl,
                                            params.mFabricAttenuation,
                                            ispc::BSDFBUILDER_PHYSICAL,
-                                           labels.mDiffuse);
+                                           labels.mDiffuse,
+                                           diffuseLightSet);
             } else {
                 const ispc::SubsurfaceType bssrdfType = static_cast<ispc::SubsurfaceType>(uParams.mSubsurface);
                 if (bssrdfType == ispc::SUBSURFACE_NORMALIZED_DIFFUSION) {
@@ -1415,7 +1453,8 @@ public:
                     builder.addNormalizedDiffusion(diffuseRefl,
                                                    params.mFabricAttenuation,
                                                    ispc::BSDFBUILDER_PHYSICAL,
-                                                   labels.mDiffuse);
+                                                   labels.mDiffuse,
+                                                   diffuseLightSet);
 
                 } else if (bssrdfType == ispc::SUBSURFACE_DIPOLE_DIFFUSION) {
                     const moonray::shading::DipoleDiffusion diffuseRefl(
@@ -1429,7 +1468,8 @@ public:
                     builder.addDipoleDiffusion(diffuseRefl,
                                                params.mFabricAttenuation,
                                                ispc::BSDFBUILDER_PHYSICAL,
-                                               labels.mDiffuse);
+                                               labels.mDiffuse,
+                                               diffuseLightSet);
 
                 } else if (bssrdfType == ispc::SUBSURFACE_RANDOM_WALK) {
                     const moonray::shading::RandomWalkSubsurface rwSubsurface(
@@ -1445,7 +1485,8 @@ public:
                     builder.addRandomWalkSubsurface(rwSubsurface,
                                                     params.mFabricAttenuation,
                                                     ispc::BSDFBUILDER_PHYSICAL,
-                                                    labels.mDiffuse);
+                                                    labels.mDiffuse,
+                                                    diffuseLightSet);
                 }
             }
         }
@@ -1459,13 +1500,14 @@ public:
             builder.addLambertianBTDF(diffuseTrans,
                                       params.mFabricAttenuation,
                                       ispc::BSDFBUILDER_PHYSICAL,
-                                      labels.mDiffuseTransmission);
+                                      labels.mDiffuseTransmission,
+                                      diffuseLightSet);
         }
         builder.endAdjacentComponents();
 
 
         // Add Hair Lobes
-        addHairLobes(dwaBaseLayerable, builder, params, uParams, labels, tls, state,  eventMessages);
+        addHairLobes(dwaBaseLayerable, builder, params, uParams, labels, tls, state, eventMessages, diffuseLightSet);
     }
 
     finline static void
@@ -1557,7 +1599,6 @@ public:
                 scene_rdl2::math::sWhite;
         params.mIridescenceRampInterpolators[0] = ispc::RAMP_INTERPOLATOR_MODE_NONE;
     }
-
 
     finline static void
     initHairParameters(ispc::HairParameters &params)
@@ -1705,6 +1746,9 @@ public:
         params.mNormalAADial = 1.0f;
         scene_rdl2::math::asCpp(params.mEmission) = scene_rdl2::math::sBlack;
         params.mEvalSubsurfaceNormalFn = 0;
+
+        params.mDiffuseLightSet = nullptr;
+        params.mSpecularLightSet = nullptr;
     }
 
     // This function's job is to resolve the BSSRDF type

@@ -384,6 +384,8 @@ enum Model {
     Layer
 };
 
+struct LightSet;
+
 struct ToonSpecularUniformData
 {
     uniform int   mRampNumPoints;
@@ -445,6 +447,9 @@ struct DwaBase
     uniform intptr_t mOuterSpecularSampleNormalFunc;
     const uniform NormalMap * uniform mFuzzNormalMap;
     uniform intptr_t mFuzzSampleNormalFunc;
+
+    const uniform LightSet * uniform mDiffuseLightSet;
+    const uniform LightSet * uniform mSpecularLightSet;
 };
 
 #define INIT_TOON_SPEC_ATTR_FUNCS(name)                         \

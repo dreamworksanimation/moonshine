@@ -83,6 +83,8 @@ enum ToonSpecularModel {
     ToonSpecularHair
 };
 
+struct LightSet;
+
 struct ToonDiffuseParameters
 {
     float mToonDiffuse;
@@ -295,6 +297,9 @@ struct DwaBaseParameters
     float mNormalAADial;
     Color mEmission;
     uniform intptr_t mEvalSubsurfaceNormalFn;
+
+    const uniform LightSet * uniform mDiffuseLightSet;
+    const uniform LightSet * uniform mSpecularLightSet;
 };
 
 struct DwaBaseUniformParameters

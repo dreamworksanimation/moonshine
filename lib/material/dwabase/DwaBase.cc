@@ -860,6 +860,9 @@ DwaBase::update()
     }
 
     resolveUniformParameters(mIspc.mUParams);
+
+    mIspc.mDiffuseLightSet = nullptr;
+    mIspc.mSpecularLightSet = nullptr;
 }
 
 void
@@ -1114,7 +1117,6 @@ resolveToonParams(const DwaBase* me,
                                  keys.mToonDiffuseKeys,
                                  params.mToonDiffuseParams);
     }
-
 
     if (hints.mRequiresToonSpecularParams) {
         resolveToonSpecParams(me, tls, state,
@@ -1691,6 +1693,9 @@ DwaBase::resolveParameters(moonray::shading::TLState *tls,
     if (mIspc.mHints.mRequiresEmissionParams) {
         asCpp(params.mEmission) = max(sBlack, evalColor(this, mAttrKeys.mEmission, tls, state));
     }
+
+    params.mDiffuseLightSet = mIspc.mDiffuseLightSet;
+    params.mSpecularLightSet = mIspc.mSpecularLightSet;
 
     // ---------------
     // for debug_pixel

@@ -125,6 +125,22 @@
                 "show_moisture": "true",
                 "use_independent_moisture_normal": "true"
             }
+        },
+        "attrDiffuseLightSet" : {
+            "name": "diffuse_lightset",
+            "label": "diffuse lightset",
+            "comment": "lightset to use for diffuse lobes",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_LIGHTSET",
+            "group": "Diffuse"
+        },
+        "attrSpecularLightSet" : {
+            "name": "specular_lightset",
+            "label": "specular lightset",
+            "comment": "lightset to use for specular lobes",
+            "type": "SceneObject*",
+            "interface": "INTERFACE_LIGHTSET",
+            "group": "Specular"
         }
     },
     "groups": {

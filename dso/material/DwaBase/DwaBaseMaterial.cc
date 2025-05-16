@@ -134,6 +134,13 @@ DwaBaseMaterial::update()
     ispc::DwaBase* dwabase = getISPCBaseMaterialStruct();
     dwabase->mAttrFuncs.mEvalSubsurfaceNormal = getEnableSubsurfaceInputNormal() ?
             (intptr_t)DwaBaseMaterial::evalSubsurfaceNormal : 0;
+
+    if (get(attrDiffuseLightSet)) {
+        dwabase->mDiffuseLightSet = get(attrDiffuseLightSet)->asA<scene_rdl2::rdl2::LightSet>();
+    }
+    if (get(attrSpecularLightSet)) {
+        dwabase->mSpecularLightSet = get(attrSpecularLightSet)->asA<scene_rdl2::rdl2::LightSet>();
+    }
 }
 
 void

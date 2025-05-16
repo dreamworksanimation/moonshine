@@ -222,6 +222,13 @@ HairToonMaterial::update()
         keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset8);
         keys->mHairToonS3Keys.mRampOffsets.push_back(attrHairToonS3RampPositionOffset9);
     }
+
+    if (get(attrDiffuseLightSet)) {
+        dwabase->mDiffuseLightSet  = get(attrDiffuseLightSet)->asA<scene_rdl2::rdl2::LightSet>();
+    }
+    if (get(attrSpecularLightSet)) {
+        dwabase->mSpecularLightSet = get(attrSpecularLightSet)->asA<scene_rdl2::rdl2::LightSet>();
+    }
 }
 
 void
