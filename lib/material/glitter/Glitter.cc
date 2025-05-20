@@ -625,7 +625,8 @@ Glitter::createMacroFlakes(moonray::shading::BsdfBuilder &bsdfBuilder,
                            const int label,
                            const float coverageFactor,
                            const ispc::BsdfBuilderBehavior combineBehavior,
-                           bool& singleMacroFlake) const
+                           bool& singleMacroFlake,
+                           const scene_rdl2::rdl2::LightSet* lightSet) const
 {
     // assume we'll only create one for now
     singleMacroFlake = true;
@@ -670,7 +671,8 @@ Glitter::createMacroFlakes(moonray::shading::BsdfBuilder &bsdfBuilder,
         bsdfBuilder.addGlitterFlakeBRDF(glitterFlakeRefl,
                                         mask * flakeWeight,
                                         combineBehavior,
-                                        label);
+                                        label,
+                                        lightSet);
 
         accumMacroFlakesColor = currFlakeColor;
         return accumMacroFlakesColor;
@@ -707,7 +709,8 @@ Glitter::createMacroFlakes(moonray::shading::BsdfBuilder &bsdfBuilder,
             bsdfBuilder.addGlitterFlakeBRDF(glitterFlakeRefl,
                                             scale * mask,
                                             combineBehavior,
-                                            label);
+                                            label,
+                                            lightSet);
 
             accumMacroFlakesColor += currFlakeColor;
         }
@@ -730,7 +733,8 @@ Glitter::createMicroFlake(const ispc::GLITTER_VaryingParameters& params,
                           const float mask,
                           const int label,
                           const float coverageFactor,
-                          const ispc::BsdfBuilderBehavior combineBehavior) const
+                          const ispc::BsdfBuilderBehavior combineBehavior,
+                          const scene_rdl2::rdl2::LightSet* lightSet) const
 {
     scene_rdl2::math::Color avgColor = scene_rdl2::math::sBlack;
 
@@ -765,7 +769,8 @@ Glitter::createMicroFlake(const ispc::GLITTER_VaryingParameters& params,
         bsdfBuilder.addStochasticFlakesBRDF(stochasticFlakeRefl,
                                             microFlakeVis * coverageFactor * mask,
                                             combineBehavior,
-                                            label);
+                                            label,
+                                            lightSet);
     }
 
     return avgColor * (1.0f / static_cast<const float>(microFlakeCount));
@@ -1068,7 +1073,8 @@ Glitter::createLobes(moonray::shading::TLState* tls,
                      moonray::shading::BsdfBuilder& bsdfBuilder,
                      const ispc::GLITTER_VaryingParameters& params,
                      const int label,
-                     ispc::GLITTER_ResultCode& resultCode) const
+                     ispc::GLITTER_ResultCode& resultCode,
+                     const scene_rdl2::rdl2::LightSet* lightSet) const
 {
     if (mUniformParams.mDebugMode != ispc::GLITTER_DEBUG_MODE_OFF) {
         switch(mUniformParams.mDebugMode) {
@@ -1146,7 +1152,8 @@ Glitter::createLobes(moonray::shading::TLState* tls,
         bsdfBuilder.addMicrofacetIsotropicBRDF(microfacetRefl,
                                                coverageFactor * glitterMask,
                                                ispc::BSDFBUILDER_PHYSICAL,
-                                               label);
+                                               label,
+                                               lightSet);
 
         return;
     }
@@ -1226,7 +1233,8 @@ Glitter::createLobes(moonray::shading::TLState* tls,
                                                 label,
                                                 coverageFactor,
                                                 combineBehavior,
-                                                createdSingleMacroFlake);
+                                                createdSingleMacroFlake,
+                                                lightSet);
     }
 
     if (createdSingleMacroFlake) {
@@ -1274,7 +1282,8 @@ Glitter::createLobes(moonray::shading::TLState* tls,
                 bsdfBuilder.addMicrofacetIsotropicBRDF(microfacetRefl,
                                                        (1.0f - macroFlakesVis) * coverageFactor * glitterMask,
                                                        combineBehavior,
-                                                       label);
+                                                       label,
+                                                       lightSet);
             }
         }
     } else { // ggxFlakesVis < mGGXMaxThreshold
@@ -1283,7 +1292,7 @@ Glitter::createLobes(moonray::shading::TLState* tls,
         scene_rdl2::alloc::Arena *arena = getArena(tls);
         scene_rdl2::math::Color avgColor = createMicroFlake(params, bsdfBuilder, microFlakeCount, macroFlakeCount, arena, flakes,
                                                 refFrame, microFlakeVis, baseFlakeColors, hsvColorVariation,
-                                                glitterMask, label, coverageFactor, combineBehavior);
+                                                glitterMask, label, coverageFactor, combineBehavior, lightSet);
 
         // Add a Cook-Torrance lobe weighted by the remaining blend weight
         if (microFacetVis > 0.0f && !isBlack(avgColor)) {
@@ -1297,7 +1306,8 @@ Glitter::createLobes(moonray::shading::TLState* tls,
             bsdfBuilder.addMicrofacetIsotropicBRDF(microfacetRefl,
                                                    microFacetVis * coverageFactor * glitterMask,
                                                    combineBehavior,
-                                                   label);
+                                                   label,
+                                                   lightSet);
         }
     }
 

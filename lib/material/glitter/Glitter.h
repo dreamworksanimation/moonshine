@@ -68,7 +68,8 @@ public:
                      moonray::shading::BsdfBuilder& bsdfBuilder,
                      const ispc::GLITTER_VaryingParameters& params,
                      const int label,
-                     ispc::GLITTER_ResultCode& resultCode) const;
+                     ispc::GLITTER_ResultCode& resultCode,
+                     const scene_rdl2::rdl2::LightSet* lightSet) const;
 
     // Call this function to visualize the LOD modes
     void createDebugBlendLobes(moonray::shading::TLState *tls,
@@ -149,7 +150,8 @@ private:
                                          const int label,
                                          const float coverageFactor,
                                          const ispc::BsdfBuilderBehavior combineBehavior,
-                                         bool& singleMacroFlake) const;
+                                         bool& singleMacroFlake,
+                                         const scene_rdl2::rdl2::LightSet* lightSet) const;
 
     void readFlakeTexturesAndModifyWeights(moonray::shading::TLState* tls,
                                            const moonray::shading::State& state,
@@ -185,7 +187,8 @@ private:
                                         const float mask,
                                         const int label,
                                         const float coverageFactor,
-                                        const ispc::BsdfBuilderBehavior combineBehavior) const;
+                                        const ispc::BsdfBuilderBehavior combineBehavior,
+                                        const scene_rdl2::rdl2::LightSet* lightSet) const;
 
     ispc::GLITTER_Glitter mIspc;
     ispc::GLITTER_UniformParameters mUniformParams;

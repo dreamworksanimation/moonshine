@@ -458,7 +458,8 @@ public:
                     const ispc::DwaBaseParameters &params,
                     const ispc::DwaBaseLabels &labels,
                     bool& exitEarly,
-                    const ispc::DwaBaseEventMessages &eventMessages)
+                    const ispc::DwaBaseEventMessages &eventMessages,
+                    const scene_rdl2::rdl2::LightSet* lightSet)
     {
         exitEarly = false;
 
@@ -470,7 +471,8 @@ public:
                                         builder,
                                         params.mGlitterVaryingParameters,
                                         labels.mGlitter,
-                                        resultCode);
+                                        resultCode,
+                                        lightSet);
 
             if (resultCode != ispc::GLITTER_RESULTCODE_SUCCESS) {
                 switch (resultCode)
@@ -1039,7 +1041,7 @@ public:
         // Glitter lobes
         if (!scene_rdl2::math::isZero(params.mGlitterVaryingParameters.mGlitterMask)) {
             bool exitEarly = false;
-            addGlitterLobes(dwaBaseLayerable, builder, tls, state, params, labels, exitEarly, eventMessages);
+            addGlitterLobes(dwaBaseLayerable, builder, tls, state, params, labels, exitEarly, eventMessages, specularLightSet);
             if (exitEarly) return;
         }
 
