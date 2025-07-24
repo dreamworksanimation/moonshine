@@ -110,7 +110,8 @@ GLITTER_createLobes(
         const uniform GLITTER_UniformParameters * uniform uParams,
         const varying GLITTER_VaryingParameters& vParams,
         const uniform int label,
-        GLITTER_ResultCode& resultCode);
+        GLITTER_ResultCode& resultCode,
+        const uniform LightSet * uniform lightSet);
 
 // Debug functions
 void

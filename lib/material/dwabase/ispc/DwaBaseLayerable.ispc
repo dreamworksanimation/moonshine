@@ -122,7 +122,8 @@ DWABASE_addGlitterLobes(const uniform Material * uniform me,
                         const varying DwaBaseParameters * uniform params,
                         const uniform DwaBaseLabels * uniform labels,
                         uniform bool& exitEarly,
-                        const DwaBaseEventMessages * uniform eventMessages)
+                        const DwaBaseEventMessages * uniform eventMessages,
+                        const uniform LightSet * uniform lightSet)
 {
     exitEarly = false;
 
@@ -135,7 +136,8 @@ DWABASE_addGlitterLobes(const uniform Material * uniform me,
                             params->mGlitterUniformParameters,
                             params->mGlitterVaryingParameters,
                             labels->mGlitter,
-                            resultCode);
+                            resultCode,
+                            lightSet);
 
         if (resultCode != GLITTER_RESULTCODE_SUCCESS) {
             switch (resultCode)
@@ -177,7 +179,8 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
                      const varying DwaBaseParameters * uniform params,
                      const uniform DwaBaseUniformParameters * uniform uParams,
                      const uniform DwaBaseLabels * uniform labels,
-                     const DwaBaseEventMessages * uniform eventMessages)
+                     const DwaBaseEventMessages * uniform eventMessages,
+                     const uniform LightSet * uniform lightSet)
 {
     const varying HairParameters * uniform hairParams = &params->mHairParameters;
 
@@ -200,7 +203,8 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
                                        hairDiffuseBsdf,
                                        hairParams->mHairDiffuse * (1.0f - sssWeight),
                                        BSDFBUILDER_PHYSICAL,
-                                       labels->mHairLabels.mHairDiffuse);
+                                       labels->mHairLabels.mHairDiffuse,
+                                       lightSet);
 
         if (hasSSS) {
             // diffuse front color substitutes for albedo in these lobes
@@ -222,7 +226,8 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
                                                    diffuseRefl,
                                                    hairParams->mHairDiffuse * sssWeight,
                                                    BSDFBUILDER_PHYSICAL,
-                                                   labels->mDiffuse);
+                                                   labels->mDiffuse,
+                                                   lightSet);
 
             } else if (bssrdfType == SUBSURFACE_DIPOLE_DIFFUSION) {
                 DipoleDiffusion diffuseRefl;
@@ -238,7 +243,8 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
                                                diffuseRefl,
                                                hairParams->mHairDiffuse * sssWeight,
                                                BSDFBUILDER_PHYSICAL,
-                                               labels->mDiffuse);
+                                               labels->mDiffuse,
+                                               lightSet);
 
             }
         }
@@ -261,7 +267,8 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
                                            hairDiffuseBsdf,
                                            1.0f,
                                            BSDFBUILDER_PHYSICAL,
-                                           labels->mHairLabels.mHair);
+                                           labels->mHairLabels.mHair,
+                                           lightSet);
         } else {
             Vec3f N = Vec3f_ctor(0.0f);
             float hairRotation = 0.0f;
@@ -325,7 +332,8 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
                                         hairBsdf,
                                         1.0f,
                                         BSDFBUILDER_PHYSICAL,
-                                        labels->mHairLabels.mHair);
+                                        labels->mHairLabels.mHair,
+                                        lightSet);
             } else {
                 if (hairParams->mHairShowR) {
                     HairRBRDF hairRBRDF;
@@ -343,7 +351,8 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
                                              hairRBRDF,
                                              1.0f,
                                              BSDFBUILDER_PHYSICAL,
-                                             labels->mHairLabels.mHairR);
+                                             labels->mHairLabels.mHairR,
+                                             lightSet);
                 }
 
                 // these 3 lobes need to be added as adjacent lobes because while
@@ -370,7 +379,8 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
                                               hairTTBTDF,
                                               1.0f,
                                               BSDFBUILDER_PHYSICAL,
-                                              labels->mHairLabels.mHairTT);
+                                              labels->mHairLabels.mHairTT,
+                                              lightSet);
                 }
 
                 if (hairParams->mHairShowTRT) {
@@ -397,7 +407,8 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
                                                hairTRTBRDF,
                                                1.0f,
                                                BSDFBUILDER_PHYSICAL,
-                                               labels->mHairLabels.mHairTRT);
+                                               labels->mHairLabels.mHairTRT,
+                                               lightSet);
                 }
 
                 if (hairParams->mHairShowTRRT) {
@@ -417,7 +428,8 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
                                                 hairTRRTBRDF,
                                                 1.0f,
                                                 BSDFBUILDER_PHYSICAL,
-                                                labels->mHairLabels.mHairTRRT);
+                                                labels->mHairLabels.mHairTRRT,
+                                                lightSet);
                 }
 
                 BsdfBuilder_endAdjacentComponents(bsdfBuilder);
@@ -429,7 +441,8 @@ DWABASE_addHairLobes(const uniform Material * uniform me,
 void
 DWABASE_addToonSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                              const varying ToonSpecularParameters& params,
-                             const uniform int label)
+                             const uniform int label,
+                             const uniform LightSet * uniform lightSet)
 {
     ToonSpecularBRDF toonSpecularBRDF;
     ToonSpecularBRDF_init(toonSpecularBRDF,
@@ -454,13 +467,15 @@ DWABASE_addToonSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                                     toonSpecularBRDF,
                                     params.mToonSpecular, // weight
                                     BSDFBUILDER_PHYSICAL,
-                                    label);
+                                    label,
+                                    lightSet);
 }
 
 void
 DWABASE_addHairToonSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                                  const varying ToonSpecularParameters& params,
-                                 const uniform DwaBaseLabels * uniform labels)
+                                 const uniform DwaBaseLabels * uniform labels,
+                                 const uniform LightSet * uniform lightSet)
 {
     HairToonSpecularBRDF hairToonSpecularBRDF;
     HairToonSpecularBRDF_init(hairToonSpecularBRDF,
@@ -486,7 +501,8 @@ DWABASE_addHairToonSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                                         hairToonSpecularBRDF,
                                         params.mToonSpecular, // weight
                                         BSDFBUILDER_PHYSICAL,
-                                        labels->mHairLabels.mHair);
+                                        labels->mHairLabels.mHair,
+                                        lightSet);
 }
 
 void
@@ -495,7 +511,8 @@ DWABASE_addOuterSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                               const uniform DwaBaseUniformParameters * uniform uParams,
                               const uniform DwaBaseLabels * uniform labels,
                               varying float minRoughness,
-                              varying Iridescence * uniform iridescence)
+                              varying Iridescence * uniform iridescence,
+                              const uniform LightSet * uniform lightSet)
 {
     const uniform bool refracts =
         (uParams->mOuterSpecularUseBending && (!uParams->mThinGeometry));
@@ -532,7 +549,8 @@ DWABASE_addOuterSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                     clearcoat,
                     params->mOuterSpecular,
                     BSDFBUILDER_PHYSICAL,
-                    labels->mOuterSpecular);
+                    labels->mOuterSpecular,
+                    lightSet);
         } else { // microfacet
             MicrofacetIsotropicClearcoat clearcoat;
             MicrofacetIsotropicClearcoat_init(
@@ -552,7 +570,8 @@ DWABASE_addOuterSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                     clearcoat,
                     params->mOuterSpecular,
                     BSDFBUILDER_PHYSICAL,
-                    labels->mOuterSpecular);
+                    labels->mOuterSpecular,
+                    lightSet);
         }
     } else { // not clearcoat, just a reflection lobe
         if (isZero(roughness)) { // mirror
@@ -568,7 +587,8 @@ DWABASE_addOuterSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                     reflection,
                     params->mOuterSpecular,
                     BSDFBUILDER_PHYSICAL,
-                    labels->mOuterSpecular);
+                    labels->mOuterSpecular,
+                    lightSet);
         } else { // microfacet
             MicrofacetIsotropicBRDF reflection;
             MicrofacetIsotropicBRDF_init(
@@ -585,7 +605,8 @@ DWABASE_addOuterSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                     reflection,
                     params->mOuterSpecular,
                     BSDFBUILDER_PHYSICAL,
-                    labels->mOuterSpecular);
+                    labels->mOuterSpecular,
+                    lightSet);
         }
     }
 }
@@ -647,7 +668,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                                   fuzz,
                                   params->mFuzz,
                                   BSDFBUILDER_PHYSICAL,
-                                  labels->mFuzz);
+                                  labels->mFuzz,
+                                  params->mDiffuseLightSet);
     }
 
     // setup iridescence if needed
@@ -699,12 +721,12 @@ DWABASE_createLobes(const uniform Material * uniform me,
 
     // Outer specular reflection/clearcoat (ignored when exiting)
     if (!isZero(params->mOuterSpecular) && isEntering(state) == true) {
-        DWABASE_addOuterSpecularLobes(bsdfBuilder, params, uParams, labels, minRoughness, outerIridescence);
+        DWABASE_addOuterSpecularLobes(bsdfBuilder, params, uParams, labels, minRoughness, outerIridescence, params->mSpecularLightSet);
     }
 
     if (!isZero(params->mGlitterVaryingParameters.mGlitterMask) == true) {
         uniform bool exitEarly = false;
-        DWABASE_addGlitterLobes(me, bsdfBuilder, tls, state, params, labels, exitEarly, eventMessages);
+        DWABASE_addGlitterLobes(me, bsdfBuilder, tls, state, params, labels, exitEarly, eventMessages, params->mSpecularLightSet);
         if (exitEarly) return;
     }
 
@@ -728,7 +750,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
             BsdfBuilder_addFabricBRDF(bsdfBuilder, warp,
                     params->mWarpThreadCoverage * params->mFabricSpecular,
                     BSDFBUILDER_PHYSICAL,
-                    labels->mSpecular);
+                    labels->mSpecular,
+                    params->mSpecularLightSet);
         }
 
         const varying Color& weftColor = params->mWeftColor;
@@ -749,7 +772,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
             BsdfBuilder_addFabricBRDF(bsdfBuilder, weft,
                     (1.f - params->mWarpThreadCoverage) * params->mFabricSpecular,
                     BSDFBUILDER_PHYSICAL,
-                    labels->mSpecular);
+                    labels->mSpecular,
+                    params->mSpecularLightSet);
         }
 
         BsdfBuilder_endAdjacentComponents(bsdfBuilder);
@@ -769,11 +793,13 @@ DWABASE_createLobes(const uniform Material * uniform me,
         if (uParams->mHairToonS1Model == ToonSpecularSurface) {
             DWABASE_addToonSpecularLobes(bsdfBuilder,
                                          params->mHairToonS1Params,
-                                         labels->mHairLabels.mHair);
+                                         labels->mHairLabels.mHair,
+                                         params->mSpecularLightSet);
         } else if (uParams->mHairToonS1Model == ToonSpecularHair) {
             DWABASE_addHairToonSpecularLobes(bsdfBuilder,
                                              params->mHairToonS1Params,
-                                             labels);
+                                             labels,
+                                             params->mSpecularLightSet);
         }
     }
 
@@ -781,11 +807,13 @@ DWABASE_createLobes(const uniform Material * uniform me,
         if (uParams->mHairToonS2Model == ToonSpecularSurface) {
             DWABASE_addToonSpecularLobes(bsdfBuilder,
                                          params->mHairToonS2Params,
-                                         labels->mHairLabels.mHair);
+                                         labels->mHairLabels.mHair,
+                                         params->mSpecularLightSet);
         } else if (uParams->mHairToonS2Model == ToonSpecularHair) {
             DWABASE_addHairToonSpecularLobes(bsdfBuilder,
                                              params->mHairToonS2Params,
-                                             labels);
+                                             labels,
+                                             params->mSpecularLightSet);
         }
     }
 
@@ -793,11 +821,13 @@ DWABASE_createLobes(const uniform Material * uniform me,
         if (uParams->mHairToonS3Model == ToonSpecularSurface) {
             DWABASE_addToonSpecularLobes(bsdfBuilder,
                                          params->mHairToonS3Params,
-                                         labels->mHairLabels.mHair);
+                                         labels->mHairLabels.mHair,
+                                         params->mSpecularLightSet);
         } else if (uParams->mHairToonS3Model == ToonSpecularHair) {
             DWABASE_addHairToonSpecularLobes(bsdfBuilder,
                                              params->mHairToonS3Params,
-                                             labels);
+                                             labels,
+                                             params->mSpecularLightSet);
         }
     }
 
@@ -842,7 +872,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                 BsdfBuilder_addMirrorBRDF(bsdfBuilder, conductorBRDF,
                         metallicWeight,
                         BSDFBUILDER_PHYSICAL,
-                        labels->mSpecular);
+                        labels->mSpecular,
+                        params->mSpecularLightSet);
 
             } else {
                 if (isZero(params->mAnisotropy)) {
@@ -861,7 +892,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                             conductorBRDF,
                             metallicWeight,
                             BSDFBUILDER_PHYSICAL,
-                            labels->mSpecular);
+                            labels->mSpecular,
+                            params->mSpecularLightSet);
                 } else {
                     const varying Vec2f rgh = computeAnisoRoughness(roughness,
                                                                     minRoughness,
@@ -883,7 +915,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                             conductorBRDF,
                             metallicWeight,
                             BSDFBUILDER_PHYSICAL,
-                            labels->mSpecular);
+                            labels->mSpecular,
+                            params->mSpecularLightSet);
                 }
             }
         }
@@ -914,7 +947,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
 
             DWABASE_addToonSpecularLobes(bsdfBuilder,
                                          toonParams,
-                                         labels->mSpecular);
+                                         labels->mSpecular,
+                                         params->mSpecularLightSet);
 
             // Toon Specular Transmission
             if (!isZero(params->mTransmission)) { 
@@ -929,7 +963,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                                               mirrorBTDF,
                                               params->mTransmission,
                                               BSDFBUILDER_PHYSICAL,
-                                              labels->mSpecularTransmission);
+                                              labels->mSpecularTransmission,
+                                              params->mSpecularLightSet);
                 } else {
                     MicrofacetIsotropicBTDF dielectricBTDF;
                     MicrofacetIsotropicBTDF_init(dielectricBTDF,
@@ -945,7 +980,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                                                            dielectricBTDF,
                                                            params->mTransmission,
                                                            BSDFBUILDER_PHYSICAL,
-                                                           labels->mSpecularTransmission);
+                                                           labels->mSpecularTransmission,
+                                                           params->mSpecularLightSet);
                 }
             }
         }
@@ -982,7 +1018,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                                       1.f, // weight
                                       BSDFBUILDER_PHYSICAL,
                                       labels->mSpecular,
-                                      labels->mSpecularTransmission);
+                                      labels->mSpecularTransmission,
+                                      params->mSpecularLightSet);
         } else {
             if (isZero(params->mAnisotropy)) {
                 MicrofacetIsotropicBSDF dielectricBSDF;
@@ -1008,7 +1045,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                         1.f, // weight
                         BSDFBUILDER_PHYSICAL,
                         labels->mSpecular,
-                        labels->mSpecularTransmission);
+                        labels->mSpecularTransmission,
+                        params->mSpecularLightSet);
             } else {
                 const Vec2f rgh =
                     computeAnisoRoughness(roughness, minRoughness, params->mAnisotropy);
@@ -1041,7 +1079,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                         1.f,
                         BSDFBUILDER_PHYSICAL,
                         labels->mSpecular,
-                        labels->mSpecularTransmission);
+                        labels->mSpecularTransmission,
+                        params->mSpecularLightSet);
             }
         }
 
@@ -1076,7 +1115,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                                     toon,
                                     params->mFabricAttenuation * params->mToonDiffuseParams.mToonDiffuse * params->mToonDiffuseParams.mRampWeight,
                                     BSDFBUILDER_PHYSICAL,
-                                    labels->mDiffuse);
+                                    labels->mDiffuse,
+                                    params->mDiffuseLightSet);
         }
     }
 
@@ -1106,7 +1146,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
             BsdfBuilder_addFlatDiffuseBRDF(bsdfBuilder, diffuseRefl,
                                            params->mFabricAttenuation,
                                            BSDFBUILDER_PHYSICAL,
-                                           labels->mDiffuse);
+                                           labels->mDiffuse,
+                                           params->mDiffuseLightSet);
         } else {
             const SubsurfaceType bssrdfType = (SubsurfaceType)uParams->mSubsurface;
             if (bssrdfType == SUBSURFACE_NORMALIZED_DIFFUSION) {
@@ -1122,7 +1163,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                 BsdfBuilder_addNormalizedDiffusion(bsdfBuilder, diffuseRefl,
                         params->mFabricAttenuation,
                         BSDFBUILDER_PHYSICAL,
-                        labels->mDiffuse);
+                        labels->mDiffuse,
+                        params->mDiffuseLightSet);
 
             } else if (bssrdfType == SUBSURFACE_DIPOLE_DIFFUSION) {
                 DipoleDiffusion diffuseRefl;
@@ -1137,7 +1179,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                 BsdfBuilder_addDipoleDiffusion(bsdfBuilder, diffuseRefl,
                         params->mFabricAttenuation,
                         BSDFBUILDER_PHYSICAL,
-                        labels->mDiffuse);
+                        labels->mDiffuse,
+                        params->mDiffuseLightSet);
 
             } else if (bssrdfType == SUBSURFACE_RANDOM_WALK) {
                 RandomWalkSubsurface rwSubsurface;
@@ -1154,7 +1197,8 @@ DWABASE_createLobes(const uniform Material * uniform me,
                 BsdfBuilder_addRandomWalkSubsurface(bsdfBuilder, rwSubsurface,
                         params->mFabricAttenuation,
                         BSDFBUILDER_PHYSICAL,
-                        labels->mDiffuse);
+                        labels->mDiffuse,
+                        params->mDiffuseLightSet);
             }
         }
     }
@@ -1170,13 +1214,14 @@ DWABASE_createLobes(const uniform Material * uniform me,
         BsdfBuilder_addLambertianBTDF(bsdfBuilder, diffuseTrans,
                 params->mFabricAttenuation,
                 BSDFBUILDER_PHYSICAL,
-                labels->mDiffuseTransmission);
+                labels->mDiffuseTransmission,
+                params->mDiffuseLightSet);
     }
 
     BsdfBuilder_endAdjacentComponents(bsdfBuilder);
 
     // Add Hair Lobes
-    DWABASE_addHairLobes(me, tls, state, bsdfBuilder, params, uParams, labels, eventMessages);
+    DWABASE_addHairLobes(me, tls, state, bsdfBuilder, params, uParams, labels, eventMessages, params->mDiffuseLightSet);
 }
 
 void
@@ -1415,5 +1460,8 @@ DWABASELAYERABLE_initParameters(varying DwaBaseParameters * uniform params)
     params->mNormalAADial = 1.0f;
     params->mEmission = sBlack;
     params->mEvalSubsurfaceNormalFn = 0;
+
+    params->mDiffuseLightSet = NULL;
+    params->mSpecularLightSet = NULL;
 }
 

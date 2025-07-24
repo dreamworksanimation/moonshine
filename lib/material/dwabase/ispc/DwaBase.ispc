@@ -1005,6 +1005,8 @@ DWABASE_resolveParameters(DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS)
         params->mEmission = max(sBlack, EVALCOLORATTR(dwaBase->mAttrFuncs.mEvalAttrEmission, me, tls, state, Color_ctor(0.0)));
     }
 
+    params->mDiffuseLightSet = dwaBase->mDiffuseLightSet;
+    params->mSpecularLightSet = dwaBase->mSpecularLightSet;
 
     // ---------------
     // for debug_pixel

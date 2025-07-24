@@ -1055,7 +1055,8 @@ createLobes(const uniform GLITTER_Glitter * uniform me,
             const uniform GLITTER_UniformParameters * uniform uParams,
             const varying GLITTER_VaryingParameters& vParams,
             const uniform int label,
-            GLITTER_ResultCode& resultCode)
+            GLITTER_ResultCode& resultCode,
+            const uniform LightSet * uniform lightSet)
 {
     resultCode = GLITTER_RESULTCODE_SUCCESS;
 
@@ -1109,7 +1110,8 @@ createLobes(const uniform GLITTER_Glitter * uniform me,
                                                microfacetRefl,
                                                coverageFactor * glitterMask,
                                                BSDFBUILDER_PHYSICAL,
-                                               label);
+                                               label,
+                                               lightSet);
 
         return;
     }
@@ -1232,7 +1234,8 @@ createLobes(const uniform GLITTER_Glitter * uniform me,
                                                        microfacetRefl,
                                                        (1.0f - macroFlakesVis) * coverageFactor * glitterMask,
                                                        combineBehavior,
-                                                       label);
+                                                       label,
+                                                       lightSet);
             }
         }
     } else { // ggxFlakesVis < mGGXMaxThreshold
@@ -1259,7 +1262,8 @@ createLobes(const uniform GLITTER_Glitter * uniform me,
                                                    microfacetRefl,
                                                    microFacetVis * coverageFactor * glitterMask,
                                                    combineBehavior,
-                                                   label);
+                                                   label,
+                                                   lightSet);
         }
     }
 
@@ -1274,7 +1278,8 @@ GLITTER_createLobes(const uniform GLITTER_Glitter * uniform me,
                     const uniform GLITTER_UniformParameters * uniform uParams,
                     const varying GLITTER_VaryingParameters& vParams,
                     const uniform int label,
-                    GLITTER_ResultCode& resultCode)
+                    GLITTER_ResultCode& resultCode,
+                    const uniform LightSet * uniform lightSet)
 {
     if (uParams->mDebugMode != GLITTER_DEBUG_MODE_OFF) {
         switch(uParams->mDebugMode) {
@@ -1333,7 +1338,8 @@ GLITTER_createLobes(const uniform GLITTER_Glitter * uniform me,
                 uParams,
                 vParams,
                 label,
-                resultCode);
+                resultCode,
+                lightSet);
 
     BsdfBuilder_endAdjacentComponents(bsdfBuilder);
 

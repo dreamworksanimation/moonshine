@@ -699,14 +699,16 @@ void DWABASE_addGlitterLobes(varying BsdfBuilder &builder,
                              const varying State &state,
                              const varying DwaBaseParameters * uniform params,
                              const uniform DwaBaseLabels * uniform labels,
-                             const uniform DwaBaseEventMessages& eventMessages);
+                             const uniform DwaBaseEventMessages& eventMessages,
+                             const uniform LightSet * uniform lightSet);
 
 void DWABASE_addOuterSpecularLobes(varying BsdfBuilder &bsdfBuilder,
                                    const varying DwaBaseParameters * uniform params,
                                    const uniform DwaBaseUniformParameters * uniform uParams,
                                    const uniform DwaBaseLabels * uniform labels,
                                    varying float minRoughness,
-                                   varying Iridescence * uniform iridescence);
+                                   varying Iridescence * uniform iridescence,
+                                   const uniform LightSet * uniform lightSet);
 
 void DWABASE_addIndependentReflectionLobe(varying BsdfBuilder &bsdfBuilder,
                                           const varying Vec3f &N,
