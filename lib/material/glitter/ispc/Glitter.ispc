@@ -704,7 +704,7 @@ createMicroFlake(const uniform GLITTER_Glitter * uniform me,
         for (int i = 0; i < microFlakeCount; ++i) {
             // modulus the (i+offset) index by macroFlakeCount to pick from the flake colors chosen for macroFlakes.
             const int flakeIndex = i + microFlakeOffset;
-            const int limitedFlakeIndex = (int)fmod(flakeIndex, macroFlakeCount);
+            const int limitedFlakeIndex = (int)fmod((double)flakeIndex, (double)macroFlakeCount);
             varying Color baseColorI = baseColor[limitedFlakeIndex];
             flakeColors[i] = computeFlakeColor(me, uParams, flakeArray[flakeIndex].id,
                                                             baseColorI, colorVariation);
@@ -967,7 +967,7 @@ GLITTER_createDebugColorLobes(const uniform GLITTER_Glitter * uniform me,
             for (unsigned int i = 0; i < microFlakeCount; ++i) {
                 // modulus the (i+offset) index by macroFlakeCount to pick from the flake colors chosen for macroFlakes.
                 const int flakeIndex = i + offset;
-                const int limitedFlakeIndex = (int)fmod(flakeIndex, macroFlakeCount);
+                const int limitedFlakeIndex = (int)fmod((double)flakeIndex, (double)macroFlakeCount);
                 varying Color baseColorI = baseColor[limitedFlakeIndex];
                 microFlakesAvgColor = microFlakesAvgColor + computeFlakeColor(me, uParams,
                     flakes[flakeIndex].id, baseColorI, colorVariation);
