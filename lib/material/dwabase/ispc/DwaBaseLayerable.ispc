@@ -1188,6 +1188,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
                         params->mDiffuseNormal,
                         reflectionAlbedo,
                         params->mScatteringRadius,
+                        params->mCreaseAttenuation,
                         params->mSSSResolveSelfIntersections,
                         me,
                         params->mSubsurfaceTraceSet,
@@ -1445,6 +1446,7 @@ DWABASELAYERABLE_initParameters(varying DwaBaseParameters * uniform params)
     params->mAlbedo = sBlack;
     params->mDiffuseRoughness = 0.0f;
     params->mScatteringRadius = sBlack;
+    params->mCreaseAttenuation = 0.0f;
 
     params->mDiffuseTransmission = sBlack;
     params->mDiffuseTransmissionBlendingBehavior = DIFFUSE_TRANSMISSION_BLENDING_MONOCHROMATIC;

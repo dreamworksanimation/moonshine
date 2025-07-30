@@ -927,6 +927,9 @@ void blendDiffuseParams(const uniform int colorSpace,
                                                       params1.mScatteringRadius,
                                                       mask,
                                                       colorSpace);
+            params.mCreaseAttenuation = lerp(params0.mCreaseAttenuation,
+                                             params1.mCreaseAttenuation,
+                                             mask);
             params.mDiffuseTransmissionBlendingBehavior = params1.mDiffuseTransmissionBlendingBehavior;
             params.mDiffuseRoughness = lerp(params0.mDiffuseRoughness,
                                             params1.mDiffuseRoughness,
@@ -934,11 +937,13 @@ void blendDiffuseParams(const uniform int colorSpace,
         } else if (mtl1HasDiffuse) {
             // only mtl1 has diffuse
             params.mScatteringRadius = params1.mScatteringRadius;
+            params.mCreaseAttenuation = params1.mCreaseAttenuation;
             params.mDiffuseTransmissionBlendingBehavior = params1.mDiffuseTransmissionBlendingBehavior;
             params.mDiffuseRoughness = params1.mDiffuseRoughness;
         } else {
             // only mtl0 has SSS
             params.mScatteringRadius = params0.mScatteringRadius;
+            params.mCreaseAttenuation = params0.mCreaseAttenuation;
             params.mDiffuseTransmissionBlendingBehavior = params0.mDiffuseTransmissionBlendingBehavior;
             params.mDiffuseRoughness = params0.mDiffuseRoughness;
         }

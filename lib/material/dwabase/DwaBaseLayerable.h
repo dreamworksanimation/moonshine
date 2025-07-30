@@ -330,6 +330,7 @@ finline std::ostream& operator<<(std::ostream& os,
         << scene_rdl2::math::asCpp(p.mScatteringRadius).r << " "
         << scene_rdl2::math::asCpp(p.mScatteringRadius).g << " "
         << scene_rdl2::math::asCpp(p.mScatteringRadius).b << " " << "\n"
+        << "mCreaseAttenuation: "   << p.mCreaseAttenuation << "\n"
         << "mDiffuseTransmission: "
             << scene_rdl2::math::asCpp(p.mDiffuseTransmission).r << " "
             << scene_rdl2::math::asCpp(p.mDiffuseTransmission).g << " "
@@ -1478,6 +1479,7 @@ public:
                             scene_rdl2::math::asCpp(params.mDiffuseNormal),
                             reflectionAlbedo,
                             scene_rdl2::math::asCpp(params.mScatteringRadius),
+                            params.mCreaseAttenuation,
                             params.mSSSResolveSelfIntersections,
                             dwaBaseLayerable,
                             reinterpret_cast<const scene_rdl2::rdl2::TraceSet *>(params.mSubsurfaceTraceSet),
@@ -1733,6 +1735,7 @@ public:
         scene_rdl2::math::asCpp(params.mAlbedo) = scene_rdl2::math::sBlack;
         params.mDiffuseRoughness = 0.0f;
         scene_rdl2::math::asCpp(params.mScatteringRadius) = scene_rdl2::math::sBlack;
+        params.mCreaseAttenuation = 0.0f;
 
         scene_rdl2::math::asCpp(params.mDiffuseTransmission) = scene_rdl2::math::sBlack;
         params.mDiffuseTransmissionBlendingBehavior = ispc::DIFFUSE_TRANSMISSION_BLENDING_MONOCHROMATIC;

@@ -44,6 +44,7 @@ export uniform DwaBaseAttributeFuncs DwaSkinMaterial_collectAttributeFuncs()
     fns.mGetAttrSubsurface                  = (uniform intptr_t) (void*) getAttrSubsurface;
     fns.mEvalAttrScatteringColor            = (uniform intptr_t) (void*) evalAttrScatteringColor;
     fns.mEvalAttrScatteringRadius           = (uniform intptr_t) (void*) evalAttrScatteringRadius;
+    fns.mEvalAttrCreaseAttenuation          = (uniform intptr_t) (void*) evalAttrCreaseAttenuation;
     fns.mGetAttrSSSResolveSelfIntersections = (uniform intptr_t) (void*) getAttrSSSResolveSelfIntersections;
     fns.mGetEnableSubsurfaceInputNormal     = (uniform intptr_t) (void*) getAttrEnableSubsurfaceInputNormal;
     fns.mEvalAttrDiffuseTransmission        = (uniform intptr_t) (void*) evalAttrDiffuseTransmission;

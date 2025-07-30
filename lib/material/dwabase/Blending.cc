@@ -948,6 +948,9 @@ void blendDiffuseParams(const ispc::BlendColorSpace colorSpace,
                                                              asCpp(params1.mScatteringRadius),
                                                              mask,
                                                              colorSpace);
+            params.mCreaseAttenuation = lerp(params0.mCreaseAttenuation,
+                                             params1.mCreaseAttenuation,
+                                             mask);
             params.mDiffuseTransmissionBlendingBehavior = params1.mDiffuseTransmissionBlendingBehavior;
             params.mDiffuseRoughness = lerp(params0.mDiffuseRoughness,
                                             params1.mDiffuseRoughness,
@@ -955,11 +958,13 @@ void blendDiffuseParams(const ispc::BlendColorSpace colorSpace,
         } else if (mtl1HasDiffuse) {
             // only mtl1 has diffuse
             asCpp(params.mScatteringRadius) = asCpp(params1.mScatteringRadius);
+            params.mCreaseAttenuation = params1.mCreaseAttenuation;
             params.mDiffuseTransmissionBlendingBehavior = params1.mDiffuseTransmissionBlendingBehavior;
             params.mDiffuseRoughness = params1.mDiffuseRoughness;
         } else {
             // only mtl0 has diffuse
             asCpp(params.mScatteringRadius) = asCpp(params0.mScatteringRadius);
+            params.mCreaseAttenuation = params0.mCreaseAttenuation;
             params.mDiffuseTransmissionBlendingBehavior = params0.mDiffuseTransmissionBlendingBehavior;
             params.mDiffuseRoughness = params0.mDiffuseRoughness;
         }

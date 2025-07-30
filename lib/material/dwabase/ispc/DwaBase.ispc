@@ -981,6 +981,9 @@ DWABASE_resolveParameters(DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS)
                   0.0f, 1.0f) *
             max(0.0f,
                 EVALFLOATATTR(dwaBase->mAttrFuncs.mEvalAttrScatteringRadius, me, tls, state, 0.0f));
+        params->mCreaseAttenuation =
+            max(0.0f,
+                EVALFLOATATTR(dwaBase->mAttrFuncs.mEvalAttrCreaseAttenuation, me, tls, state, 0.0f));
         params->mSSSResolveSelfIntersections =
                 GETBOOLATTR(dwaBase->mAttrFuncs.mGetAttrSSSResolveSelfIntersections, me, true);
     }

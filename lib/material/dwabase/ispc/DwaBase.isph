@@ -286,6 +286,7 @@ struct DwaBaseAttributeFuncs
     uniform intptr_t mGetAttrSubsurface;
     uniform intptr_t mEvalAttrScatteringColor;
     uniform intptr_t mEvalAttrScatteringRadius;
+    uniform intptr_t mEvalAttrCreaseAttenuation;
     uniform intptr_t mGetAttrSSSResolveSelfIntersections;
     uniform intptr_t mGetEnableSubsurfaceInputNormal;
     uniform intptr_t mEvalAttrDiffuseTransmission;
@@ -598,6 +599,7 @@ DWABASE_initDwaBaseAttributeFuncs(uniform DwaBaseAttributeFuncs &fns)
     fns.mGetAttrSubsurface                      = 0;
     fns.mEvalAttrScatteringColor                = 0;
     fns.mEvalAttrScatteringRadius               = 0;
+    fns.mEvalAttrCreaseAttenuation              = 0;
     fns.mGetEnableSubsurfaceInputNormal         = 0;
     fns.mGetAttrSSSResolveSelfIntersections     = 0;
     fns.mEvalAttrDiffuseTransmission            = 0;

@@ -1677,6 +1677,8 @@ DwaBase::resolveParameters(moonray::shading::TLState *tls,
         asCpp(params.mScatteringRadius) =
             clamp(evalColor(this, mAttrKeys.mScatteringColor, tls, state)) *
             max(0.0f, evalFloat(this, mAttrKeys.mScatteringRadius, tls, state));
+        params.mCreaseAttenuation = max(0.0f, mAttrKeys.mCreaseAttenuation.isValid() ?
+                get(mAttrKeys.mCreaseAttenuation) : 0.0f);
         params.mSubsurfaceTraceSet = (ispc::TraceSet *)get(mAttrKeys.mSubsurfaceTraceSet);
         params.mSSSResolveSelfIntersections = mAttrKeys.mSSSResolveSelfIntersections.isValid() ?
                 get(mAttrKeys.mSSSResolveSelfIntersections) : true;

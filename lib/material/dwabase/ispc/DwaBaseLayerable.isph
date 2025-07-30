@@ -280,6 +280,7 @@ struct DwaBaseParameters
     Color mAlbedo;
     float mDiffuseRoughness;
     Color mScatteringRadius;
+    float mCreaseAttenuation;
     uniform bool mSSSResolveSelfIntersections;
     uniform TraceSet * uniform mSubsurfaceTraceSet;
 
@@ -634,6 +635,8 @@ DWABASELAYERABLE_printParameters(const varying DwaBaseParameters * uniform const
         DWABASE_EXTRACT(params->mScatteringRadius.r),
         DWABASE_EXTRACT(params->mScatteringRadius.g),
         DWABASE_EXTRACT(params->mScatteringRadius.b));
+    print("mCreaseAttenuation: %\n",
+        DWABASE_EXTRACT(params->mCreaseAttenuation));
     print("mDiffuseTransmission: % % %\n",
         DWABASE_EXTRACT(params->mDiffuseTransmission.r),
         DWABASE_EXTRACT(params->mDiffuseTransmission.g),

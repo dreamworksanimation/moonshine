@@ -61,6 +61,7 @@ collectAttributeKeys()
     keys.mSubsurface                    = attrSubsurface;
     keys.mScatteringColor               = attrScatteringColor;
     keys.mScatteringRadius              = attrScatteringRadius;
+    keys.mCreaseAttenuation             = attrCreaseAttenuation;
     keys.mSubsurfaceTraceSet            = attrSubsurfaceTraceSet;
     keys.mEnableSubsurfaceInputNormal   = attrEnableSubsurfaceInputNormal;
     keys.mSSSResolveSelfIntersections   = attrSSSResolveSelfIntersections;

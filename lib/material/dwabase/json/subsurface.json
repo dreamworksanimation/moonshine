@@ -43,6 +43,19 @@
             },
             "min": "0.0f"
         },
+        "attrCreaseAttenuation" : {
+            "name": "crease_attenuation",
+            "label": "crease attenuation",
+            "comment": "This mitigates the over-brightening around creases which random walk SSS can cause.",
+            "type": "Float",
+            "default": "0.0f",
+            "flags": "FLAGS_BINDABLE",
+            "group": "Diffuse",
+            "enable if": {
+                "show_diffuse": "true"
+            },
+            "min": "0.0f"
+        },
         "attrSubsurfaceTraceSet" : {
             "name": "sss_trace_set",
             "label": "sss trace set",

@@ -306,6 +306,7 @@ struct DwaBaseAttributeKeys
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Int>     mSubsurface;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Rgb>     mScatteringColor;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>   mScatteringRadius;
+    scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Float>   mCreaseAttenuation;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::SceneObject *> mSubsurfaceTraceSet;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>    mEnableSubsurfaceInputNormal;
     scene_rdl2::rdl2::AttributeKey<scene_rdl2::rdl2::Bool>    mSSSResolveSelfIntersections;
