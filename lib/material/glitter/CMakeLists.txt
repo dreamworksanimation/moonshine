@@ -33,7 +33,6 @@ target_link_libraries(${objLib}
         ${PROJECT_NAME}::common_interpolation
         ${PROJECT_NAME}::common_noise
         ${PROJECT_NAME}::map_projection
-        Moonray::bvh_shading_ispc
         Moonray::map_primvar
         Moonray::shading_ispc
         SceneRdl2::common_math
@@ -51,7 +50,6 @@ if(NOT objLibDeps STREQUAL "")
         ${PROJECT_NAME}::common_interpolation
         ${PROJECT_NAME}::common_noise
         ${PROJECT_NAME}::map_projection
-        Moonray::bvh_shading_ispc
         Moonray::map_primvar
         Moonray::shading_ispc
         SceneRdl2::common_math
@@ -96,7 +94,6 @@ target_link_libraries(${component}
         Moonray::map_primvar
     PUBLIC
         ${PROJECT_NAME}::common_noise
-        Moonray::rendering_bvh_shading
         Moonray::rendering_shading
         SceneRdl2::common_math
         SceneRdl2::scene_rdl2

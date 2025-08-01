@@ -7,7 +7,7 @@
 
 #include <scene_rdl2/scene/rdl2/Geometry.h>
 #include <scene_rdl2/scene/rdl2/UserData.h>
-#include <moonray/rendering/bvh/shading/PrimitiveAttribute.h>
+#include <moonray/rendering/shading/PrimitiveAttribute.h>
 
 namespace moonshine {
 namespace geometry {

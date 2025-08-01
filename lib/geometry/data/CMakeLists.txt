@@ -27,7 +27,6 @@ target_include_directories(${component}
 
 target_link_libraries(${component}
     PUBLIC
-        Moonray::rendering_bvh_shading
         Moonray::rendering_geom
         Moonray::rendering_shading
         SceneRdl2::scene_rdl2

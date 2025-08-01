@@ -9,7 +9,7 @@
 
 #include <moonray/rendering/shading/MaterialApi.h>
 #include <moonray/rendering/shading/BasicTexture.h>
-#include <moonray/rendering/bvh/shading/Xform.h>
+#include <moonray/rendering/shading/Xform.h>
 #include <scene_rdl2/scene/rdl2/Material.h>
 #include <scene_rdl2/render/logging/logging.h>
 #include <scene_rdl2/common/math/Color.h>

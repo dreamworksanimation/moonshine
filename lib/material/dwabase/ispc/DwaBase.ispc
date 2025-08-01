@@ -4,7 +4,7 @@
 /// @file DwaBase.ispc
 
 #include <moonray/rendering/shading/ispc/Shading.isph>
-#include <moonray/rendering/bvh/shading/ispc/Xform.isph>
+#include <moonray/rendering/shading/ispc/Xform.isph>
 #include <moonray/rendering/shading/ispc/Util.isph>
 #include <moonshine/material/glitter/ispc/Glitter.isph>
 #include "DwaBaseLayerable.isph"

@@ -33,7 +33,7 @@ set_target_properties(${objLib} PROPERTIES
 target_link_libraries(${objLib}
     PRIVATE
         ${PROJECT_NAME}::material_glitter
-        Moonray::rendering_bvh_shading
+        Moonray::rendering_shading
         Moonray::shading_ispc
         SceneRdl2::common_platform
 )
@@ -45,7 +45,7 @@ get_target_property(objLibDeps ${objLib} DEPENDENCY)
 if(NOT objLibDeps STREQUAL "")
     add_dependencies(${objLibDeps} 
         ${PROJECT_NAME}::material_glitter
-        Moonray::rendering_bvh_shading
+        Moonray::rendering_shading
         Moonray::shading_ispc
         SceneRdl2::common_platform
     )
@@ -93,7 +93,6 @@ target_link_libraries(${component}
     PUBLIC
         ${PROJECT_NAME}::material_glitter
         Moonray::common_mcrt_macros
-        Moonray::rendering_bvh_shading
         Moonray::rendering_shading
         Moonray::shading_ispc
         SceneRdl2::common_math

@@ -33,7 +33,6 @@ set_target_properties(${objLib} PROPERTIES
 
 target_link_libraries(${objLib}
     PRIVATE
-        # Moonray::bvh_shading_ispc
         Moonray::shading_ispc
         # SceneRdl2::common_platform
 )
@@ -43,8 +42,7 @@ Moonshine_ispc_compile_options(${objLib})
 
 get_target_property(objLibDeps ${objLib} DEPENDENCY)
 if(NOT objLibDeps STREQUAL "")
-    add_dependencies(${objLibDeps} 
-        # Moonray::bvh_shading_ispc
+    add_dependencies(${objLibDeps}
         Moonray::shading_ispc
         # SceneRdl2::common_platform
     )
