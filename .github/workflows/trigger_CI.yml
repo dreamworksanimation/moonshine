@@ -10,7 +10,6 @@ on:
       - '.github/**'
       - 'flowpipeline.yaml'
       - 'LICENSE'
-      - 'pull_request_template.md'
       - 'tsc/**'
 
 jobs:
