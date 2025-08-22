@@ -1246,7 +1246,7 @@ public:
             // Dispersion
             // Only allow for primary ray intersections to safeguard against splitting a ray twice.
             // Ideally, we tag the ray with a wavelength it carries or whether it has been split already.
-            const float abbeNumber = (state.isIndirect()) ? 0.0f : params.mDispersionAbbeNumber;
+            const float abbeNumber = (!state.isDirect()) ? 0.0f : params.mDispersionAbbeNumber;
 
             builder.startAdjacentComponents();
 

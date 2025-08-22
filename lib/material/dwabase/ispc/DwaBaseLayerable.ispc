@@ -936,7 +936,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
         // Dispersion
         // Only allow for primary ray intersections to safeguard against splitting a ray twice.
         // Ideally, we tag the ray with a wavelength it carries or whether it has been split already.
-        const varying float abbeNumber = (isIndirect(state)) ? 0.0f : params->mDispersionAbbeNumber;
+        const varying float abbeNumber = (!isDirect(state)) ? 0.0f : params->mDispersionAbbeNumber;
 
         BsdfBuilder_startAdjacentComponents(bsdfBuilder);
 
