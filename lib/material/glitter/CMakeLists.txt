@@ -31,8 +31,8 @@ set_target_properties(${objLib} PROPERTIES
 target_link_libraries(${objLib}
     PRIVATE
         ${PROJECT_NAME}::common_interpolation
-        ${PROJECT_NAME}::common_noise
         ${PROJECT_NAME}::map_projection
+        Moonray::common_noise
         Moonray::map_primvar
         Moonray::shading_ispc
         SceneRdl2::common_math
@@ -93,7 +93,7 @@ target_link_libraries(${component}
         ${PROJECT_NAME}::common_interpolation
         Moonray::map_primvar
     PUBLIC
-        ${PROJECT_NAME}::common_noise
+        Moonray::common_noise
         Moonray::rendering_shading
         SceneRdl2::common_math
         SceneRdl2::scene_rdl2

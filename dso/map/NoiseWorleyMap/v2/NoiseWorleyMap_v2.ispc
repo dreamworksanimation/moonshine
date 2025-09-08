@@ -7,13 +7,11 @@
 
 #include "attributes.isph"
 
+#include <moonray/common/noise/ispc/Noise.isph>
+#include <moonray/common/noise/ispc/Worley.isph>
 #include <moonray/map/primvar/ispc/Primvar.isph>
-
 #include <moonray/rendering/shading/ispc/MapApi.isph>
-
 #include <moonshine/common/interpolation/ispc/Interpolation.isph>
-#include <moonshine/common/noise/ispc/Noise.isph>
-#include <moonshine/common/noise/ispc/Worley.isph>
 
 struct StaticNoiseWorleyMapData {
     // shade time error events - these can be static as long as we

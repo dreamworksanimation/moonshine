@@ -10,12 +10,11 @@
 #include "NoiseWorleyMap_v2_ispc_stubs.h"
 
 #include <moonshine/common/interpolation/Interpolation.h>
-#include <moonshine/common/noise/Worley.h>
-
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
 #include <moonray/common/mcrt_util/Atomic.h>
 #include <moonray/map/primvar/Primvar.h>
 #include <moonray/rendering/shading/MapApi.h>
+#include <moonray/common/noise/Worley.h>
 
 #include <memory>
 

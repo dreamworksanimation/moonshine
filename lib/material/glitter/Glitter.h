@@ -7,6 +7,7 @@
 
 #include "Glitter_ispc_stubs.h"
 
+#include <moonray/common/noise/Worley.h>
 #include <moonray/rendering/shading/MaterialApi.h>
 #include <moonray/rendering/shading/BasicTexture.h>
 #include <moonray/rendering/shading/Xform.h>
@@ -15,7 +16,6 @@
 #include <scene_rdl2/common/math/Color.h>
 #include <scene_rdl2/common/math/Vec3.h>
 #include <scene_rdl2/common/math/ReferenceFrame.h>
-#include <moonshine/common/noise/Worley.h>
 
 namespace moonshine {
 
@@ -116,15 +116,15 @@ private:
                                      ispc::NOISE_WorleySample& sample,
                                      ispc::GLITTER_ResultCode& resultCode) const;
 
-    static unsigned int finalizeFlakes(noise::Worley_PointArray::iterator flkItrBeg,
-                                       noise::Worley_PointArray::iterator flkItrCur);
+    static unsigned int finalizeFlakes(moonray::noise::Worley_PointArray::iterator flkItrBeg,
+                                       moonray::noise::Worley_PointArray::iterator flkItrCur);
 
     unsigned int findNearestFlakes(const ispc::NOISE_WorleySample& sample,
-                                   const noise::Flake_StyleArray& styleCDF,
-                                   const noise::Flake_StyleArray& styleSizes,
+                                   const moonray::noise::Flake_StyleArray& styleCDF,
+                                   const moonray::noise::Flake_StyleArray& styleSizes,
                                    float flakeDensity,
                                    float flakeJitter,
-                                   noise::Worley_PointArray& flakes) const;
+                                   moonray::noise::Worley_PointArray& flakes) const;
 
     scene_rdl2::math::Color computeFlakeColor(const int flakeID,
                                          const scene_rdl2::math::Color& baseColor,
@@ -141,7 +141,7 @@ private:
                                          const unsigned int totalFlakeCount,
                                          const float macroFlakeVisibility,
                                          const scene_rdl2::math::ReferenceFrame& refFrame,
-                                         const noise::Worley_PointArray& flakes,
+                                         const moonray::noise::Worley_PointArray& flakes,
                                          const std::array<scene_rdl2::math::Color, sMaxMacroFlakeCount>& baseColor,
                                          const std::array<float, sMaxMacroFlakeCount>& flakeRoughnesses,
                                          const std::array<scene_rdl2::math::Color, sMaxMacroFlakeCount>& flakeTextures,
@@ -157,15 +157,15 @@ private:
                                            const moonray::shading::State& state,
                                            const unsigned int macroFlakeCount,
                                            const float flakeOrientationRandomness,
-                                           noise::Worley_PointArray& flakes,
+                                           moonray::noise::Worley_PointArray& flakes,
                                            std::array<scene_rdl2::math::Color, sMaxMacroFlakeCount>& flakeTextures) const;
 
-    void computeStyleCDF(const noise::Flake_StyleArray& styleFrequencies,
-                         noise::Flake_StyleArray& styleCDF) const;
+    void computeStyleCDF(const moonray::noise::Flake_StyleArray& styleFrequencies,
+                         moonray::noise::Flake_StyleArray& styleCDF) const;
 
     void setFlakeStyles(const ispc::GLITTER_VaryingParameters& params,
                         const unsigned int macroFlakeCount,
-                        const noise::Worley_PointArray& flakes,
+                        const moonray::noise::Worley_PointArray& flakes,
                         std::array<scene_rdl2::math::Color, sMaxMacroFlakeCount>& flakeColors,
                         std::array<float, sMaxMacroFlakeCount>& flakeRoughnesses) const;
 
@@ -179,7 +179,7 @@ private:
                                         const unsigned int microFlakeCount,
                                         const unsigned int macroFlakeCount,
                                         scene_rdl2::alloc::Arena* arena,
-                                        const noise::Worley_PointArray& flakes,
+                                        const moonray::noise::Worley_PointArray& flakes,
                                         const scene_rdl2::math::ReferenceFrame& refFrame,
                                         const float microFlakeVis,
                                         const std::array<scene_rdl2::math::Color, sMaxMacroFlakeCount>& baseColor,
@@ -194,7 +194,7 @@ private:
     ispc::GLITTER_UniformParameters mUniformParams;
 
     std::unique_ptr<moonray::shading::Xform> mXform;
-    std::unique_ptr<noise::Worley> mNoiseWorley;
+    std::unique_ptr<moonray::noise::Worley> mNoiseWorley;
 
     // Individual Flake Textures & their weights - used in macroflake mode
     std::array<TexturePointer, sGlitterFlakeTextureCount> mFlakePatterns;

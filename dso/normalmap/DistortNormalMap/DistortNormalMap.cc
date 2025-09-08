@@ -5,7 +5,7 @@
 #include "attributes.cc"
 #include "DistortNormalMap_ispc_stubs.h"
 
-#include <moonshine/common/noise/Simplex.h>
+#include <moonray/common/noise/Simplex.h>
 #include <moonray/map/primvar/Primvar.h>
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
@@ -29,8 +29,8 @@ private:
                              Vec3f* sample);
 
     ispc::DistortNormalMap mIspc;
-    std::unique_ptr<moonshine::noise::Simplex> mNoiseU;
-    std::unique_ptr<moonshine::noise::Simplex> mNoiseV;
+    std::unique_ptr<moonray::noise::Simplex> mNoiseU;
+    std::unique_ptr<moonray::noise::Simplex> mNoiseV;
     NormalMap* mNormalMap;
 
 RDL2_DSO_CLASS_END(DistortNormalMap)
@@ -67,8 +67,8 @@ DistortNormalMap::update()
 
     if (hasChanged(attrSeed)) {
         // noise is not using 4D (0)
-        mNoiseU = std::make_unique<moonshine::noise::Simplex>(get(attrSeed), 0);
-        mNoiseV = std::make_unique<moonshine::noise::Simplex>(get(attrSeed) + 2, 0);
+        mNoiseU = std::make_unique<moonray::noise::Simplex>(get(attrSeed), 0);
+        mNoiseV = std::make_unique<moonray::noise::Simplex>(get(attrSeed) + 2, 0);
         mIspc.mNoiseU = mNoiseU->getIspcSimplex();
         mIspc.mNoiseV = mNoiseV->getIspcSimplex();
     }

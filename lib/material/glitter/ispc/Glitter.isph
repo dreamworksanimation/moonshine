@@ -5,13 +5,13 @@
 
 #pragma once
 
+#include <moonray/common/noise/ispc/Worley.isph>
 #include <moonray/rendering/shading/ispc/Shading.isph>
 #include <moonray/rendering/shading/ispc/BasicTexture.isph>
 #include <scene_rdl2/common/platform/IspcUtil.isph>
 #include <moonray/rendering/shading/ispc/Ior.isph>
 #include <moonray/rendering/shading/ispc/Xform.isph>
 #include <moonray/rendering/shading/ispc/ShaderDataAux.isph>
-#include <moonshine/common/noise/ispc/Worley.isph>
 
 // ===================================================================
 // ENUMS

@@ -6,8 +6,8 @@
 #include "attributes.isph"
 
 #include <moonshine/common/interpolation/ispc/Interpolation.isph>
-#include <moonshine/common/noise/ispc/Perlin.isph>
-#include <moonshine/common/noise/ispc/Simplex.isph>
+#include <moonray/common/noise/ispc/Perlin.isph>
+#include <moonray/common/noise/ispc/Simplex.isph>
 #include <moonray/map/primvar/ispc/Primvar.isph>
 
 #include <moonray/rendering/shading/ispc/MapApi.isph>

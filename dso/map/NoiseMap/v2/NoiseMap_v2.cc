@@ -7,10 +7,10 @@
 #include "NoiseMap_v2_ispc_stubs.h"
 
 #include <moonray/common/mcrt_util/Atomic.h>
+#include <moonray/common/noise/Perlin.h>
+#include <moonray/common/noise/Simplex.h>
 #include <moonray/map/primvar/Primvar.h>
 #include <moonshine/common/interpolation/Interpolation.h>
-#include <moonshine/common/noise/Perlin.h>
-#include <moonshine/common/noise/Simplex.h>
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
 #include <moonray/rendering/shading/MapApi.h>
@@ -37,14 +37,14 @@ private:
     ispc::NoiseMap_v2 mIspc; // must be the 1st member
 
     std::unique_ptr<moonray::shading::Xform> mXform;
-    std::unique_ptr<noise::Perlin> mNoiseDistort;
-    std::unique_ptr<noise::Perlin> mNoiseR;
-    std::unique_ptr<noise::Perlin> mNoiseG;
-    std::unique_ptr<noise::Perlin> mNoiseB;
-    std::unique_ptr<noise::Simplex> mNoiseSimplexDistort;
-    std::unique_ptr<noise::Simplex> mNoiseSimplexR;
-    std::unique_ptr<noise::Simplex> mNoiseSimplexG;
-    std::unique_ptr<noise::Simplex> mNoiseSimplexB;
+    std::unique_ptr<moonray::noise::Perlin> mNoiseDistort;
+    std::unique_ptr<moonray::noise::Perlin> mNoiseR;
+    std::unique_ptr<moonray::noise::Perlin> mNoiseG;
+    std::unique_ptr<moonray::noise::Perlin> mNoiseB;
+    std::unique_ptr<moonray::noise::Simplex> mNoiseSimplexDistort;
+    std::unique_ptr<moonray::noise::Simplex> mNoiseSimplexR;
+    std::unique_ptr<moonray::noise::Simplex> mNoiseSimplexG;
+    std::unique_ptr<moonray::noise::Simplex> mNoiseSimplexB;
 
 RDL2_DSO_CLASS_END(NoiseMap_v2)
 
@@ -148,11 +148,11 @@ NoiseMap_v2::update()
         if (hasChanged(attrDistortion) || hasChanged(attrDistortionNoiseType)) {
             if (!isZero(get(attrDistortion))) {
                 if (get(attrDistortionNoiseType) == ispc::NoiseType_Simplex) {
-                    mNoiseSimplexDistort = std::make_unique<noise::Simplex>(
+                    mNoiseSimplexDistort = std::make_unique<moonray::noise::Simplex>(
                         get(attrSeed), get(attrUse4D));
                     mIspc.mNoiseSimplexDistort = mNoiseSimplexDistort->getIspcSimplex();
                 } else {
-                    mNoiseDistort = std::make_unique<noise::Perlin>(
+                    mNoiseDistort = std::make_unique<moonray::noise::Perlin>(
                         get(attrSeed), 2048, false, get(attrUse4D));
                     mIspc.mNoiseDistort = mNoiseDistort->getIspcPerlin();
                 }
@@ -160,7 +160,7 @@ NoiseMap_v2::update()
         }
 
         if (get(attrNoiseType) ==  ispc::NoiseType_Simplex) {
-            mNoiseSimplexR = std::make_unique<noise::Simplex>(
+            mNoiseSimplexR = std::make_unique<moonray::noise::Simplex>(
                 get(attrSeed), get(attrUse4D));
             mIspc.mNoiseSimplexR = mNoiseSimplexR->getIspcSimplex();
 
@@ -168,28 +168,28 @@ NoiseMap_v2::update()
                 // The scene_rdl2 Random class gives the same result
                 // for seed = 0 and seed = 1 so we add + 2 and + 3 here instead
                 // of + 1 and + 2
-                mNoiseSimplexG = std::make_unique<noise::Simplex>(
+                mNoiseSimplexG = std::make_unique<moonray::noise::Simplex>(
                     get(attrSeed) + 2, get(attrUse4D));
                 mIspc.mNoiseSimplexG = mNoiseSimplexG->getIspcSimplex();
 
-                mNoiseSimplexB = std::make_unique<noise::Simplex>(
+                mNoiseSimplexB = std::make_unique<moonray::noise::Simplex>(
                     get(attrSeed) + 3, get(attrUse4D));
                 mIspc.mNoiseSimplexB = mNoiseSimplexB->getIspcSimplex();
             }
         } else {
-            mNoiseR = std::make_unique<noise::Perlin>(get(attrSeed),
+            mNoiseR = std::make_unique<moonray::noise::Perlin>(get(attrSeed),
                                                                  ispc::NOISE_MAP_TABLE_SIZE,
                                                                  false,
                                                                  get(attrUse4D));
             mIspc.mNoiseR = mNoiseR->getIspcPerlin();
 
             if (get(attrColor)) {
-                mNoiseG = std::make_unique<noise::Perlin>(get(attrSeed) + 2,
+                mNoiseG = std::make_unique<moonray::noise::Perlin>(get(attrSeed) + 2,
                                                                      ispc::NOISE_MAP_TABLE_SIZE,
                                                                      false,
                                                                      get(attrUse4D));
 
-                mNoiseB = std::make_unique<noise::Perlin>(get(attrSeed) + 3,
+                mNoiseB = std::make_unique<moonray::noise::Perlin>(get(attrSeed) + 3,
                                                                      ispc::NOISE_MAP_TABLE_SIZE,
                                                                      false,
                                                                      get(attrUse4D));

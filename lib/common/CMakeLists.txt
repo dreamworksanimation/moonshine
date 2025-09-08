@@ -2,4 +2,3 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_subdirectory(interpolation)
-add_subdirectory(noise)
