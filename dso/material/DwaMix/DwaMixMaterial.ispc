@@ -264,6 +264,7 @@ shade(const uniform Material *      uniform  me,
     const uniform bool castsCaustics = DWAMIX_castsCaustics(me);
 
     varying DwaBaseParameters params;
+    DWABASELAYERABLE_initColorCorrectParameters(&params);
     if (DWAMIX_resolveParameters(me, tls, state, castsCaustics, &params)) {
         // get sss trace set
         params.mSubsurfaceTraceSet = mixMaterial->mSubsurfaceTraceSet;

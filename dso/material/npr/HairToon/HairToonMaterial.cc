@@ -241,6 +241,8 @@ HairToonMaterial::shade(const Material* self,
     const ispc::DwaBase* dwabase = me->getISPCBaseMaterialStruct();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     me->resolveParameters(tls, state, false, params);
     me->createLobes(me, tls, state, bsdfBuilder, params, dwabase->mUParams, sLabels);
 }

@@ -127,6 +127,7 @@ DwaToonMaterial::DwaToonMaterial(const SceneClass& sceneClass, const std::string
             sLabels,
             ispc::Model::Toon)
 {
+    mType |= INTERFACE_DWABASE;
     mType |= INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaToonMaterial::shade;
@@ -227,6 +228,8 @@ DwaToonMaterial::shade(const Material* self,
     const ispc::DwaBase* dwabase = me->getISPCBaseMaterialStruct();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     me->resolveParameters(tls, state, me->get(attrCastsCaustics), params);
     me->createLobes(me, tls, state, bsdfBuilder, params, dwabase->mUParams, sLabels);
 }

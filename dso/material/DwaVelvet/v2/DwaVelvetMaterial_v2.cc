@@ -78,6 +78,7 @@ DwaVelvetMaterial_v2::DwaVelvetMaterial_v2(const scene_rdl2::rdl2::SceneClass& s
                 sLabels,
                 ispc::Model::Velvet_v2)
 {
+    mType |= scene_rdl2::rdl2::INTERFACE_DWABASE;
     mType |= scene_rdl2::rdl2::INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaVelvetMaterial_v2::shade;
@@ -99,6 +100,8 @@ DwaVelvetMaterial_v2::shade(const scene_rdl2::rdl2::Material* self, moonray::sha
     const ispc::DwaBase* dwabase = me->getISPCBaseMaterialStruct();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     me->resolveParameters(tls, state, me->get(attrCastsCaustics), params);
     me->createLobes(me, tls, state, bsdfBuilder, params, dwabase->mUParams, sLabels);
 }

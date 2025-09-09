@@ -4,10 +4,12 @@
 /// @file DwaBaseLayerable.ispc
 
 #include "DwaBaseLayerable.isph"
+#include <moonray/rendering/shading/ispc/ColorCorrect.isph>
 #include <moonray/rendering/shading/ispc/Shading.isph>
 
 ISPC_UTIL_EXPORT_ENUM_TO_HEADER(DWABASE_ToonDiffuseConstants);
 ISPC_UTIL_EXPORT_ENUM_TO_HEADER(DWABASE_IridescenceConstants);
+ISPC_UTIL_EXPORT_ENUM_TO_HEADER(DWABASE_ColorCorrectConstants);
 ISPC_UTIL_EXPORT_ENUM_TO_HEADER(ToonDiffuseModel);
 ISPC_UTIL_EXPORT_ENUM_TO_HEADER(ToonSpecularModel);
 ISPC_UTIL_EXPORT_ENUM_TO_HEADER(IridescenceLobe);
@@ -29,6 +31,10 @@ enum VelvetVersion {
 // Access Function to retrieve ISPC LABELS struct
 extern "C" const void* uniform getLabelsDataPtr(const uniform Material* uniform);
 
+export void * uniform DwaBase_getCreateLobesFunc()
+{
+    return DWABASE_createLobes;
+}
 
 // When no label present set to invalid value defined in Bsdf.isph::BsdfLobe_setLabel.
 static const uniform int noLabel = -1;
@@ -156,7 +162,7 @@ DWABASE_addGlitterLobes(const uniform Material * uniform me,
 }
 
 Color
-DWABASE_getDiffuseTransmissionAttenuation(const varying DwaBaseParameters * uniform params)
+DWABASELAYERABLE_getDiffuseTransmissionAttenuation(const varying DwaBaseParameters * uniform params)
 {
     varying Color diffuseTransmissionAttenuation;
     if (params->mDiffuseTransmissionBlendingBehavior == DIFFUSE_TRANSMISSION_BLENDING_RGB) {
@@ -1089,7 +1095,7 @@ DWABASE_createLobes(const uniform Material * uniform me,
 
     // Diffuse lobes
     const varying bool zeroScatterRadius = isBlack(params->mScatteringRadius);
-    const varying Color diffuseTransmissionAttenuation = DWABASE_getDiffuseTransmissionAttenuation(params);
+    const varying Color diffuseTransmissionAttenuation = DWABASELAYERABLE_getDiffuseTransmissionAttenuation(params);
     const varying Color reflectionAlbedo = params->mAlbedo * diffuseTransmissionAttenuation;
     const varying bool blackAlbedo = isBlack(reflectionAlbedo);
 
@@ -1362,6 +1368,15 @@ DWABASELAYERABLE_initToonDiffuseParameters(varying ToonDiffuseParameters * unifo
 }
 
 void
+DWABASELAYERABLE_initAccentParameters(varying AccentParameters * uniform params)
+{
+    params->mSubsurface = 1.0f;
+    params->mSubsurfaceNormal = Vec3f_ctor(0.0f, 0.0f, 0.0f);
+    params->mSubsurfaceNormalDial = 1.0f;
+    params->mSubsurfaceColor = sWhite;
+}
+
+void
 DWABASELAYERABLE_initParameters(varying DwaBaseParameters * uniform params)
 {
     // The following uniform params are set in update:
@@ -1465,5 +1480,188 @@ DWABASELAYERABLE_initParameters(varying DwaBaseParameters * uniform params)
 
     params->mDiffuseLightSet = NULL;
     params->mSpecularLightSet = NULL;
+
+    DWABASELAYERABLE_initAccentParameters(&params->mAccentParams);
+}
+
+void
+DWABASELAYERABLE_initColorCorrectParameters(varying DwaBaseParameters * params)
+{
+    params->mNumColorCorrections = 0;
+    for (size_t i = 0; i < DWABASE_MAX_COLOR_CORRECTIONS; ++i) {
+        params->mColorCorrectParams[i].mOn = false;
+        params->mColorCorrectParams[i].mMix = 1.0f;
+        params->mColorCorrectParams[i].mHueShift = 0.0f;
+        params->mColorCorrectParams[i].mSaturation = 1.0f;
+        params->mColorCorrectParams[i].mGain = 1.0f;
+        params->mColorCorrectParams[i].mTmiEnabled = false;
+        params->mColorCorrectParams[i].mTmi = Color_ctor(0.0f, 0.0f, 0.0f);
+    }
+}
+
+void DWABASELAYERABLE_copyColorCorrectParameters(const varying DwaBaseParameters * src,
+                                                 varying DwaBaseParameters * dst)
+{
+    dst->mNumColorCorrections = src->mNumColorCorrections;
+    for (size_t i = 0; i < dst->mNumColorCorrections; ++i) {
+        dst->mColorCorrectParams[i].mOn = src->mColorCorrectParams[i].mOn;
+        dst->mColorCorrectParams[i].mMix =  src->mColorCorrectParams[i].mMix;
+        dst->mColorCorrectParams[i].mHueShift = src->mColorCorrectParams[i].mHueShift;
+        dst->mColorCorrectParams[i].mSaturation = src->mColorCorrectParams[i].mSaturation;
+        dst->mColorCorrectParams[i].mGain =  src->mColorCorrectParams[i].mGain;
+        dst->mColorCorrectParams[i].mTmiEnabled = src->mColorCorrectParams[i].mTmiEnabled ;
+        dst->mColorCorrectParams[i].mTmi = src->mColorCorrectParams[i].mTmi;
+    }
+}
+
+static void
+clampTo0(Color& c)
+{
+    c.r = max(0.f, c.r);
+    c.g = max(0.f, c.g);
+    c.b = max(0.f, c.b);
+}
+
+static void
+clampTo1(Color& c)
+{
+    c.r = min(1.f, c.r);
+    c.g = min(1.f, c.g);
+    c.b = min(1.f, c.b);
+}
+
+static void
+applyColorCorrections(const varying float hueShift,
+                      const varying float saturation,
+                      const varying float gainValue,
+                      const varying bool tmiEnabled,
+                      const varying Color tmi,
+                      varying Color &c)
+{
+    if (!isZero(hueShift)) {
+        applyHueShift(hueShift, c);
+    }
+
+    if (!isOne(saturation)) {
+        applySaturation(saturation, c.r, c.g, c.b);
+    }
+
+    c = c * gainValue;
+
+    if (tmiEnabled) {
+        applyTMI(tmi.r, tmi.g, tmi.b, c.r, c.g, c.b);
+    }
+}
+
+
+extern void
+DWABASE_applyColorCorrectParameters(uniform ShadingTLState * uniform tls,
+                                    const varying State &state,
+                                    varying DwaBaseParameters * uniform params)
+{
+    // We'll apply color correction to these particular params.
+    // Use pointer array to allow for processing them in a loop.
+    #define NUM_COLOR_ARRAY_ELEMS 15
+    varying Color * uniform colors[NUM_COLOR_ARRAY_ELEMS] = {
+        &params->mFuzzAlbedo,
+        &params->mMetallicColor,
+        &params->mMetallicEdgeColor,
+        &params->mWarpColor,
+        &params->mWeftColor,
+        &params->mTransmissionColor,
+        &params->mAlbedo,
+        &params->mDiffuseTransmission,
+        &params->mHairParameters.mHairDiffuseFrontColor,
+        &params->mHairParameters.mHairDiffuseBackColor,
+        &params->mToonSpecularParams.mTint,
+        &params->mAccentParams.mSubsurfaceColor,
+        &params->mScatteringRadius,
+        &params->mIridescenceParameters.mIridescencePrimaryColor,
+        &params->mIridescenceParameters.mIridescenceSecondaryColor
+    };
+
+    for (size_t cc = 0; cc < params->mNumColorCorrections; ++cc) {
+        if (!params->mColorCorrectParams[cc].mOn) { continue; }
+
+        if (isZero(params->mColorCorrectParams[cc].mMix)) { continue; }
+
+
+        // process refl/trans values
+        for (uniform uint8_t i = 0; i < NUM_COLOR_ARRAY_ELEMS; ++i) {
+            varying Color& c = *colors[i];
+            const varying Color original = c;
+            applyColorCorrections(params->mColorCorrectParams[cc].mHueShift,
+                                  params->mColorCorrectParams[cc].mSaturation,
+                                  params->mColorCorrectParams[cc].mGain,
+                                  params->mColorCorrectParams[cc].mTmiEnabled,
+                                  params->mColorCorrectParams[cc].mTmi,
+                                  c);
+            c = lerpOpt(original, c, params->mColorCorrectParams[cc].mMix);
+
+            // clamp refl/trans vals to [0,1]
+            clampTo0(c);
+            clampTo1(c);
+        }
+
+        // handle toon ramp, if present
+        if (!isZero(params->mToonDiffuseParams.mToonDiffuse) &&
+            params->mToonDiffuseParams.mModel == TOON_DIFFUSE_RAMP) {
+            const int rampPts = params->mToonDiffuseParams.mRampNumPoints;
+            for (int i = 0; i < rampPts; ++i) {
+                Color c = params->mToonDiffuseParams.mRampColors[i];
+                const Color original = c;
+                applyColorCorrections(params->mColorCorrectParams[cc].mHueShift,
+                                      params->mColorCorrectParams[cc].mSaturation,
+                                      params->mColorCorrectParams[cc].mGain,
+                                      params->mColorCorrectParams[cc].mTmiEnabled,
+                                      params->mColorCorrectParams[cc].mTmi,
+                                      c);
+                c = lerpOpt(original, c, params->mColorCorrectParams[cc].mMix);
+
+                // clamp refl/trans vals to [0,1]
+                clampTo0(c);
+                clampTo1(c);
+                params->mToonDiffuseParams.mRampColors[i] = c;
+            }
+        }
+
+        // handle iridescence ramp, if present
+        if (!isZero(params->mIridescenceParameters.mIridescence) &&
+            params->mIridescenceParameters.mIridescenceColorControl == SHADING_IRIDESCENCE_COLOR_USE_RAMP) {
+            const int rampPts = params->mIridescenceParameters.mIridescenceRampNumPoints;
+            for (int i = 0; i < rampPts; ++i) {
+                Color c = params->mIridescenceParameters.mIridescenceRampColors[i];
+                const Color original = c;
+                applyColorCorrections(params->mColorCorrectParams[cc].mHueShift,
+                                      params->mColorCorrectParams[cc].mSaturation,
+                                      params->mColorCorrectParams[cc].mGain,
+                                      params->mColorCorrectParams[cc].mTmiEnabled,
+                                      params->mColorCorrectParams[cc].mTmi,
+                                      c);
+                c = lerpOpt(original, c, params->mColorCorrectParams[cc].mMix);
+
+                // clamp refl/trans vals to [0,1]
+                clampTo0(c);
+                clampTo1(c);
+                params->mIridescenceParameters.mIridescenceRampColors[i] = c;
+            }
+        }
+
+        // handle emission separately, don't clamp at 1.0
+        {
+            varying Color& c = params->mEmission;
+            const varying Color original = c;
+            applyColorCorrections(params->mColorCorrectParams[cc].mHueShift,
+                                  params->mColorCorrectParams[cc].mSaturation,
+                                  params->mColorCorrectParams[cc].mGain,
+                                  params->mColorCorrectParams[cc].mTmiEnabled,
+                                  params->mColorCorrectParams[cc].mTmi,
+                                  c);
+            c = lerpOpt(original, c, params->mColorCorrectParams[cc].mMix);
+
+            // clamp emission to [0,inf]
+            clampTo0(c);
+        }
+    }
 }
 

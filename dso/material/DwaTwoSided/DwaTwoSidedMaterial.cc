@@ -127,6 +127,7 @@ DwaTwoSidedMaterial::DwaTwoSidedMaterial(const SceneClass& sceneClass, const std
     , mFrontMaterial(nullptr)
     , mBackMaterial(nullptr)
 {
+    mType |= INTERFACE_DWABASE;
     mType |= INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaTwoSidedMaterial::shade;
@@ -134,9 +135,6 @@ DwaTwoSidedMaterial::DwaTwoSidedMaterial(const SceneClass& sceneClass, const std
     mPresenceFunc = DwaTwoSidedMaterial::presence;
 
     mIspc.mEvalSubsurfaceNormal = (intptr_t)DwaTwoSidedMaterial::evalSubsurfaceNormal;
-
-    mIspc.mFrontIsInterfaceDwaBaseLayerable = false;
-    mIspc.mBackIsInterfaceDwaBaseLayerable = false;
 }
 
 void
@@ -165,25 +163,8 @@ void
 DwaTwoSidedMaterial::update()
 {
     if (hasChanged(attrFrontMaterial) || hasChanged(attrBackMaterial)) {
-        mFrontMaterial = nullptr;
-        mBackMaterial = nullptr;
-        mIspc.mFrontIsInterfaceDwaBaseLayerable = false;
-        mIspc.mBackIsInterfaceDwaBaseLayerable = false;
-
-        scene_rdl2::rdl2::SceneObject* frontMaterial = get(attrFrontMaterial);
-        if (frontMaterial) {
-            const scene_rdl2::rdl2::SceneObjectInterface frontInterface = frontMaterial->getSceneClass().getDeclaredInterface();
-            mIspc.mFrontIsInterfaceDwaBaseLayerable = frontInterface & scene_rdl2::rdl2::SceneObjectInterface::INTERFACE_DWABASELAYERABLE;
-            mFrontMaterial = registerLayerable(frontMaterial, mIspc.mFrontMaterial);
-        }
-
-        scene_rdl2::rdl2::SceneObject* backMaterial = get(attrBackMaterial);
-        if (backMaterial) {
-            const scene_rdl2::rdl2::SceneObjectInterface backInterface = backMaterial->getSceneClass().getDeclaredInterface();
-            mIspc.mBackIsInterfaceDwaBaseLayerable = backInterface & scene_rdl2::rdl2::SceneObjectInterface::INTERFACE_DWABASELAYERABLE;
-            mBackMaterial = registerLayerable(backMaterial, mIspc.mBackMaterial);
-        }
-
+        mFrontMaterial = registerLayerable(get(attrFrontMaterial), mIspc.mFrontMaterial);
+        mBackMaterial = registerLayerable(get(attrBackMaterial), mIspc.mBackMaterial);
         resolveUniformParameters(mIspc.mUParams);
     }
     mIspc.mSubsurfaceTraceSet = (TraceSet *)get(attrSubsurfaceTraceSet);
@@ -281,26 +262,15 @@ DwaTwoSidedMaterial::shade(const Material* self,
     const ispc::DwaTwoSidedMaterial* ispc = me->getISPCLayerMaterialStruct();
 
     const bool castsCaustics = me->getCastsCaustics();
-    ispc::DwaBaseParameters params;
 
-    if (state.isEntering()  && me->mFrontMaterial != nullptr) {
-        if (me->mIspc.mFrontIsInterfaceDwaBaseLayerable) {
-            if (me->mFrontMaterial->resolveParameters(tls, state, castsCaustics, params)) {
-                params.mSubsurfaceTraceSet = (TraceSet *)me->get(attrSubsurfaceTraceSet);
-                me->createLobes(me, tls, state, bsdfBuilder, params, ispc->mUParams, sLabels);
-            }
-        } else {
-            me->mFrontMaterial->shade(tls, state, bsdfBuilder);
-        }
-    } else if (!state.isEntering() && me->mBackMaterial != nullptr) {
-        if (me->mIspc.mBackIsInterfaceDwaBaseLayerable) {
-            if (me->mBackMaterial->resolveParameters(tls, state, castsCaustics, params)) {
-                params.mSubsurfaceTraceSet = (TraceSet *)me->get(attrSubsurfaceTraceSet);
-                me->createLobes(me, tls, state, bsdfBuilder, params, ispc->mUParams, sLabels);
-            }
-        } else {
-            me->mBackMaterial->shade(tls, state, bsdfBuilder);
-        }
+    ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
+    if (me->resolveParameters(tls, state, castsCaustics, params)) {
+        // get sss trace set for this DwaTwoSidedMaterial
+        params.mSubsurfaceTraceSet = (TraceSet *)me->get(attrSubsurfaceTraceSet);
+
+        me->createLobes(me, tls, state, bsdfBuilder, params, ispc->mUParams, sLabels);
     }
 }
 

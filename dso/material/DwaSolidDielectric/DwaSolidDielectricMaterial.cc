@@ -110,6 +110,7 @@ DwaSolidDielectricMaterial::DwaSolidDielectricMaterial(const SceneClass& sceneCl
             sLabels,
             ispc::Model::SolidDielectric)
 {
+    mType |= INTERFACE_DWABASE;
     mType |= INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaSolidDielectricMaterial::shade;
@@ -136,6 +137,8 @@ DwaSolidDielectricMaterial::shade(const Material* self, moonray::shading::TLStat
     const ispc::DwaBase* dwabase = me->getISPCBaseMaterialStruct();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     me->resolveParameters(tls, state, me->get(attrCastsCaustics), params);
     me->createLobes(me, tls, state, bsdfBuilder, params, dwabase->mUParams, sLabels);
 }

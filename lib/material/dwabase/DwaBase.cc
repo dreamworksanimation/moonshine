@@ -1585,6 +1585,22 @@ resolveFabricSpecularParams(const DwaBase* me,
     }
 }
 
+finline void
+resolveAccentParams(const DwaBase* me,
+                    moonray::shading::TLState *tls,
+                    const moonray::shading::State& state,
+                    bool castsCaustics,
+                    const ispc::DwaBase& ispcDwaBase,
+                    const ispc::DwaBaseParameterHints& hints,
+                    const DwaBaseAttributeKeys& keys,
+                    ispc::DwaBaseParameters &params)
+{
+    params.mAccentParams.mSubsurface = 1.0f;
+    asCpp(params.mAccentParams.mSubsurfaceNormal) = asCpp(params.mDiffuseNormal);
+    params.mAccentParams.mSubsurfaceNormalDial = params.mNormalDial;
+    asCpp(params.mAccentParams.mSubsurfaceColor) = asCpp(params.mAlbedo);
+}
+
 int
 DwaBase::resolveSubsurfaceType(const State& state) const
 {
@@ -1698,6 +1714,10 @@ DwaBase::resolveParameters(moonray::shading::TLState *tls,
 
     params.mDiffuseLightSet = mIspc.mDiffuseLightSet;
     params.mSpecularLightSet = mIspc.mSpecularLightSet;
+
+    resolveAccentParams(this, tls, state, castsCaustics, mIspc, mIspc.mHints, mAttrKeys, params);
+
+    applyColorCorrectParameters(tls, state, params);
 
     // ---------------
     // for debug_pixel

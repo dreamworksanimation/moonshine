@@ -128,6 +128,7 @@ DwaAdjustMaterial::DwaAdjustMaterial(
     : Parent(sceneClass, name, sLabels)
     , mInputMtl(nullptr)
 {
+    mType |= INTERFACE_DWABASE;
     mType |= INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaAdjustMaterial::shade;
@@ -510,6 +511,7 @@ DwaAdjustMaterial::shade(const Material* self,
     const bool castsCaustics = me->getCastsCaustics();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
 
     if (me->resolveParameters(tls, state, castsCaustics, params)) {
         me->createLobes(me, tls, state, bsdfBuilder, params, ispc->mUParams, sLabels);

@@ -87,6 +87,7 @@ DwaFabricMaterial::DwaFabricMaterial(const scene_rdl2::rdl2::SceneClass& sceneCl
                 sLabels,
                 ispc::Model::Fabric)
 {
+    mType |= scene_rdl2::rdl2::INTERFACE_DWABASE;
     mType |= scene_rdl2::rdl2::INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaFabricMaterial::shade;
@@ -108,6 +109,8 @@ DwaFabricMaterial::shade(const scene_rdl2::rdl2::Material* self, moonray::shadin
     const ispc::DwaBase* dwabase = me->getISPCBaseMaterialStruct();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     me->resolveParameters(tls, state, me->get(attrCastsCaustics), params);
     me->createLobes(me, tls, state, bsdfBuilder, params, dwabase->mUParams, sLabels);
 }

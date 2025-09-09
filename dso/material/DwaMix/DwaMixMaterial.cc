@@ -176,6 +176,7 @@ DwaMixMaterial::DwaMixMaterial(const SceneClass& sceneClass, const std::string& 
              sLabels,
              ispc::Model::Layer)
 {
+    mType |= INTERFACE_DWABASE;
     mType |= INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaMixMaterial::shade;
@@ -466,6 +467,8 @@ DwaMixMaterial::shade(const Material* self,
     const bool castsCaustics = me->getCastsCaustics();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     if (me->resolveParameters(tls, state, castsCaustics, params)) {
         // get sss trace set for this DwaMixMaterial
         params.mSubsurfaceTraceSet = static_cast<TraceSet *>(me->get(attrSubsurfaceTraceSet));

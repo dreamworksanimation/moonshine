@@ -203,6 +203,7 @@ shade(const uniform Material *      uniform  me,
         (const uniform DwaSwitchMaterial* uniform)getDwaSwitchMaterialStruct(me);
 
     varying DwaBaseParameters params;
+    DWABASELAYERABLE_initColorCorrectParameters(&params);
     if (DWASWITCH_resolveParameters(me, tls, state, false, &params)) {
         // get sss trace set
         params.mSubsurfaceTraceSet = thisMaterial->mSubsurfaceTraceSet;

@@ -24,6 +24,10 @@ enum DWABASE_IridescenceConstants {
     DWABASE_MAX_IRIDESCENCE_RAMP_POINTS = 10
 };
 
+enum DWABASE_ColorCorrectConstants {
+    DWABASE_MAX_COLOR_CORRECTIONS = 10
+};
+
 // These structures hold the labels that will be assigned
 // to the various lobes for aovs and LPE's.
 struct HairLabels
@@ -199,6 +203,25 @@ struct HairParameters
     float mHairSubsurfaceBlend;
 };
 
+struct ColorCorrectParameters
+{ 
+    bool mOn;
+    float mMix;
+    float mHueShift;
+    float mSaturation;
+    float mGain;
+    bool mTmiEnabled;
+    Color mTmi;
+};
+
+struct AccentParameters
+{
+    float mSubsurface;
+    Color mSubsurfaceColor;
+    float mSubsurfaceNormalDial;
+    Vec3f mSubsurfaceNormal;
+};
+
 // This structure holds the parameters needed to construct the lobes
 // for a DwaBase material.
 // NOTE: All fields must be initialized in DWABASELAYERABLE_initParameters()
@@ -299,6 +322,11 @@ struct DwaBaseParameters
     Color mEmission;
     uniform intptr_t mEvalSubsurfaceNormalFn;
 
+    // color correct parameters
+    ColorCorrectParameters mColorCorrectParams[DWABASE_MAX_COLOR_CORRECTIONS];
+    int mNumColorCorrections;
+    AccentParameters mAccentParams;
+
     const uniform LightSet * uniform mDiffuseLightSet;
     const uniform LightSet * uniform mSpecularLightSet;
 };
@@ -318,6 +346,13 @@ struct DwaBaseUniformParameters
 };
 
 void DWABASELAYERABLE_initParameters(varying DwaBaseParameters * uniform params);
+
+void DWABASELAYERABLE_initColorCorrectParameters(varying DwaBaseParameters * params);
+
+void DWABASELAYERABLE_copyColorCorrectParameters(const varying DwaBaseParameters * src,
+                                                 varying DwaBaseParameters * dst);
+
+Color DWABASELAYERABLE_getDiffuseTransmissionAttenuation(const varying DwaBaseParameters * uniform params);
 
 // Extract lane 0 or print all lanes ?
 #if 1
@@ -386,6 +421,21 @@ DWABASELAYERABLE_printIridescenceParameters(const varying IridescenceParameters 
     print("mIridescenceAt90: %\n", DWABASE_EXTRACT(params->mIridescenceAt90));
     print("mIridescenceRampInterpolationMode: %\n", DWABASE_EXTRACT((uint32_t) params->mIridescenceRampInterpolationMode));
     print("mIridescenceRampPoints: %\n", DWABASE_EXTRACT(params->mIridescenceRampNumPoints));
+}
+
+inline void
+DWABASELAYERABLE_printAccentParameters(const varying AccentParameters * uniform const params)
+{
+    print("mSubsurface: %\n", DWABASE_EXTRACT(params->mSubsurface));
+    print("mSubsurfaceNormalDial: %\n", DWABASE_EXTRACT(params->mSubsurfaceNormalDial));
+    print("mSubsurfaceNormal: % % %\n",
+        DWABASE_EXTRACT(params->mSubsurfaceNormal.x),
+        DWABASE_EXTRACT(params->mSubsurfaceNormal.y),
+        DWABASE_EXTRACT(params->mSubsurfaceNormal.z));
+    print("mSubsurfaceColor: % % %\n",
+        DWABASE_EXTRACT(params->mSubsurfaceColor.r),
+        DWABASE_EXTRACT(params->mSubsurfaceColor.g),
+        DWABASE_EXTRACT(params->mSubsurfaceColor.b));
 }
 
 inline void
@@ -661,6 +711,8 @@ DWABASELAYERABLE_printParameters(const varying DwaBaseParameters * uniform const
     print("mThinGeometry: %\n", DWABASE_EXTRACT((uniform uint32_t) uParams->mThinGeometry));
     print("mPreventLightCulling: %\n", DWABASE_EXTRACT((uniform uint32_t) uParams->mPreventLightCulling));
     print("mEvalSubsurfaceNormalFn: %\n", DWABASE_EXTRACT(params->mEvalSubsurfaceNormalFn ));
+
+    DWABASELAYERABLE_printAccentParameters(&params->mAccentParams);
 }
 
 // Arguments for the resolveParameters() function call for DwaBaseLayerable materials
@@ -672,13 +724,20 @@ typedef uniform int (*DWABASELAYERABLE_ResolveSubsurfaceTypeFunc) (DWABASELAYERA
 
 // Arguments for the resolveParameters() function call for DwaBaseLayerable materials
 #define DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS const uniform Material* uniform me, \
-                                           uniform ShadingTLState *uniform tls,\
-                                           const varying State& state,         \
-                                           const uniform bool castsCaustics,   \
-                                           varying DwaBaseParameters* uniform params
+                                                  uniform ShadingTLState *uniform tls,\
+                                                  const varying State& state,         \
+                                                  const uniform bool castsCaustics,   \
+                                                  varying DwaBaseParameters* uniform params
 
 // Function pointer type for resolveParameters function
 typedef bool (*DWABASELAYERABLE_ResolveParametersFunc) (DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS);
+
+typedef void (*DWABASELAYERABLE_CreateLobesFunc) (const uniform Material * uniform me,
+                                                  uniform ShadingTLState * uniform tls,
+                                                  const varying State             &state,
+                                                  varying BsdfBuilder             &bsdfBuilder,
+                                                  const varying DwaBaseParameters * uniform params,
+                                                  const uniform DwaBaseUniformParameters * uniform uParams);
 
 // Function pointer type for castsCaustics function
 typedef uniform bool (*DWABASELAYERABLE_CastsCausticsFunc) (const uniform Material* uniform me);
@@ -739,10 +798,12 @@ void DWABASE_addIndependentTransmissionLobe(varying BsdfBuilder &bsdfBuilder,
 // Base Class to create all the closures in the DwaBase architecture using the DwaBaseParameters provided
 void DWABASE_createLobes(const uniform Material * uniform me,
                          uniform ShadingTLState * uniform tls,
-                         const varying State             &state,
-                         varying BsdfBuilder             &bsdfBuilder,
+                         const varying State &state,
+                         varying BsdfBuilder &bsdfBuilder,
                          const varying DwaBaseParameters * uniform params,
                          const uniform DwaBaseUniformParameters * uniform uParams);
 
-
-
+extern void
+DWABASE_applyColorCorrectParameters(uniform ShadingTLState * uniform tls,
+                                    const varying State &state,
+                                    varying DwaBaseParameters * uniform params);

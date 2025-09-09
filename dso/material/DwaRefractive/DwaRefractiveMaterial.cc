@@ -98,6 +98,7 @@ DwaRefractiveMaterial::DwaRefractiveMaterial(const scene_rdl2::rdl2::SceneClass&
             sLabels,
             ispc::Model::Refractive)
 {
+    mType |= scene_rdl2::rdl2::INTERFACE_DWABASE;
     mType |= scene_rdl2::rdl2::INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaRefractiveMaterial::shade;
@@ -130,6 +131,8 @@ DwaRefractiveMaterial::shade(const scene_rdl2::rdl2::Material* self, moonray::sh
     const ispc::DwaBase* dwabase = me->getISPCBaseMaterialStruct();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     me->resolveParameters(tls, state, me->get(attrCastsCaustics), params);
     me->createLobes(me, tls, state, bsdfBuilder, params, dwabase->mUParams, sLabels);
 }

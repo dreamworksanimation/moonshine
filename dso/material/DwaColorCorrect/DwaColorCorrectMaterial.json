@@ -12,7 +12,8 @@
             "name": "input_material",
             "label": "input material",
             "type": "SceneObject*",
-            "interface": "INTERFACE_DWABASELAYERABLE",
+            "interface": "INTERFACE_DWABASE",
+            "flags": "FLAGS_NONE",
             "comment": "Material to modify"
         },
         "attrOn": {
@@ -91,6 +92,7 @@
             "default": "Rgb(0.0f, 0.0f, 0.0f)",
             "group": "TMI",
             "comment": "T = Temperature where positive values push towards blue and negative towards red.   M = Magenta where positive values push towards magenta and negative towards green.  I = Intensity where negative values remove and positive values add energy ",
+            "flags": "FLAGS_BINDABLE",
             "enable if": {
                 "on": "true",
                 "TMI_enabled": "true"

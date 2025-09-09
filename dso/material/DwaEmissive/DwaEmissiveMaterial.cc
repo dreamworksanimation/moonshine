@@ -54,6 +54,7 @@ DwaEmissiveMaterial::DwaEmissiveMaterial(const scene_rdl2::rdl2::SceneClass& sce
             sLabels,
             ispc::Model::Mixed)
 {
+    mType |= scene_rdl2::rdl2::INTERFACE_DWABASE;
     mType |= scene_rdl2::rdl2::INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaEmissiveMaterial::shade;
@@ -77,6 +78,8 @@ DwaEmissiveMaterial::shade(const scene_rdl2::rdl2::Material* self, moonray::shad
     const ispc::DwaBase* dwabase = me->getISPCBaseMaterialStruct();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     me->resolveParameters(tls, state, false, params);
     me->createLobes(me, tls, state, bsdfBuilder, params, dwabase->mUParams, sLabels);
 }

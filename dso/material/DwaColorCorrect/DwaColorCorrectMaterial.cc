@@ -13,7 +13,6 @@
 #include <moonshine/material/dwabase/DwaBase.h>
 
 #include <moonray/common/mcrt_macros/moonray_static_check.h>
-#include <moonray/rendering/shading/ColorCorrect.h>
 #include <moonray/rendering/shading/MaterialApi.h>
 #include <moonshine/material/dwabase/Blending.h>
 
@@ -50,6 +49,14 @@ public:
                            const State& state,
                            bool castsCaustics,
                            ispc::DwaBaseParameters &params) const override;
+
+    virtual void createLobes(const DwaBaseLayerable * const dwaBaseLayerable,
+                             moonray::shading::TLState *tls,
+                             const moonray::shading::State &state,
+                             moonray::shading::BsdfBuilder &builder,
+                             const ispc::DwaBaseParameters &params,
+                             const ispc::DwaBaseUniformParameters &uParams,
+                             const ispc::DwaBaseLabels &labels) const override;
 
     Vec3f resolveSubsurfaceNormal(TLState *tls,
                               const State& state) const override;
@@ -97,6 +104,11 @@ public:
         return reinterpret_cast<EvalNormalFunc>(DwaColorCorrectMaterial::evalSubsurfaceNormal);
     }
 
+    void * getCreateLobesISPCFunc() const override
+    {
+        return ispc::DwaColorCorrectMaterial_getCreateLobesFunc();
+    }
+
     const ispc::DwaColorCorrectMaterial* getISPCMaterialStruct() const { return &mIspc; }
 
 private:
@@ -108,10 +120,6 @@ private:
     static Vec3f evalSubsurfaceNormal(const scene_rdl2::rdl2::Material* self,
                                       TLState *tls,
                                       const State& state);
-
-    void modifyParameters(moonray::shading::TLState *tls,
-                          const moonray::shading::State &state,
-                          ispc::DwaBaseParameters &params) const;
 
     ispc::DwaColorCorrectMaterial mIspc;
     const DwaBaseLayerable* mInputMtl;
@@ -127,6 +135,7 @@ DwaColorCorrectMaterial::DwaColorCorrectMaterial(
     : Parent(sceneClass, name, sLabels)
     , mInputMtl(nullptr)
 {
+    mType |= scene_rdl2::rdl2::INTERFACE_DWABASE;
     mType |= scene_rdl2::rdl2::INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaColorCorrectMaterial::shade;
@@ -177,13 +186,24 @@ DwaColorCorrectMaterial::resolveParameters(TLState *tls,
 {
     bool result = false;
     if (mInputMtl) {
+        const size_t cc = params.mNumColorCorrections;
+        params.mColorCorrectParams[cc].mOn = get(attrOn);
+        params.mColorCorrectParams[cc].mMix = saturate(evalFloat(this, attrMix, tls, state));
+        params.mColorCorrectParams[cc].mHueShift = evalFloat(this, attrHueShift, tls, state);
+        params.mColorCorrectParams[cc].mSaturation = max(0.f, evalFloat(this, attrSaturation, tls, state));
+        params.mColorCorrectParams[cc].mGain = evalFloat(this, attrGain, tls, state);
+        params.mColorCorrectParams[cc].mTmiEnabled = get(attrTMIEnabled);
+        asCpp(params.mColorCorrectParams[cc].mTmi) = evalColor(this, attrTMI, tls, state);
+        params.mNumColorCorrections++;
+
+        params.mNumColorCorrections = min(ispc::DWABASE_MAX_COLOR_CORRECTIONS,
+                                          params.mNumColorCorrections++);
+
         result = mInputMtl->resolveParameters(tls, state, castsCaustics, params);
+
         // override this, to make sure *this* material's evalSubsurfaceNormal() func is called,
         // and not the child material's func. Also see DwaSwitchMaterial.
         params.mEvalSubsurfaceNormalFn = mIspc.mEvalSubsurfaceNormal;
-        if (result) {
-            modifyParameters(tls, state, params);
-        }
     }
     return result;
 }
@@ -231,131 +251,18 @@ DwaColorCorrectMaterial::resolveSubsurfaceNormal(TLState *tls,
     return result;
 }
 
-static void
-clampTo0(Color& c)
-{
-    c.r = max(0.f, c.r);
-    c.g = max(0.f, c.g);
-    c.b = max(0.f, c.b);
-}
-
-static void
-clampTo1(Color& c)
-{
-        c.r = min(1.f, c.r);
-        c.g = min(1.f, c.g);
-        c.b = min(1.f, c.b);
-}
-
-static void
-applyColorCorrections(const float hueShift,
-                      const float saturation,
-                      const float gainValue,
-                      const bool tmiEnabled,
-                      const Color& tmi,
-                      Color &c)
-{
-    if (!isZero(hueShift)) {
-        moonray::shading::applyHueShift(hueShift, c);
-    }
-
-    if (!isOne(saturation)) {
-        moonray::shading::applySaturation(saturation, c);
-    }
-
-    c = c * gainValue;
-
-    if (tmiEnabled) {
-        moonray::shading::applyTMI(tmi, c);
-    }
-}
-
 void
-DwaColorCorrectMaterial::modifyParameters(moonray::shading::TLState *tls,
-                                          const moonray::shading::State &state,
-                                          ispc::DwaBaseParameters &params) const
+DwaColorCorrectMaterial::createLobes(const moonshine::dwabase::DwaBaseLayerable * const dwaBaseLayerable,
+                                     moonray::shading::TLState *tls,
+                                     const moonray::shading::State &state,
+                                     moonray::shading::BsdfBuilder &bsdfBuilder,
+                                     const ispc::DwaBaseParameters &params,
+                                     const ispc::DwaBaseUniformParameters &uParams,
+                                     const ispc::DwaBaseLabels &labels) const
 {
-    if (!get(attrOn)) { return; }
-
-    const float mix = saturate(evalFloat(this, attrMix, tls, state));
-    if (isZero(mix)) { return; }
-
-    const float hueShift = evalFloat(this, attrHueShift, tls, state);
-    const float saturation = max(0.f, evalFloat(this, attrSaturation, tls, state));
-    const float gainValue = evalFloat(this, attrGain, tls, state);
-    const bool tmiEnabled = get(attrTMIEnabled);
-    const Color tmi = get(attrTMI);
-
-    // We'll apply color correction to these particular params.
-    // Use pointer array to allow for processing them in a loop.
-    // We'll also apply color correction to emission later....
-
-    #define NUM_COLOR_ARRAY_ELEMS 8
-    Color * colors[NUM_COLOR_ARRAY_ELEMS] = {
-        asCpp(&params.mFuzzAlbedo),
-        asCpp(&params.mMetallicColor),
-        asCpp(&params.mMetallicEdgeColor),
-        asCpp(&params.mWarpColor),
-        asCpp(&params.mWeftColor),
-        asCpp(&params.mTransmissionColor),
-        asCpp(&params.mAlbedo),
-        asCpp(&params.mDiffuseTransmission)
-    };
-
-    // process refl/trans values
-    for (uint8_t i = 0; i < NUM_COLOR_ARRAY_ELEMS; ++i) {
-        Color& c = *colors[i];
-        const Color original = c;
-        applyColorCorrections(hueShift,
-                              saturation,
-                              gainValue,
-                              tmiEnabled,
-                              tmi,
-                              c);
-        c = lerpOpt(original, c, mix);
-
-        // clamp refl/trans vals to [0,1]
-        clampTo0(c);
-        clampTo1(c);
-    }
-
-    // handle toon ramp, if present
-    if (!isZero(params.mToonDiffuseParams.mToonDiffuse) && 
-        params.mToonDiffuseParams.mModel == ispc::TOON_DIFFUSE_RAMP) {
-        const int rampPts = params.mToonDiffuseParams.mRampNumPoints;
-        for (uint8_t i = 0; i < rampPts; ++i) {
-            Color c = asCpp(params.mToonDiffuseParams.mRampColors[i]);
-            const Color original = c;
-            applyColorCorrections(hueShift,
-                                  saturation,
-                                  gainValue,
-                                  tmiEnabled,
-                                  tmi,
-                                  c);
-            c = lerpOpt(original, c, mix);
-
-            // clamp refl/trans vals to [0,1]
-            clampTo0(c);
-            clampTo1(c);
-            asCpp(params.mToonDiffuseParams.mRampColors[i]) = c;
-        }
-    }
-
-    // handle emission separately, don't clamp at 1.0
-    {
-        Color& c = asCpp(params.mEmission);
-        const Color original = c;
-        applyColorCorrections(hueShift,
-                              saturation,
-                              gainValue,
-                              tmiEnabled,
-                              tmi,
-                              c);
-        c = lerpOpt(original, c, mix);
-
-        // clamp emission to [0,inf]
-        clampTo0(c);
-    }
+    const DwaColorCorrectMaterial* me = static_cast<const DwaColorCorrectMaterial*>(this);
+    const ispc::DwaColorCorrectMaterial* ispc = me->getISPCMaterialStruct();
+    me->mInputMtl->createLobes(me, tls, state, bsdfBuilder, params, ispc->mUParams, sLabels);
 }
 
 void
@@ -369,9 +276,10 @@ DwaColorCorrectMaterial::shade(const scene_rdl2::rdl2::Material* self,
     const bool castsCaustics = me->getCastsCaustics();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
 
     if (me->resolveParameters(tls, state, castsCaustics, params)) {
-        me->createLobes(me, tls, state, bsdfBuilder, params, ispc->mUParams, sLabels);
+        me->mInputMtl->createLobes(me, tls, state, bsdfBuilder, params, ispc->mUParams, sLabels);
     }
 }
 

@@ -832,6 +832,20 @@ resolveTransmissionParams(const uniform DwaBase * uniform dwaBase,
 }
 
 inline void
+resolveAccentParams(const uniform DwaBase * uniform dwaBase,
+                    const uniform Material *uniform me,
+                    uniform ShadingTLState * uniform tls,
+                    const varying State &state,
+                    const uniform bool castsCaustics,
+                    varying DwaBaseParameters * uniform params)
+{
+    params->mAccentParams.mSubsurface = 1.0f;
+    params->mAccentParams.mSubsurfaceNormal = params->mDiffuseNormal;
+    params->mAccentParams.mSubsurfaceNormalDial = params->mNormalDial;
+    params->mAccentParams.mSubsurfaceColor = params->mAlbedo;
+}
+
+inline void
 resolveFabricSpecularParams(const uniform DwaBase * uniform dwaBase,
                             const uniform Material *uniform me,
                             uniform ShadingTLState * uniform tls,
@@ -1008,6 +1022,10 @@ DWABASE_resolveParameters(DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS)
         params->mEmission = max(sBlack, EVALCOLORATTR(dwaBase->mAttrFuncs.mEvalAttrEmission, me, tls, state, Color_ctor(0.0)));
     }
 
+    resolveAccentParams(dwaBase, me, tls, state, castsCaustics, params);
+
+    DWABASE_applyColorCorrectParameters(tls, state, params);
+
     params->mDiffuseLightSet = dwaBase->mDiffuseLightSet;
     params->mSpecularLightSet = dwaBase->mSpecularLightSet;
 
@@ -1091,4 +1109,5 @@ export void * uniform DwaBase_getresolveSubsurfaceNormalFunc()
 {
     return DWABASE_resolveSubsurfaceNormal;
 }
+
 

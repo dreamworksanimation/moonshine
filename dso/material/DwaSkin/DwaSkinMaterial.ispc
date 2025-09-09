@@ -82,6 +82,7 @@ shade(const uniform Material *      uniform  me,
                 (const uniform DwaBase* uniform)getDwaBaseMaterialStruct(me);
 
     varying DwaBaseParameters params;
+    DWABASELAYERABLE_initColorCorrectParameters(&params);
     DWABASE_resolveParameters(me, tls, state, getAttrCastsCaustics(me), &params);
     DWABASE_createLobes(me, tls, state, bsdfBuilder, &params, &dwaBase->mUParams);
 }

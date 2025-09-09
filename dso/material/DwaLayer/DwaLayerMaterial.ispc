@@ -222,6 +222,7 @@ shade(const uniform Material *      uniform  me,
     const uniform bool castsCaustics = DWALAYER_castsCaustics(me);
 
     varying DwaBaseParameters params;
+    DWABASELAYERABLE_initColorCorrectParameters(&params);
     if (DWALAYER_resolveParameters(me, tls, state, castsCaustics, &params)) {
         // get sss trace set
         params.mSubsurfaceTraceSet = layerMaterial->mSubsurfaceTraceSet;

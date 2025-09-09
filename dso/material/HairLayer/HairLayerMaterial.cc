@@ -281,6 +281,8 @@ HairLayerMaterial::shade(const scene_rdl2::rdl2::Material* self,
     }
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     if (me->resolveParameters(tls, state, castsCaustics, params)) {
         me->createLobes(me, tls, state, bsdfBuilder, params, ispc->mUParams, sLabels);
     }

@@ -90,6 +90,7 @@ DwaMetalMaterial::DwaMetalMaterial(const scene_rdl2::rdl2::SceneClass& sceneClas
             sLabels,
             ispc::Model::Metal)
 {
+    mType |= scene_rdl2::rdl2::INTERFACE_DWABASE;
     mType |= scene_rdl2::rdl2::INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaMetalMaterial::shade;
@@ -111,6 +112,8 @@ DwaMetalMaterial::shade(const scene_rdl2::rdl2::Material* self, moonray::shading
     const ispc::DwaBase* dwabase = me->getISPCBaseMaterialStruct();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     me->resolveParameters(tls, state, me->get(attrCastsCaustics), params);
     me->createLobes(me, tls, state, bsdfBuilder, params, dwabase->mUParams, sLabels);
 }

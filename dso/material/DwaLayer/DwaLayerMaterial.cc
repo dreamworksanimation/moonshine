@@ -148,6 +148,7 @@ DwaLayerMaterial::DwaLayerMaterial(const SceneClass& sceneClass, const std::stri
     , mLayerableA(nullptr)
     , mLayerableB(nullptr)
 {
+    mType |= INTERFACE_DWABASE;
     mType |= INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaLayerMaterial::shade;
@@ -320,6 +321,8 @@ DwaLayerMaterial::shade(const Material* self,
     const bool castsCaustics = me->getCastsCaustics();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     if (me->resolveParameters(tls, state, castsCaustics, params)) {
         // get sss trace set for DwaLayerMaterial
         params.mSubsurfaceTraceSet = static_cast<TraceSet *>(me->get(attrSubsurfaceTraceSet));

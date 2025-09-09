@@ -26,6 +26,7 @@ struct SubMtlData {
     uniform intptr_t mResolvePreventLightCullingFunc;
     uniform intptr_t mResolveSubsurfaceTypeFunc;
     uniform intptr_t mResolveSubsurfaceNormalFunc;
+    uniform intptr_t mCreateLobesFunc;
 };
 
 void

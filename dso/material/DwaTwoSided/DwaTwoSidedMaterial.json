@@ -13,7 +13,7 @@
             "label": "front material",
             "type": "SceneObject*",
             "flags": "FLAGS_NONE",
-            "interface": "INTERFACE_MATERIAL",
+            "interface": "INTERFACE_DWABASE",
             "comment": "material to use on front-facing surfaces"
         },
         "attrBackMaterial": {
@@ -21,7 +21,7 @@
             "label": "back material",
             "type": "SceneObject*",
             "flags": "FLAGS_NONE",
-            "interface": "INTERFACE_MATERIAL",
+            "interface": "INTERFACE_DWABASE",
             "comment": "material to use on back-facing surfaces"
         },
         "attrFallbackBSSRDF": {

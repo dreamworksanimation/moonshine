@@ -273,6 +273,7 @@ shade(const uniform Material *      uniform  me,
     const uniform bool castsCaustics = HAIRCOLORCORRECT_castsCaustics(me);
 
     varying DwaBaseParameters params;
+    DWABASELAYERABLE_initColorCorrectParameters(&params);
 
     if (HAIRCOLORCORRECT_resolveParameters(me, tls, state, castsCaustics, &params)) {
         DWABASE_createLobes(me, tls, state, bsdfBuilder, &params, &material->mUParams);

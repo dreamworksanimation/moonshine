@@ -328,6 +328,7 @@ HairColorCorrectMaterial::shade(const scene_rdl2::rdl2::Material* self,
     const bool castsCaustics = me->getCastsCaustics();
 
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
 
     if (me->resolveParameters(tls, state, castsCaustics, params)) {
         me->createLobes(me, tls, state, bsdfBuilder, params, ispc->mUParams, sLabels);

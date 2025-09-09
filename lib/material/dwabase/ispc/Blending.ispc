@@ -1009,6 +1009,90 @@ void blendCommonParams(const uniform int colorSpace,
                                       colorSpace);
 }
 
+void blendColorCorrectParams(const uniform int colorSpace,
+                             const varying float mask,
+                             const varying DwaBaseParameters &params0,
+                             const varying DwaBaseParameters &params1,
+                             varying DwaBaseParameters &params)
+{
+    const size_t maxCC = max(params0.mNumColorCorrections, params1.mNumColorCorrections);
+    for (size_t cc = 0; cc < maxCC; ++cc) {
+        if (!params0.mColorCorrectParams[cc].mOn && !params1.mColorCorrectParams[cc].mOn) {
+            continue;
+        } else if (params0.mColorCorrectParams[cc].mOn && !params1.mColorCorrectParams[cc].mOn) {
+            params.mColorCorrectParams[cc].mOn = params0.mColorCorrectParams[cc].mOn;
+            params.mColorCorrectParams[cc].mMix = params0.mColorCorrectParams[cc].mMix;
+            params.mColorCorrectParams[cc].mHueShift = params0.mColorCorrectParams[cc].mHueShift;
+            params.mColorCorrectParams[cc].mSaturation = params0.mColorCorrectParams[cc].mSaturation;
+            params.mColorCorrectParams[cc].mGain = params0.mColorCorrectParams[cc].mGain;
+            params.mColorCorrectParams[cc].mTmiEnabled = params0.mColorCorrectParams[cc].mTmiEnabled;
+            params.mColorCorrectParams[cc].mTmi = params0.mColorCorrectParams[cc].mTmi;
+        } else if (!params0.mColorCorrectParams[cc].mOn && params1.mColorCorrectParams[cc].mOn) {
+            params.mColorCorrectParams[cc].mOn = params1.mColorCorrectParams[cc].mOn;
+            params.mColorCorrectParams[cc].mMix = params1.mColorCorrectParams[cc].mMix;
+            params.mColorCorrectParams[cc].mHueShift = params1.mColorCorrectParams[cc].mHueShift;
+            params.mColorCorrectParams[cc].mSaturation = params1.mColorCorrectParams[cc].mSaturation;
+            params.mColorCorrectParams[cc].mGain = params1.mColorCorrectParams[cc].mGain;
+            params.mColorCorrectParams[cc].mTmiEnabled = params1.mColorCorrectParams[cc].mTmiEnabled;
+            params.mColorCorrectParams[cc].mTmi = params1.mColorCorrectParams[cc].mTmi;
+        } else {
+            params.mColorCorrectParams[cc].mOn = true;
+
+            params.mColorCorrectParams[cc].mMix = lerp(params0.mColorCorrectParams[cc].mMix,
+                                                       params1.mColorCorrectParams[cc].mMix,
+                                                       mask);
+
+            params.mColorCorrectParams[cc].mHueShift = lerp(params0.mColorCorrectParams[cc].mHueShift,
+                                                            params1.mColorCorrectParams[cc].mHueShift,
+                                                            mask);
+
+            params.mColorCorrectParams[cc].mSaturation = lerp(params0.mColorCorrectParams[cc].mSaturation,
+                                                              params1.mColorCorrectParams[cc].mSaturation,
+                                                              mask);
+
+            params.mColorCorrectParams[cc].mGain = lerp(params0.mColorCorrectParams[cc].mGain,
+                                                        params1.mColorCorrectParams[cc].mGain,
+                                                        mask);
+
+            params.mColorCorrectParams[cc].mTmiEnabled = params0.mColorCorrectParams[cc].mTmiEnabled ||
+                                                         params1.mColorCorrectParams[cc].mTmiEnabled;
+
+            if (params.mColorCorrectParams[cc].mTmiEnabled) {
+                const varying Color tmi0 = params0.mColorCorrectParams[cc].mTmi;
+                const varying Color tmi1 = params1.mColorCorrectParams[cc].mTmi;
+                params.mColorCorrectParams[cc].mTmi = colorSpaceLerp(tmi0,
+                                                                     tmi1,
+                                                                     mask,
+                                                                     colorSpace);
+            }
+        }
+    }
+}
+
+void blendAccentParams(const uniform int colorSpace,
+                       const varying float mask,
+                       const varying DwaBaseParameters &params0,
+                       const varying DwaBaseParameters &params1,
+                       varying DwaBaseParameters &params)
+{
+    params.mAccentParams.mSubsurface = lerp(params0.mAccentParams.mSubsurface,
+                                            params1.mAccentParams.mSubsurface,
+                                            mask);
+
+    params.mAccentParams.mSubsurfaceNormal = normalize(lerp(params0.mAccentParams.mSubsurfaceNormal,
+                                                            params1.mAccentParams.mSubsurfaceNormal,
+                                                            mask));
+
+    params.mAccentParams.mSubsurfaceNormalDial = lerp(params0.mAccentParams.mSubsurfaceNormalDial,
+                                                      params1.mAccentParams.mSubsurfaceNormalDial,
+                                                      mask);
+
+    params.mAccentParams.mSubsurfaceColor = colorSpaceLerp(params0.mAccentParams.mSubsurfaceColor,
+                                                           params1.mAccentParams.mSubsurfaceColor,
+                                                           mask,
+                                                           colorSpace);
+}
+
 //---------------------------------------------------------------------------
 // Blend hair helper functions
 
@@ -1474,6 +1558,8 @@ DWABASE_blendParameters(const uniform Material* uniform me,
 
     // resolve both sub-material params and blend
     DwaBaseParameters params0, params1;
+    DWABASELAYERABLE_copyColorCorrectParameters(params, &params0);
+    DWABASELAYERABLE_copyColorCorrectParameters(params, &params1);
 
     bool success = resolveFn0(material0, tls, state, castsCaustics, &params0) &&
                    resolveFn1(material1, tls, state, castsCaustics, &params1);
@@ -1491,6 +1577,8 @@ DWABASE_blendParameters(const uniform Material* uniform me,
     blendCommonSpecularParams(mask, params0, params1, *params);
     blendIridescenceParams(colorSpace, mask, params0, params1, *params);
     blendMetallicParams(colorSpace, mask, params0, params1, *params);
+    blendColorCorrectParams(colorSpace, mask, params0, params1, *params);
+    blendAccentParams(colorSpace, mask, params0, params1, *params);
 
     // Always blend params.mFabricAttenuation before calling
     // blendRefractiveIndex, blendTransmission, blendDiffuse
@@ -1564,6 +1652,9 @@ DWABASE_blendHairParameters(const uniform Material* uniform me,
     uniform bool layerCastsCaustics = casts0 || casts1;
 
     DwaBaseParameters params0, params1;
+    DWABASELAYERABLE_copyColorCorrectParameters(params, &params0);
+    DWABASELAYERABLE_copyColorCorrectParameters(params, &params1);
+
     bool success = resolveFn0(material0, tls, state, layerCastsCaustics, &params0) &&
                    resolveFn1(material1, tls, state, layerCastsCaustics, &params1);
     if (!success) { return false; }

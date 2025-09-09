@@ -119,6 +119,7 @@ DwaSwitchMaterial::DwaSwitchMaterial(const scene_rdl2::rdl2::SceneClass& sceneCl
     : Parent(sceneClass, name, sLabels)
     , mMaterial(nullptr)
 {
+    mType |= scene_rdl2::rdl2::INTERFACE_DWABASE;
     mType |= scene_rdl2::rdl2::INTERFACE_DWABASELAYERABLE;
 
     mShadeFunc = DwaSwitchMaterial::shade;
@@ -314,6 +315,8 @@ DwaSwitchMaterial::shade(const scene_rdl2::rdl2::Material* self,
     const ispc::DwaSwitchMaterial* ispc = me->getISPCMaterialStruct();
     const bool castsCaustics = me->getCastsCaustics();
     ispc::DwaBaseParameters params;
+    initColorCorrectParameters(params);
+
     if (me->resolveParameters(tls, state, castsCaustics, params)) {
         // get sss trace set for this DwaSwitchMaterial
         params.mSubsurfaceTraceSet = (scene_rdl2::rdl2::TraceSet *)me->get(attrSubsurfaceTraceSet);
