@@ -48,8 +48,8 @@ get_target_property(objLibDeps ${objLib} DEPENDENCY)
 if(NOT objLibDeps STREQUAL "")
     add_dependencies(${objLibDeps} 
         ${PROJECT_NAME}::common_interpolation
-        ${PROJECT_NAME}::common_noise
         ${PROJECT_NAME}::map_projection
+        Moonray::common_noise
         Moonray::map_primvar
         Moonray::shading_ispc
         SceneRdl2::common_math
