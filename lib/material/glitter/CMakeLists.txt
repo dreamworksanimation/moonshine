@@ -46,7 +46,7 @@ Moonshine_ispc_compile_options(${objLib})
 
 get_target_property(objLibDeps ${objLib} DEPENDENCY)
 if(NOT objLibDeps STREQUAL "")
-    add_dependencies(${objLibDeps} 
+    add_dependencies(${objLibDeps}
         ${PROJECT_NAME}::common_interpolation
         ${PROJECT_NAME}::map_projection
         Moonray::common_noise
