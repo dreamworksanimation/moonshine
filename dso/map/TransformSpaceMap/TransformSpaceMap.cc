@@ -61,7 +61,7 @@ TransformSpaceMap::update()
     }
 
     SceneObject const * obj = get(attrObject);
-    Geometry const *rdlGeometry = obj ? obj->asA<Node>() : nullptr;
+    Node const *rdlGeometry = obj ? obj->asA<Node>() : nullptr;
 
     SceneObject const * cam = get(attrCamera);
     Camera const *rdlCamera = cam ? cam->asA<Camera>() : nullptr;

@@ -89,7 +89,7 @@ void
 NoiseWorleyMap_v2::update()
 {
     // Get input object and camera
-    const Geometry* geom = get(attrObject) ?
+    const Node* geom = get(attrObject) ?
                 get(attrObject)->asA<Node>() : nullptr;
     const Camera* cam = get(attrCamera) ?
             get(attrCamera)->asA<Camera>() : nullptr;
