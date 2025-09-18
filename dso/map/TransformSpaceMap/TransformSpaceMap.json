@@ -87,7 +87,7 @@
             "name": "object",
             "type": "SceneObject*",
             "flags": "FLAGS_NONE",
-            "interface": "INTERFACE_GEOMETRY",
+            "interface": "INTERFACE_NODE",
             "comment": "an alternate object to use when transforming to/from 'object' space"
         },
         "attrUseCustomWindowCoordinates": {

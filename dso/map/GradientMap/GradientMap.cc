@@ -165,7 +165,7 @@ GradientMap::update()
     // If a separate object is specified, get the input object.
     // Only relevant if SHADING_SPACE_OBJECT is chosen.
     const scene_rdl2::rdl2::Geometry* geom = get(attrObject) ?
-                get(attrObject)->asA<scene_rdl2::rdl2::Geometry>() : nullptr;
+                get(attrObject)->asA<scene_rdl2::rdl2::Node>() : nullptr;
 
     // Construct Xform with default transforms for camera and screen.
     mXform = std::make_unique<moonray::shading::Xform>(this, geom, nullptr, nullptr);

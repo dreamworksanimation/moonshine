@@ -140,7 +140,7 @@
             "aliases": [ "object space" ],
             "type": "SceneObject*",
             "flags": "FLAGS_NONE",
-            "interface": "INTERFACE_GEOMETRY",
+            "interface": "INTERFACE_NODE",
             "comment": "Directly connect object to use that object's space.",
             "enable if": {
                 "space": "object"

@@ -120,7 +120,7 @@
             "name": "object",
             "type": "SceneObject*",
             "flags": "FLAGS_NONE",
-            "interface": "INTERFACE_GEOMETRY",
+            "interface": "INTERFACE_NODE",
             "comment": "Use the provided object's transformation space (only used if object space is also specified)",
             "group": "Gradient properties"
         },
