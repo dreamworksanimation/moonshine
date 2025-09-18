@@ -54,6 +54,14 @@ public:
                            bool castsCaustics,
                            ispc::DwaBaseParameters &params) const override;
 
+    virtual void createLobes(const DwaBaseLayerable * const dwaBaseLayerable,
+                             moonray::shading::TLState *tls,
+                             const moonray::shading::State &state,
+                             moonray::shading::BsdfBuilder &builder,
+                             const ispc::DwaBaseParameters &params,
+                             const ispc::DwaBaseUniformParameters &uParams,
+                             const ispc::DwaBaseLabels &labels) const override;
+
     Vec3f resolveSubsurfaceNormal(TLState *tls,
                                         const State& state) const override;
 
@@ -93,7 +101,12 @@ public:
         return reinterpret_cast<EvalNormalFunc>(DwaTwoSidedMaterial::evalSubsurfaceNormal);
     }
 
-    const ispc::DwaTwoSidedMaterial* getISPCLayerMaterialStruct() const { return &mIspc; }
+    const ispc::DwaTwoSidedMaterial* getISPCMaterialStruct() const { return &mIspc; }
+
+    void * getCreateLobesISPCFunc() const override
+    {
+        return ispc::DwaTwoSidedMaterial_getCreateLobesFunc();
+    }
 
 private:
     static void shade(const Material* self,
@@ -205,6 +218,24 @@ DwaTwoSidedMaterial::resolveParameters(TLState *tls,
     return result;
 }
 
+void
+DwaTwoSidedMaterial::createLobes(const moonshine::dwabase::DwaBaseLayerable * const dwaBaseLayerable,
+                                 moonray::shading::TLState *tls,
+                                 const moonray::shading::State &state,
+                                 moonray::shading::BsdfBuilder &bsdfBuilder,
+                                 const ispc::DwaBaseParameters &params,
+                                 const ispc::DwaBaseUniformParameters &uParams,
+                                 const ispc::DwaBaseLabels &labels) const
+{
+    const DwaTwoSidedMaterial* me = static_cast<const DwaTwoSidedMaterial*>(this);
+    const ispc::DwaTwoSidedMaterial* ispc = me->getISPCMaterialStruct();
+    if (state.isEntering() && mFrontMaterial != nullptr) {
+        mFrontMaterial->createLobes(me, tls, state,  bsdfBuilder, params, ispc->mUParams, sLabels);
+    } else if (!state.isEntering() && mBackMaterial != nullptr) {
+        mBackMaterial->createLobes(me, tls, state, bsdfBuilder, params, ispc->mUParams, sLabels);
+    }
+}
+
 float
 DwaTwoSidedMaterial::resolvePresence(TLState *tls,
                                      const State& state) const
@@ -251,7 +282,6 @@ DwaTwoSidedMaterial::resolveSubsurfaceNormal(TLState *tls,
     return result;
 }
 
-
 void
 DwaTwoSidedMaterial::shade(const Material* self,
                            TLState *tls,
@@ -259,7 +289,7 @@ DwaTwoSidedMaterial::shade(const Material* self,
                            BsdfBuilder& bsdfBuilder)
 {
     const DwaTwoSidedMaterial* me = static_cast<const DwaTwoSidedMaterial*>(self);
-    const ispc::DwaTwoSidedMaterial* ispc = me->getISPCLayerMaterialStruct();
+    const ispc::DwaTwoSidedMaterial* ispc = me->getISPCMaterialStruct();
 
     const bool castsCaustics = me->getCastsCaustics();
 
@@ -303,7 +333,7 @@ const void*
 getDwaTwoSidedMaterialStruct(const void* ptr)
 {
     const DwaTwoSidedMaterial* classPtr = static_cast<const DwaTwoSidedMaterial*>(ptr);
-    return (static_cast<const void*>(classPtr->getISPCLayerMaterialStruct()));
+    return (static_cast<const void*>(classPtr->getISPCMaterialStruct()));
 }
 }
 

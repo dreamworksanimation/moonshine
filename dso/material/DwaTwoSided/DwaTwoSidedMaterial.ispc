@@ -85,6 +85,32 @@ DWATWOSIDED_resolveParameters(DWABASELAYERABLE_RESOLVE_PARAMS_FUNC_ARGS)
     return result;
 }
 
+extern void
+DWATWOSIDED_createLobes(const uniform Material * uniform me,
+                        uniform ShadingTLState * uniform tls,
+                        const varying State             &state,
+                        varying BsdfBuilder             &bsdfBuilder,
+                        const varying DwaBaseParameters * uniform params,
+                        const uniform DwaBaseUniformParameters * uniform uParams)
+{
+
+    const uniform DwaTwoSidedMaterial* uniform twoSidedMaterial =
+            (const uniform DwaTwoSidedMaterial* uniform)getDwaTwoSidedMaterialStruct(me);
+
+    const uniform SubMtlData& front = twoSidedMaterial->mFrontMaterial;
+    const uniform SubMtlData& back = twoSidedMaterial->mBackMaterial;
+    const uniform Material* uniform frontMaterial = (const uniform Material * uniform) front.mDwaBaseLayerable;
+    const uniform Material* uniform backMaterial = (const uniform Material * uniform) back.mDwaBaseLayerable;
+
+    if (isEntering(state) && frontMaterial) {
+        const DWABASELAYERABLE_CreateLobesFunc createLobesFn = (DWABASELAYERABLE_CreateLobesFunc)front.mCreateLobesFunc;
+        createLobesFn(frontMaterial, tls, state, bsdfBuilder, params, uParams);
+    } else if (!isEntering(state) && backMaterial) {
+        const DWABASELAYERABLE_CreateLobesFunc createLobesFn = (DWABASELAYERABLE_CreateLobesFunc)back.mCreateLobesFunc;
+        createLobesFn(backMaterial, tls, state, bsdfBuilder, params, uParams);
+    }
+}
+
 extern uniform bool
 DWATWOSIDED_castsCaustics(const uniform Material *uniform me)
 {
@@ -191,6 +217,11 @@ export void *uniform DwaTwoSidedMaterial_getresolveSubsurfaceNormalFunc()
     return DWATWOSIDED_resolveSubsurfaceNormal;
 }
 
+export void *uniform DwaTwoSidedMaterial_getCreateLobesFunc()
+{
+    return DWATWOSIDED_createLobes;
+}
+
 static void
 shade(const uniform Material *      uniform  me,
             uniform ShadingTLState *uniform  tls,
@@ -207,7 +238,7 @@ shade(const uniform Material *      uniform  me,
         // get sss trace set
         params.mSubsurfaceTraceSet = twoSidedMaterial->mSubsurfaceTraceSet;
 
-        DWABASE_createLobes(me, tls, state, bsdfBuilder, &params, &twoSidedMaterial->mUParams);
+        DWATWOSIDED_createLobes(me, tls, state, bsdfBuilder, &params, &twoSidedMaterial->mUParams);
     }
 }
 
