@@ -101,6 +101,7 @@ HairToonMaterial::HairToonMaterial(const SceneClass& sceneClass, const std::stri
             sLabels,
             ispc::Model::HairToon)
 {
+    mType |= INTERFACE_DWABASE;
     mType |= INTERFACE_DWABASEHAIRLAYERABLE;
 
     mShadeFunc = HairToonMaterial::shade;
