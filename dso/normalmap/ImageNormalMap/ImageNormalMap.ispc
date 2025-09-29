@@ -110,8 +110,8 @@ sampleNormal(const uniform NormalMap* uniform map,
     varying Col4f tx;
     if (me->mTexture) {
         // rotation and scaling only for non-udim case
-        const Vec2f offset = getAttrOffset(map);
-        const Vec2f scale  = getAttrScale(map);
+        const Vec2f offset = evalAttrOffset(map, tls, state);
+        const Vec2f scale  = evalAttrScale(map, tls, state);
         const uniform Vec2f rotationCenter = getAttrRotationCenter(map);
         // Rotate coords and derivatives.
         const uniform float theta = deg2rad(getAttrRotationAngle(map));

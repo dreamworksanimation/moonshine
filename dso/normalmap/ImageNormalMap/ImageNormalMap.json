@@ -71,6 +71,7 @@
             "name": "offset",
             "type": "Vec2f",
             "default": "Vec2f(0.0f, 0.0f)",
+            "flags": "FLAGS_BINDABLE",
             "comment": "Translates the UV coordinates in texture space.  The order of operations is rotation, scale, and then offset.",
             "group": "UVs"
         },
@@ -78,6 +79,7 @@
             "name": "scale",
             "type": "Vec2f",
             "default": "Vec2f(1.0f, 1.0f)",
+            "flags": "FLAGS_BINDABLE",
             "comment": "Scales the UV coordinates in texture space.  The order of operations is rotation, scale, and then offset.",
             "group": "UVs"
         },

@@ -249,8 +249,8 @@ ImageNormalMap::sampleNormal(const scene_rdl2::rdl2::NormalMap* self,
     Color4 tx;
     if (me->mTexture) {
         // rotation and scaling only for non-udim case
-        const Vec2f offset = me->get(attrOffset);
-        const Vec2f scale  = me->get(attrScale);
+        const Vec2f offset = evalVec2f(me, attrOffset, tls, state);
+        const Vec2f scale  = evalVec2f(me, attrScale, tls, state);
         const Vec2f rotationCenter = me->get(attrRotationCenter);
         // Rotate coords and derivatives.
         float theta = deg2rad(me->get(attrRotationAngle));
