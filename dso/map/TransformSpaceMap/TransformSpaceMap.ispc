@@ -234,12 +234,7 @@ worldToRefTangent(const varying State &state,
     dRefPds = normalize(dRefPds);
 
     Vec3f refN;
-    if (isProvided(state, refNKey)) {
-        SHADER_DATA_getRefN(refPKey, refNKey, tls, state, &refN);
-    } else {
-        Vec3f dRefPdt = normalize(getdVec3fAttributedt(tls, state, refPKey));
-        refN = cross(dRefPds, dRefPdt);
-    }
+    SHADER_DATA_getRefN(refPKey, refNKey, tls, state, &refN);
 
     ReferenceFrame refFrame;
     ReferenceFrame_init(refFrame, normalize(refN), dRefPds);

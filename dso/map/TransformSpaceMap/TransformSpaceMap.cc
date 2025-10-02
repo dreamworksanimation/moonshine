@@ -269,15 +269,7 @@ worldToRefTangent(const moonray::shading::State& state,
     dRefPds = normalize(dRefPds);
 
     Vec3f refN;
-    if (state.isProvided(refNKey)) {
-        refN = state.getAttribute(
-            static_cast<moonray::shading::TypedAttributeKey<Vec3f>>(refNKey));
-    } else {
-        Vec3f dRefPdt;
-        state.getdVec3fAttrdt(refPKey, dRefPdt);
-        dRefPdt = normalize(dRefPdt);
-        refN = cross(dRefPds, dRefPdt);
-    }
+    state.getRefN(refN);
 
     const ReferenceFrame refFrame(normalize(refN), dRefPds);
 
