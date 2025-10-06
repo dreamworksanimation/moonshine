@@ -29,15 +29,12 @@ help = ('For assistance, '
         "please contact the folio's owner at: moonbase-dev@dreamworks.com")
 
 variants = [
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'openimageio-2.3.20.0.x', 'gcc-11.x'],
-    ['os-rocky-9', 'opt_level-debug',    'refplat-vfx2023.1', 'openimageio-2.3.20.0.x', 'gcc-11.x'],
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'openimageio-2.3.20.0.x', 'clang-17.0.6.x'],
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'openimageio-2.4.8.0.x',  'gcc-11.x'],
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2022.0', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1'],
-    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2024.0', 'openimageio-2.4.8.0.x',  'gcc-11.x'],
-
-    ['os-CentOS-7', 'opt_level-optdebug', 'refplat-vfx2022.0', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1'],
-    ['os-CentOS-7', 'opt_level-debug',    'refplat-vfx2022.0', 'openimageio-2.3.20.0.x', 'gcc-9.3.x.1'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'gcc-11.x'],
+    ['os-rocky-9', 'opt_level-debug',    'refplat-vfx2023.1', 'gcc-11.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2023.1', 'clang-17.0.6.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2024.0', 'gcc-11.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2025.0', 'gcc-11.x'],
+    ['os-rocky-9', 'opt_level-optdebug', 'refplat-vfx2022.0', 'gcc-9.3.x.1'],
 ]
 
 conf_rats_variants = variants[0:2]
