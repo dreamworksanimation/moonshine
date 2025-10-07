@@ -40,7 +40,12 @@ Color
 colorNormalize(const varying Color &a)
 {
     Vec3f vecA = Vec3f_ctor(a.r, a.g, a.b);
-    vecA = normalize(vecA);
+    const float lengthSquared = lengthSqr(vecA);
+    if (lengthSquared <= (sEpsilon * sEpsilon)) {
+        vecA = Vec3f_ctor(0.f);
+    } else {
+        vecA = normalize(vecA);
+    }
     return Color_ctor(vecA.x, vecA.y, vecA.z);
 }
 
