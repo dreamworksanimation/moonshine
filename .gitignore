@@ -28,3 +28,6 @@ cmd/client_apps/Android/bin/
 /.config.xml
 /.metadata_src_project
 /.src_project*
+
+# gha created files
+.ci_githooks
