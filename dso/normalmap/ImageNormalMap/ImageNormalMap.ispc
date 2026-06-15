@@ -64,7 +64,7 @@ sampleNormal(const uniform NormalMap* uniform map,
              uniform ShadingTLState* uniform tls,
              const varying State& state)
 {
-    const uniform ImageNormalMap* uniform me = MAP_GET_ISPC_PTR(ImageNormalMap, map);
+    const uniform ImageNormalMap* uniform me = NORMALMAP_GET_ISPC_PTR(ImageNormalMap, map);
 
     Vec2f st;
     float dsdx, dtdx, dsdy, dtdy;

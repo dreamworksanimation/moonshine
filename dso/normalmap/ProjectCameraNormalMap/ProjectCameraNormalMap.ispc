@@ -36,7 +36,7 @@ sampleNormal(const uniform NormalMap * uniform map,
              uniform ShadingTLState * uniform tls,
              const varying State & state)
 {
-    const uniform ProjectCameraNormalMap * uniform me = MAP_GET_ISPC_PTR(ProjectCameraNormalMap, map);
+    const uniform ProjectCameraNormalMap * uniform me = NORMALMAP_GET_ISPC_PTR(ProjectCameraNormalMap, map);
 
     if (!me->mHasValidProjector) {
         // Log missing projector data message

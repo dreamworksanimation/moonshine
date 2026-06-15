@@ -48,7 +48,7 @@ sampleNormal(const uniform NormalMap* uniform map,
              uniform ShadingTLState* uniform tls,
              const varying State& state)
 {
-    const uniform RandomNormalMap * uniform me = MAP_GET_ISPC_CPTR(RandomNormalMap, map);
+    const uniform RandomNormalMap * uniform me = NORMALMAP_GET_ISPC_CPTR(RandomNormalMap, map);
 
     const varying Color input = evalAttrInput(map, tls, state);
     const uniform int seed = getAttrSeed(map);
