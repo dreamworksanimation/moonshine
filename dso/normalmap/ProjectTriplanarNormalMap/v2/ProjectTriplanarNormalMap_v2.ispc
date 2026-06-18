@@ -27,7 +27,7 @@ sampleNormal(const uniform NormalMap* uniform map,
              const varying State& state) {
 
     const uniform ProjectTriplanarNormalMap_v2 * uniform me =
-        MAP_GET_ISPC_CPTR(ProjectTriplanarNormalMap_v2, map);
+        NORMALMAP_GET_ISPC_CPTR(ProjectTriplanarNormalMap_v2, map);
 
     const uniform PROJECTION_TriplanarData& data = me->mTriplanarData;
 

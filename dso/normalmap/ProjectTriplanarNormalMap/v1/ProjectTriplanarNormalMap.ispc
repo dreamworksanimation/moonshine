@@ -23,7 +23,7 @@ sampleNormal(const uniform NormalMap* uniform map,
              uniform ShadingTLState* uniform tls,
              const varying State& state) {
 
-    const uniform ProjectTriplanarNormalMap * uniform me = MAP_GET_ISPC_CPTR(ProjectTriplanarNormalMap, map);
+    const uniform ProjectTriplanarNormalMap * uniform me = NORMALMAP_GET_ISPC_CPTR(ProjectTriplanarNormalMap, map);
     const uniform PROJECTION_TriplanarData& data = me->mTriplanarData;
 
     if (!data.mHasValidProjector) {
