@@ -651,7 +651,7 @@ DwaBase::update()
             // don't want to clear mRequiredAttributes in case glitter still requires refPKey
             std::vector<int>::iterator it = std::find(mRequiredAttributes.begin(),
                                                       mRequiredAttributes.end(),
-                                                      moonray::shading::StandardAttributes::sScatterTag);
+                                                      moonray::shading::StandardAttributes::sScatterTag.getIndex());
             if (it != mRequiredAttributes.end() &&
                     isEqual(get(mAttrKeys.mHairGlintMinTwists), get(mAttrKeys.mHairGlintMaxTwists))) {
                 // key found but no glint variation, so erase key
